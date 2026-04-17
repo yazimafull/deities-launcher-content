@@ -36,6 +36,17 @@
 </head>
 <body>
 
+<script>
+    // --- SÉCURITÉ TOKEN ---
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get("auth");
+
+    if (auth !== "YAZIMA-ACCESS-KEY-2026") {
+        document.body.innerHTML = "<h1>Accès refusé</h1>";
+        throw new Error("Accès refusé");
+    }
+</script>
+
 <div id="score">Score : 0</div>
 <div id="player"></div>
 
