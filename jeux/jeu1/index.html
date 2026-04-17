@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu 1 - Deities Studio</title>
+</head>
+<body>
+  <h1>Jeu 1 - Deities Studio</h1>
+  <p>Si tu vois ça, c’est que le token est bon.</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get("auth");
+
+    if (auth !== "YAZIMA-ACCESS-KEY-2026") {
+      document.body.innerHTML = "<h1>Accès refusé</h1>";
+    }
+  </script>
+</body>
+</html>
