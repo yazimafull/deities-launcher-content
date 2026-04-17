@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Évite les lasers !</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            color: white;
+            font-family: Arial;
+        }
+
+        #player {
+            width: 40px;
+            height: 40px;
+            background: #00aaff;
+            position: absolute;
+            border-radius: 5px;
+        }
+
+        .laser {
+            position: absolute;
+            background: #ff3333;
+            box-shadow: 0 0 15px #ff3333;
+        }
+
+        #score {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="score">Score : 0</div>
+<div id="player"></div>
+
+<script>
+    const player = document.getElementById("player");
+    const scoreTxt = document.getElementById("score");
+
+    let score = 0;
+    let playerX = 200, playerY = 200;
+
+    // Déplacement du joueur
+    document.addEventListener("mousemove", (e) => {
+        playerX = e.clientX - 20;
+        playerY = e.clientY - 20;
+        player.style.left = playerX + "px";
+        player.style.top = playerY + "px";
+    });
+
+    function spawnLaser() {
+        const laser = document.createElement("div");
+        laser.classList.add("laser");
+
+        const horizontal = Math.random() < 0.5;
+
+        if (horizontal) {
+            laser.style.width = "100%";
+            laser.style.height = "10px";
+            laser.style.top = Math.random() * window.innerHeight + "px";
+            laser.style.left = "0px";
+        } else {
+            laser.style.width = "10px";
+            laser.style.height = "100%";
+            laser.style.left = Math.random() * window.innerWidth + "px";
+            laser.style.top = "0px";
+        }
+
+        document.body.appendChild(laser);
+
+        // Collision check
+        const interval = setInterval(() => {
+            const p = player.getBoundingClientRect();
+            const l = laser.getBoundingClientRect();
+
+            if (
+                l.left < p.right &&
+                l.right > p.left &&
+                l.top < p.bottom &&
+                l.bottom > p.top
+            ) {
+                alert("Touché par un laser ! Score final : " + score);
+                location.reload();
+            }
+        }, 20);
+
+        // Laser disparaît après 1 seconde
+        setTimeout(() => {
+            clearInterval(interval);
+            laser.remove();
+        }, 1000);
+    }
+
+    // Score + lasers réguliers
+    setInterval(() => {
+        score++;
+        scoreTxt.textContent = "Score : " + score;
+        spawnLaser();
+    }, 700);
+</script>
+
+</body>
+</html>
