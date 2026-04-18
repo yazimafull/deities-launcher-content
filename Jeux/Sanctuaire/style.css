@@ -134,10 +134,7 @@ body {
 
 .death-panel {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.85);
     color: white;
     display: none;
@@ -165,14 +162,14 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     z-index: 2000;
 }
 
 /* -------- PANNEAU GAUCHE -------- */
 
 .left-panel {
-    width: 22%;
+    width: 20%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -186,6 +183,7 @@ body {
     margin-bottom: 40px;
 }
 
+/* MENU GAUCHE */
 .left-menu {
     display: flex;
     flex-direction: column;
@@ -201,7 +199,7 @@ body {
 /* -------- ZONE CENTRALE -------- */
 
 .center-panel {
-    width: 50%;
+    width: 60%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -210,22 +208,12 @@ body {
     padding-bottom: 60px;
 }
 
+/* CADRE CENTRAL SUPPRIMÉ */
 .character-display {
-    width: 60%;
-    height: 60%;
-    border: 3px solid rgba(255, 255, 255, 0.4);
-    background: rgba(0, 0, 0, 0.4);
-    margin-bottom: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: none;
 }
 
-.character-placeholder {
-    color: #ddd;
-    font-size: 22px;
-}
-
+/* BOUTON JOUER CENTRÉ HORIZONTALEMENT */
 .play-btn {
     width: 220px;
     padding: 16px;
@@ -233,12 +221,13 @@ body {
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #c9a86a;
     color: #e2d3b5;
+    margin: 0 auto;
 }
 
 /* -------- PANNEAU DROIT -------- */
 
 .right-panel {
-    width: 22%;
+    width: 20%;
     height: 100%;
     background: rgba(0, 0, 0, 0.45);
     padding: 20px;
@@ -259,19 +248,28 @@ body {
     margin-bottom: 20px;
 }
 
+/* BOUTON CRÉER UN NOUVEAU */
 .create-btn {
     width: 180px;
     padding: 12px;
     font-size: 18px;
 }
 
-.delete-icon {
-    margin-top: 20px;
-    font-size: 26px;
-    background: none;
-    border: none;
+/* BOUTON POUBELLE (invisible si aucun perso) */
+.delete-btn {
+    width: 180px;
+    padding: 12px;
+    font-size: 18px;
+    margin-top: 15px;
+    border: 2px solid #b00000;
+    background: rgba(0,0,0,0.5);
+    color: white;
     cursor: pointer;
-    color: #ff4444;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: rgba(80,0,0,0.7);
 }
 
 /* =============================== */
