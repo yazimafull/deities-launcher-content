@@ -1,11 +1,21 @@
 {
   "version": "1.0.0",
   "files": [
-    { "path": "index.html" },
-    { "path": "style.css" },
-    { "path": "game.json" },
-    { "path": "background.jpg" },
-    { "path": "icon.png" },
-    { "path": "js/main.js" }
+    { "path": "index.html", "sha256": "" },
+    { "path": "game.json", "sha256": "" },
+    { "path": "background.jpg", "sha256": "" },
+    { "path": "icon.png", "sha256": "" },
+    { "path": "style.css", "sha256": "" },
+
+    { "path": "js/boss.js", "sha256": "" },
+    { "path": "js/bullet.js", "sha256": "" },
+    { "path": "js/characterMenu.js", "sha256": "" },
+    { "path": "js/collisionSystem.js", "sha256": "" },
+    { "path": "js/damageSystem.js", "sha256": "" },
+    { "path": "js/enemy.js", "sha256": "" },
+    { "path": "js/main.js", "sha256": "" },
+    { "path": "js/player.js", "sha256": "" },
+    { "path": "js/upgradePanel.js", "sha256": "" }
   ]
 }
+
