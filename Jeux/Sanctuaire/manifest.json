@@ -6,7 +6,6 @@
     { "path": "game.json" },
     { "path": "background.jpg" },
     { "path": "icon.png" },
-    { "path": "users.json" },
     { "path": "js/main.js" }
   ]
 }
