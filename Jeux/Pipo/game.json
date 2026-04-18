@@ -1,0 +1,7 @@
+{
+    "name": "Pipo",
+    "description": "Un jeu pipo pour les plus grands des pipos.",
+    "icon": "icon.png",
+    "background": "background.jpg",
+    "version": "1.0.0"
+}
