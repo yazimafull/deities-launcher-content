@@ -1,4 +1,7 @@
-﻿/* GLOBAL */
+/* =============================== */
+/*            GLOBAL               */
+/* =============================== */
+
 body {
     margin: 0;
     background: #111;
@@ -7,7 +10,15 @@ body {
     overflow: hidden;
 }
 
-/* CANVAS — derrière les menus */
+/* UTILITAIRE */
+.hidden {
+    display: none !important;
+}
+
+/* =============================== */
+/*            CANVAS               */
+/* =============================== */
+
 #game-canvas {
     position: absolute;
     top: 0;
@@ -15,7 +26,10 @@ body {
     z-index: 10;
 }
 
-/* MENUS — devant le canvas */
+/* =============================== */
+/*            MENUS                */
+/* =============================== */
+
 .menu {
     position: absolute;
     top: 50%;
@@ -25,11 +39,10 @@ body {
     z-index: 100;
 }
 
-.hidden {
-    display: none;
-}
+/* =============================== */
+/*            BOUTONS              */
+/* =============================== */
 
-/* BOUTONS */
 .btn {
     display: block;
     margin: 10px auto;
@@ -39,13 +52,22 @@ body {
     color: white;
     font-size: 20px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .btn:hover {
     background: #444;
 }
 
-/* PANEL UPGRADES — tout devant */
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* =============================== */
+/*         PANEL UPGRADES          */
+/* =============================== */
+
 .side-panel {
     position: absolute;
     right: 0;
@@ -63,7 +85,10 @@ body {
     padding: 0;
 }
 
-/* BARRE DE VIE — devant les menus */
+/* =============================== */
+/*         BARRE DE VIE            */
+/* =============================== */
+
 #healthbar-container {
     position: absolute;
     top: 10px;
@@ -81,7 +106,10 @@ body {
     background: #00ff55;
 }
 
-/* BARRE D'XP — devant les menus */
+/* =============================== */
+/*         BARRE D'XP              */
+/* =============================== */
+
 #xpbar-container {
     position: absolute;
     bottom: 10px;
@@ -100,7 +128,10 @@ body {
     background: #4aa3ff;
 }
 
-/* ÉCRAN DE MORT — tout au-dessus */
+/* =============================== */
+/*         ÉCRAN DE MORT           */
+/* =============================== */
+
 .death-panel {
     position: absolute;
     top: 0;
@@ -109,7 +140,7 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
     color: white;
-    display: none; /* 🔥 IMPORTANT : caché par défaut */
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -117,97 +148,158 @@ body {
     z-index: 9999;
 }
 
-/* 🔥 Quand on veut l’afficher */
 .death-panel.show {
     display: flex;
 }
 
-/* Ta classe hidden peut rester */
-.hidden {
-    display: none;
-}
-
 /* =============================== */
-/*   MENU DE SELECTION PERSONNAGE  */
+/*   NOUVEAU MENU DIABLO II        */
 /* =============================== */
 
-#character-select-menu {
+.character-screen {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    padding: 20px;
-    background: rgba(0,0,0,0.75);
-    border: 2px solid white;
-    text-align: center;
+    inset: 0;
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     z-index: 2000;
 }
 
-#character-select-menu h1 {
-    margin-bottom: 20px;
-    font-size: 42px;
-    letter-spacing: 3px;
+/* -------- PANNEAU GAUCHE -------- */
+
+.left-panel {
+    width: 22%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    background: rgba(0,0,0,0.35);
 }
 
-/* Liste des personnages */
-.char-list {
+.game-logo {
+    width: 80%;
+    margin-bottom: 40px;
+}
+
+.left-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-btn {
+    width: 180px;
+    padding: 12px;
+    font-size: 18px;
+}
+
+/* -------- ZONE CENTRALE -------- */
+
+.center-panel {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 60px;
+}
+
+.character-display {
+    width: 60%;
+    height: 60%;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.4);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-placeholder {
+    color: #ddd;
+    font-size: 22px;
+}
+
+.play-btn {
+    width: 220px;
+    padding: 16px;
+    font-size: 22px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+}
+
+/* -------- PANNEAU DROIT -------- */
+
+.right-panel {
+    width: 22%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.panel-title {
+    color: #e2d3b5;
+    margin-bottom: 20px;
+}
+
+.character-list {
     width: 100%;
-    max-height: 250px;
+    height: 70%;
     overflow-y: auto;
     margin-bottom: 20px;
-    border: 2px solid white;
-    padding: 10px;
-    background: rgba(20,20,20,0.6);
 }
 
-.character-entry {
-    padding: 10px;
-    margin: 5px 0;
-    background: #222;
-    border: 1px solid #555;
-    cursor: pointer;
+.create-btn {
+    width: 180px;
+    padding: 12px;
     font-size: 18px;
-    transition: 0.2s;
 }
 
-.character-entry:hover {
-    background: #333;
+.delete-icon {
+    margin-top: 20px;
+    font-size: 26px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff4444;
 }
 
-.character-entry.selected {
-    background: #444;
-    border-color: white;
+/* =============================== */
+/*         PANNEAU OPTIONS         */
+/* =============================== */
+
+.options-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
 }
 
-/* Boutons du menu */
-.char-buttons {
-    margin-top: 10px;
+.options-window {
+    background: rgba(0,0,0,0.8);
+    padding: 40px;
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    text-align: center;
 }
 
-.char-buttons .btn {
-    width: 80%;
-    margin: 8px auto;
-}
-
-/* Boutons désactivés */
-.btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-/* Bas du menu */
-.bottom-menu {
+.close-options-btn {
     margin-top: 20px;
 }
 
-.bottom-menu .btn.small {
-    padding: 8px 15px;
-    font-size: 16px;
-    display: inline-block;
-    margin: 5px;
-}
-
-/* {
-    /*outline: 1px solid red !important;
-}
+/* =============================== */
+/*         FIN DU FICHIER          */
+/* =============================== */
