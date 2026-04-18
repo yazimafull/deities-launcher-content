@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "files": [
+    { "path": "index.html" },
+    { "path": "style.css" },
+    { "path": "game.json" },
+    { "path": "background.jpg" },
+    { "path": "icon.png" },
+    { "path": "users.json" },
+    { "path": "js/main.js" }
+  ]
+}
