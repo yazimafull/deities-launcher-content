@@ -166,6 +166,14 @@ body {
     z-index: 2000;
 }
 
+/* -------- LIGNES MAGIQUES -------- */
+
+.left-panel,
+.right-panel {
+    box-sizing: border-box; /* empêche padding/border d'élargir */
+    min-width: 0;           /* empêche le contenu interne d'élargir */
+}
+
 /* -------- PANNEAU GAUCHE -------- */
 
 .left-panel {
@@ -183,7 +191,6 @@ body {
     margin-bottom: 40px;
 }
 
-/* MENU GAUCHE */
 .left-menu {
     display: flex;
     flex-direction: column;
@@ -208,12 +215,11 @@ body {
     padding-bottom: 60px;
 }
 
-/* CADRE CENTRAL SUPPRIMÉ */
+/* Cadre désactivé */
 .character-display {
     display: none;
 }
 
-/* BOUTON JOUER CENTRÉ HORIZONTALEMENT */
 .play-btn {
     width: 220px;
     padding: 16px;
@@ -246,20 +252,18 @@ body {
     height: 70%;
     overflow-y: auto;
     margin-bottom: 20px;
+    min-width: 0; /* empêche l'élargissement */
 }
 
-/* BOUTON CRÉER UN NOUVEAU */
-.create-btn {
-    width: 180px;
-    padding: 12px;
-    font-size: 18px;
-}
-
-/* BOUTON POUBELLE (invisible si aucun perso) */
+.create-btn,
 .delete-btn {
-    width: 180px;
+    width: 100%;
+    max-width: 180px; /* garde la taille visuelle */
     padding: 12px;
     font-size: 18px;
+}
+
+.delete-btn {
     margin-top: 15px;
     border: 2px solid #b00000;
     background: rgba(0,0,0,0.5);
