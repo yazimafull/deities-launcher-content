@@ -4,7 +4,7 @@ export function onPlayerDeath() {
     const deathScreen = document.getElementById("death-screen");
     if (!deathScreen) return;
 
-    // Afficher l'écran
+    // Afficher l'Ã©cran
     deathScreen.classList.remove("hidden");
     deathScreen.classList.add("show");
 }
