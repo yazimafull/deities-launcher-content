@@ -5,7 +5,7 @@ import { setState, GameState } from "./state.js";
 
 export const allUpgrades = [
     {
-        name: "Feu - brûlure",
+        name: "Feu - brÃ»lure",
         apply() { player.element = "fire"; }
     },
     {
@@ -21,7 +21,7 @@ export const allUpgrades = [
         apply() { player.speed *= 1.2; }
     },
     {
-        name: "+20% dégâts",
+        name: "+20% dÃ©gÃ¢ts",
         apply() { player.damage *= 1.2; }
     },
     {
@@ -41,7 +41,7 @@ export function showUpgradeChoices() {
     container.innerHTML = "";
     menu.classList.remove("hidden");
 
-    // 3 upgrades aléatoires
+    // 3 upgrades alÃ©atoires
     let choices = [];
     while (choices.length < 3) {
         let up = allUpgrades[Math.floor(Math.random()*allUpgrades.length)];
