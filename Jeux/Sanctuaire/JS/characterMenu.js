@@ -1,29 +1,51 @@
-// characterMenu.js
-// Gestion du menu d'accueil : personnages, création, suppression, lancement du jeu
+/* ============================================================
+   CHARACTER MENU â€” VERSION DIABLO II
+   Fusion complÃ¨te : ancien systÃ¨me + nouveau UI + options + souris
+   ============================================================ */
 
-// Sélecteurs
+/* ------------------------------------------------------------
+   SÃ‰LECTEURS
+------------------------------------------------------------ */
+
 const menu = document.getElementById("character-select-menu");
 const listContainer = document.getElementById("character-list");
 const playBtn = document.getElementById("play-character-btn");
 const createBtn = document.getElementById("create-character-btn");
 const deleteBtn = document.getElementById("delete-character-btn");
 const gameCanvas = document.getElementById("game-canvas");
+const characterDisplay = document.getElementById("selected-character-display");
 
-// Variable interne : personnage sélectionné
+/* Options */
+const optionsPanel = document.getElementById("options-panel");
+const optionsBtn = document.getElementById("options-btn");
+const closeOptionsBtn = document.getElementById("close-options-btn");
+
+/* Quitter */
+const quitBtn = document.getElementById("quit-btn");
+
+/* ------------------------------------------------------------
+   VARIABLES
+------------------------------------------------------------ */
+
 let selectedCharacterId = null;
 
-// Charger les personnages depuis localStorage
+/* ------------------------------------------------------------
+   CHARGEMENT / SAUVEGARDE
+------------------------------------------------------------ */
+
 function loadCharacters() {
     const raw = localStorage.getItem("MS_characters");
     return raw ? JSON.parse(raw) : [];
 }
 
-// Sauvegarder les personnages
 function saveCharacters(chars) {
     localStorage.setItem("MS_characters", JSON.stringify(chars));
 }
 
-// Rafraîchir l'affichage de la liste
+/* ------------------------------------------------------------
+   AFFICHAGE DE LA LISTE
+------------------------------------------------------------ */
+
 function refreshCharacterList() {
     const characters = loadCharacters();
     listContainer.innerHTML = "";
@@ -31,10 +53,9 @@ function refreshCharacterList() {
     characters.forEach(char => {
         const div = document.createElement("div");
         div.className = "character-entry";
-        div.textContent = `${char.name} — ${char.class} (Niv. ${char.level})`;
+        div.textContent = `${char.name} â€” ${char.class} (Niv. ${char.level})`;
         div.dataset.id = char.id;
 
-        // Sélection visuelle
         if (char.id === selectedCharacterId) {
             div.classList.add("selected");
         }
@@ -42,21 +63,51 @@ function refreshCharacterList() {
         div.addEventListener("click", () => {
             selectedCharacterId = char.id;
             playBtn.disabled = false;
-            deleteBtn.disabled = false;
+            deleteBtn.classList.remove("hidden");
             refreshCharacterList();
+            refreshCharacterDisplay();
         });
 
         listContainer.appendChild(div);
     });
 
-    // Si aucun personnage
     if (characters.length === 0) {
         playBtn.disabled = true;
-        deleteBtn.disabled = true;
+        deleteBtn.classList.add("hidden");
+        refreshCharacterDisplay();
     }
 }
 
-// Créer un personnage
+/* ------------------------------------------------------------
+   AFFICHAGE DU PERSONNAGE AU CENTRE
+------------------------------------------------------------ */
+
+function refreshCharacterDisplay() {
+    if (!selectedCharacterId) {
+        characterDisplay.innerHTML = `
+            <div class="character-placeholder">
+                SÃ©lectionnez un personnage
+            </div>
+        `;
+        return;
+    }
+
+    const characters = loadCharacters();
+    const char = characters.find(c => c.id === selectedCharacterId);
+
+    characterDisplay.innerHTML = `
+        <div class="character-placeholder">
+            ${char.name}<br>
+            <span style="font-size:18px; opacity:0.8">${char.class}</span><br>
+            <span style="font-size:16px; opacity:0.6">Niveau ${char.level}</span>
+        </div>
+    `;
+}
+
+/* ------------------------------------------------------------
+   CRÃ‰ATION DE PERSONNAGE
+------------------------------------------------------------ */
+
 function createCharacter() {
     const name = prompt("Nom du personnage :");
     if (!name) return;
@@ -76,15 +127,21 @@ function createCharacter() {
         inventory: [],
         resources: {},
         talents: [],
-        hubState: {} // sanctuaire plus tard
+        hubState: {}
     };
 
     characters.push(newChar);
     saveCharacters(characters);
+
+    selectedCharacterId = newChar.id;
     refreshCharacterList();
+    refreshCharacterDisplay();
 }
 
-// Supprimer un personnage
+/* ------------------------------------------------------------
+   SUPPRESSION DE PERSONNAGE
+------------------------------------------------------------ */
+
 function deleteCharacter() {
     if (!selectedCharacterId) return;
 
@@ -97,38 +154,86 @@ function deleteCharacter() {
 
     selectedCharacterId = null;
     playBtn.disabled = true;
-    deleteBtn.disabled = true;
+    deleteBtn.classList.add("hidden");
 
     refreshCharacterList();
+    refreshCharacterDisplay();
 }
 
-// Lancer le jeu avec le personnage sélectionné
+/* ------------------------------------------------------------
+   LANCER LE JEU
+------------------------------------------------------------ */
+
 function playGame() {
     if (!selectedCharacterId) return;
 
-    // Masquer le menu
-    menu.style.display = "none";
+    menu.classList.add("hidden");
 
-    // Afficher le canvas du jeu
     gameCanvas.classList.remove("hidden");
+    document.getElementById("healthbar-container").classList.remove("hidden");
+    document.getElementById("xpbar-container").classList.remove("hidden");
 
-    // Charger le personnage sélectionné
+    hideCursor();
+
     const characters = loadCharacters();
     const character = characters.find(c => c.id === selectedCharacterId);
 
-    // Envoyer le personnage au main.js
     window.currentCharacter = character;
 
-    // Déclencher un événement pour signaler à main.js que le jeu peut démarrer
     document.dispatchEvent(new CustomEvent("startGameWithCharacter", {
         detail: character
     }));
 }
 
-// Événements
+/* ------------------------------------------------------------
+   OPTIONS PANEL
+------------------------------------------------------------ */
+
+optionsBtn.addEventListener("click", () => {
+    optionsPanel.classList.remove("hidden");
+    showCursor();
+});
+
+closeOptionsBtn.addEventListener("click", () => {
+    optionsPanel.classList.add("hidden");
+});
+
+/* ------------------------------------------------------------
+   QUITTER LE JEU
+------------------------------------------------------------ */
+
+quitBtn.addEventListener("click", () => {
+    window.electronAPI.quitGame();
+});
+
+/* ------------------------------------------------------------
+   GESTION DE LA SOURIS
+------------------------------------------------------------ */
+
+function showCursor() {
+    document.body.style.cursor = "default";
+}
+
+function hideCursor() {
+    document.body.style.cursor = "none";
+}
+
+window.showCursor = showCursor;
+window.hideCursor = hideCursor;
+
+showCursor();
+
+/* ------------------------------------------------------------
+   Ã‰VÃ‰NEMENTS
+------------------------------------------------------------ */
+
 createBtn.addEventListener("click", createCharacter);
 deleteBtn.addEventListener("click", deleteCharacter);
 playBtn.addEventListener("click", playGame);
 
-// Initialisation
+/* ------------------------------------------------------------
+   INITIALISATION
+------------------------------------------------------------ */
+
 refreshCharacterList();
+refreshCharacterDisplay();
