@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Survivors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ÉCRAN D’ACCUEIL / SÉLECTION DE PERSONNAGE -->
+    <div id="character-select-menu" class="menu">
+        <h1>MINI SURVIVORS</h1>
+
+        <!-- Liste des personnages -->
+        <div id="character-list" class="char-list">
+            <!-- Les personnages seront injectés ici via JS -->
+        </div>
+
+        <!-- Boutons -->
+        <div class="char-buttons">
+            <button class="btn" id="create-character-btn">Créer un personnage</button>
+            <button class="btn" id="delete-character-btn" disabled>Supprimer</button>
+            <button class="btn" id="play-character-btn" disabled>Jouer</button>
+        </div>
+
+        <!-- Bas du menu -->
+        <div class="bottom-menu">
+            <button class="btn small" id="options-btn">Options</button>
+            <button class="btn small" id="quit-btn">Quitter</button>
+        </div>
+    </div>
+
+    <!-- MENU PAUSE -->
+    <div id="pause-menu" class="menu hidden">
+        <h2>Pause</h2>
+        <button class="btn" id="resume-btn">Reprendre</button>
+        <button class="btn" id="restart-btn">Relancer</button>
+        <button class="btn" id="back-menu-btn">Menu principal</button>
+    </div>
+
+    <!-- MENU LEVEL UP -->
+    <div id="levelup-menu" class="menu hidden">
+        <h2>Choisissez un upgrade</h2>
+        <div id="upgrade-choices"></div>
+    </div>
+
+    <!-- PANEL UPGRADES -->
+    <div id="upgrade-panel" class="side-panel hidden">
+        <h3>Upgrades</h3>
+        <ul id="upgrade-list"></ul>
+    </div>
+
+    <!-- BARRE DE VIE -->
+    <div id="healthbar-container">
+        <div id="healthbar"></div>
+    </div>
+
+    <!-- BARRE D'XP -->
+    <div id="xpbar-container">
+        <div id="xpbar"></div>
+    </div>
+
+    <!-- CANVAS DU JEU -->
+    <canvas id="game-canvas" class="hidden"></canvas>
+
+    <!-- ÉCRAN DE MORT -->
+    <div id="death-screen" class="death-panel hidden">
+        <h1>Vous êtes mort</h1>
+        <button class="btn" id="retry-button">Recommencer</button>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/characterMenu.js"></script>
+
+</body>
+</html>
