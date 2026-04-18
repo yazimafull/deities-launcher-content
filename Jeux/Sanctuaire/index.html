@@ -20,32 +20,29 @@
             </div>
         </div>
 
-        <!-- ZONE CENTRALE : PERSONNAGE -->
+        <!-- ZONE CENTRALE -->
         <div class="center-panel">
-            <div id="selected-character-display" class="character-display">
-                <div class="character-placeholder">Sélectionnez un personnage</div>
-            </div>
-
+            <!-- Cadre supprimé (désactivé dans le CSS) -->
             <button class="btn play-btn" id="play-character-btn" disabled>Jouer</button>
         </div>
 
-        <!-- PANNEAU DROIT : LISTE DES PERSONNAGES -->
+        <!-- PANNEAU DROIT -->
         <div class="right-panel">
             <h2 class="panel-title">Personnages</h2>
 
             <div id="character-list" class="character-list">
-                <!-- Les personnages seront injectés ici via JS -->
+                <!-- Personnages injectés via JS -->
             </div>
 
             <button class="btn create-btn" id="create-character-btn">Créer un nouveau</button>
 
-            <!-- Icône poubelle (affichée seulement si un perso est sélectionné) -->
-            <button class="delete-icon hidden" id="delete-character-btn">🗑️</button>
+            <!-- Bouton poubelle (affiché seulement si un perso est sélectionné) -->
+            <button class="delete-btn hidden" id="delete-character-btn">Supprimer</button>
         </div>
 
     </div>
 
-    <!-- PANNEAU OPTIONS (OVERLAY) -->
+    <!-- PANNEAU OPTIONS -->
     <div id="options-panel" class="options-overlay hidden">
         <div class="options-window">
             <h2>Options</h2>
@@ -77,17 +74,17 @@
         <ul id="upgrade-list"></ul>
     </div>
 
-    <!-- BARRE DE VIE (cachée au lancement) -->
+    <!-- BARRE DE VIE -->
     <div id="healthbar-container" class="hidden">
         <div id="healthbar"></div>
     </div>
 
-    <!-- BARRE D'XP (cachée au lancement) -->
+    <!-- BARRE D'XP -->
     <div id="xpbar-container" class="hidden">
         <div id="xpbar"></div>
     </div>
 
-    <!-- CANVAS DU JEU (caché au lancement) -->
+    <!-- CANVAS DU JEU -->
     <canvas id="game-canvas" class="hidden"></canvas>
 
     <!-- ÉCRAN DE MORT -->
