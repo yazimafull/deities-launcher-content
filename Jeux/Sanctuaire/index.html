@@ -15,13 +15,14 @@
             <img src="icon.png" class="game-logo" alt="Game Logo">
             <div class="left-menu">
                 <button class="btn left-btn" id="options-btn">Options</button>
+
+                <!-- 🔥 BOUTON QUITTER FONCTIONNEL -->
                 <button class="btn left-btn" id="quit-btn">Quitter</button>
             </div>
         </div>
 
         <!-- ZONE CENTRALE -->
         <div class="center-panel">
-            <!-- Cadre supprimé (désactivé dans le CSS) -->
             <button class="btn play-btn" id="play-character-btn" disabled>Jouer</button>
         </div>
 
@@ -35,7 +36,6 @@
 
             <button class="btn create-btn" id="create-character-btn">Créer un nouveau</button>
 
-            <!-- Bouton poubelle (affiché seulement si un perso est sélectionné) -->
             <button class="delete-btn hidden" id="delete-character-btn">Supprimer</button>
         </div>
 
@@ -95,6 +95,18 @@
     <!-- SCRIPTS -->
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/characterMenu.js"></script>
+
+    <!-- 🔥 SCRIPT QUI CONNECTE LE BOUTON QUITTER À ELECTRON -->
+    <script>
+        const quitBtn = document.getElementById("quit-btn");
+        if (quitBtn) {
+            quitBtn.addEventListener("click", () => {
+                if (window.electronAPI && window.electronAPI.quitGame) {
+                    window.electronAPI.quitGame();
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
