@@ -7,26 +7,53 @@
 </head>
 <body>
 
-    <!-- �CRAN D�ACCUEIL / S�LECTION DE PERSONNAGE -->
-    <div id="character-select-menu" class="menu">
-        <h1>MINI SURVIVORS</h1>
+    <!-- ÉCRAN DE SÉLECTION DE PERSONNAGE — STYLE DIABLO II -->
+    <div id="character-select-menu" class="character-screen">
 
-        <!-- Liste des personnages -->
-        <div id="character-list" class="char-list">
-            <!-- Les personnages seront inject�s ici via JS -->
+        <!-- PANNEAU GAUCHE -->
+        <div class="left-panel">
+            <img src="logo.png" class="game-logo" alt="Game Logo">
+
+            <div class="left-menu">
+                <button class="btn left-btn" id="options-btn">Options</button>
+                <button class="btn left-btn" id="quit-btn">Quitter</button>
+            </div>
         </div>
 
-        <!-- Boutons -->
-        <div class="char-buttons">
-            <button class="btn" id="create-character-btn">Cr�er un personnage</button>
-            <button class="btn" id="delete-character-btn" disabled>Supprimer</button>
-            <button class="btn" id="play-character-btn" disabled>Jouer</button>
+        <!-- ZONE CENTRALE : PERSONNAGE -->
+        <div class="center-panel">
+            <div id="selected-character-display" class="character-display">
+                <div class="character-placeholder">Sélectionnez un personnage</div>
+            </div>
+
+            <button class="btn play-btn" id="play-character-btn" disabled>Jouer</button>
         </div>
 
-        <!-- Bas du menu -->
-        <div class="bottom-menu">
-            <button class="btn small" id="options-btn">Options</button>
-            <button class="btn small" id="quit-btn">Quitter</button>
+        <!-- PANNEAU DROIT : LISTE DES PERSONNAGES -->
+        <div class="right-panel">
+            <h2 class="panel-title">Personnages</h2>
+
+            <div id="character-list" class="character-list">
+                <!-- Les personnages seront injectés ici via JS -->
+            </div>
+
+            <button class="btn create-btn" id="create-character-btn">Créer un nouveau</button>
+
+            <!-- Icône poubelle (affichée seulement si un perso est sélectionné) -->
+            <button class="delete-icon hidden" id="delete-character-btn">🗑️</button>
+        </div>
+
+    </div>
+
+    <!-- PANNEAU OPTIONS (OVERLAY) -->
+    <div id="options-panel" class="options-overlay hidden">
+        <div class="options-window">
+            <h2>Options</h2>
+            <p>Options graphiques (à venir)</p>
+            <p>Options audio (à venir)</p>
+            <p>Raccourcis clavier (à venir)</p>
+
+            <button class="btn close-options-btn" id="close-options-btn">Fermer</button>
         </div>
     </div>
 
@@ -50,22 +77,22 @@
         <ul id="upgrade-list"></ul>
     </div>
 
-    <!-- BARRE DE VIE -->
-    <div id="healthbar-container">
+    <!-- BARRE DE VIE (cachée au lancement) -->
+    <div id="healthbar-container" class="hidden">
         <div id="healthbar"></div>
     </div>
 
-    <!-- BARRE D'XP -->
-    <div id="xpbar-container">
+    <!-- BARRE D'XP (cachée au lancement) -->
+    <div id="xpbar-container" class="hidden">
         <div id="xpbar"></div>
     </div>
 
-    <!-- CANVAS DU JEU -->
+    <!-- CANVAS DU JEU (caché au lancement) -->
     <canvas id="game-canvas" class="hidden"></canvas>
 
-    <!-- �CRAN DE MORT -->
+    <!-- ÉCRAN DE MORT -->
     <div id="death-screen" class="death-panel hidden">
-        <h1>Vous �tes mort</h1>
+        <h1>Vous êtes mort</h1>
         <button class="btn" id="retry-button">Recommencer</button>
     </div>
 
