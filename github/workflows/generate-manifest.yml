@@ -1,0 +1,95 @@
+name: Generate Manifests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Jeux/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install crypto-js
+
+      - name: Generate manifests
+        run: |
+          echo "🔍 Scanning all games..."
+          node << 'EOF'
+          const fs = require("fs");
+          const path = require("path");
+          const crypto = require("crypto");
+
+          const ROOT = path.join(process.cwd(), "Jeux");
+
+          function sha256File(filePath) {
+            const buffer = fs.readFileSync(filePath);
+            const hash = crypto.createHash("sha256");
+            hash.update(buffer);
+            return hash.digest("hex");
+          }
+
+          function scanFolder(folder, baseFolder) {
+            const entries = fs.readdirSync(folder, { withFileTypes: true });
+            let files = [];
+
+            for (const entry of entries) {
+              const fullPath = path.join(folder, entry.name);
+              const relativePath = path.relative(baseFolder, fullPath).replace(/\\/g, "/");
+
+              if (entry.isDirectory()) {
+                files = files.concat(scanFolder(fullPath, baseFolder));
+              } else {
+                if (entry.name === "manifest.json") continue;
+                files.push(relativePath);
+              }
+            }
+            return files;
+          }
+
+          const games = fs.readdirSync(ROOT).filter(f => {
+            return fs.statSync(path.join(ROOT, f)).isDirectory();
+          });
+
+          for (const game of games) {
+            const gameFolder = path.join(ROOT, game);
+            const files = scanFolder(gameFolder, gameFolder);
+
+            const manifest = {
+              version: Date.now().toString(), // version auto basée sur timestamp
+              files: files.map(f => ({
+                path: f,
+                sha256: sha256File(path.join(gameFolder, f))
+              }))
+            };
+
+            fs.writeFileSync(
+              path.join(gameFolder, "manifest.json"),
+              JSON.stringify(manifest, null, 4),
+              "utf8"
+            );
+
+            console.log(`✔️ Manifest generated for ${game}`);
+          }
+          EOF
+
+      - name: Commit updated manifests
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-update manifests" || echo "No changes to commit"
+          git push
