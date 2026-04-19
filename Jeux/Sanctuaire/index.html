@@ -54,6 +54,29 @@
         </div>
     </div>
 
+    <!-- 🔥 PANEL DE CRÉATION DE PERSONNAGE -->
+    <div id="create-panel" class="create-overlay hidden">
+        <div class="create-window">
+            <h2>Créer un personnage</h2>
+
+            <label>Pseudo :</label>
+            <input type="text" id="char-name-input" maxlength="20">
+
+            <label>Race :</label>
+            <div class="race-select">
+                <button class="race-btn" data-race="Humain">Humain</button>
+                <button class="race-btn" data-race="Elfe">Elfe</button>
+                <button class="race-btn" data-race="Nain">Nain</button>
+                <button class="race-btn" data-race="Squelette">Squelette</button>
+            </div>
+
+            <div class="create-actions">
+                <button id="confirm-create-btn" class="btn">Créer</button>
+                <button id="cancel-create-btn" class="btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MENU PAUSE -->
     <div id="pause-menu" class="menu hidden">
         <h2>Pause</h2>
