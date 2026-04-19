@@ -2,70 +2,130 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Deities: Sanctuaire – Menu principal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <title>Mini Survivors</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="main-menu">
-        <div class="menu-left">
-            <h1 class="game-title">Deities: Sanctuaire</h1>
 
-            <div class="menu-buttons">
-                <button id="play-btn" class="menu-btn" disabled>Jouer</button>
-                <button id="create-character-btn" class="menu-btn">Créer un nouveau</button>
-                <button id="options-btn" class="menu-btn">Options</button>
-                <button id="quit-btn" class="menu-btn">Quitter</button>
+    <!-- ÉCRAN DE SÉLECTION DE PERSONNAGE -->
+    <div id="character-select-menu" class="character-screen">
+
+        <!-- PANNEAU GAUCHE -->
+        <div class="left-panel">
+            <img src="icon.png" class="game-logo" alt="Game Logo">
+            <div class="left-menu">
+                <button class="btn left-btn" id="options-btn">Options</button>
+                <button class="btn left-btn" id="quit-btn">Quitter</button>
             </div>
         </div>
 
-        <div class="menu-right">
-            <h2>Destins enregistrés</h2>
-            <div id="character-list" class="character-list">
-                <!-- Personnages ajoutés dynamiquement -->
+        <!-- ZONE CENTRALE -->
+        <div class="center-panel">
+            <div id="selected-character-display"></div>
+            <button class="btn play-btn" id="play-character-btn" disabled>Jouer</button>
+        </div>
+
+        <!-- PANNEAU DROIT -->
+        <div class="right-panel">
+            <h2 class="panel-title">Personnages</h2>
+
+            <div id="character-list" class="character-list"></div>
+
+            <button class="btn create-btn" id="create-character-btn">Créer un nouveau</button>
+            <button class="delete-btn hidden" id="delete-character-btn">Supprimer</button>
+        </div>
+
+    </div>
+
+    <!-- PANEL OPTIONS -->
+    <div id="options-panel" class="options-overlay hidden">
+        <div class="options-window">
+            <h2>Options</h2>
+            <p>Options graphiques (à venir)</p>
+            <p>Options audio (à venir)</p>
+            <p>Raccourcis clavier (à venir)</p>
+
+            <button class="btn close-options-btn" id="close-options-btn">Fermer</button>
+        </div>
+    </div>
+
+    <!-- PANEL CRÉATION DE PERSONNAGE -->
+    <div id="create-panel" class="create-overlay hidden">
+        <div class="create-window">
+            <h2>Créer un personnage</h2>
+
+            <label>Pseudo :</label>
+            <input type="text" id="character-name-input" maxlength="20">
+
+            <label>Race :</label>
+            <div class="race-select">
+                <button class="race-btn" data-race="Humain">Humain</button>
+                <button class="race-btn" data-race="Elfe">Elfe</button>
+                <button class="race-btn" data-race="Nain">Nain</button>
+                <button class="race-btn" data-race="Squelette">Squelette</button>
+            </div>
+
+            <div class="create-actions">
+                <button id="confirm-create-btn" class="btn">Créer</button>
+                <button id="cancel-create-btn" class="btn">Annuler</button>
             </div>
         </div>
     </div>
 
-    <!-- PANEL CREATION PERSONNAGE -->
-    <div id="create-character-overlay" class="hidden"></div>
-
-    <div id="create-character-panel" class="create-panel hidden">
-        <h1>Créer un nouveau destin</h1>
-
-        <div class="pseudo-input">
-            <input type="text" id="char-pseudo" placeholder="Entrez votre pseudo...">
-        </div>
-
-        <div class="classes">
-            <div class="class-card" data-class="Éclat">
-                <h3>Éclat</h3>
-                <p>Fragment incarné du Cycle, rapide et tranchant.</p>
-            </div>
-
-            <div class="class-card" data-class="Vestige">
-                <h3>Vestige</h3>
-                <p>Âme oubliée revenue du Néant, maître des ombres.</p>
-            </div>
-
-            <div class="class-card" data-class="Gardien">
-                <h3>Gardien</h3>
-                <p>Protecteur du Sanctuaire, solide et inébranlable.</p>
-            </div>
-
-            <div class="class-card" data-class="Souffle">
-                <h3>Souffle</h3>
-                <p>Incarnation de l’Éther, énergie brute et instable.</p>
-            </div>
-        </div>
-
-        <div class="button-container">
-            <button id="confirm-create" class="generate-btn">Créer</button>
-            <button id="cancel-create" class="back-btn">Retour</button>
-        </div>
+    <!-- MENU PAUSE -->
+    <div id="pause-menu" class="menu hidden">
+        <h2>Pause</h2>
+        <button class="btn" id="resume-btn">Reprendre</button>
+        <button class="btn" id="restart-btn">Relancer</button>
+        <button class="btn" id="back-menu-btn">Menu principal</button>
     </div>
 
-    <script src="main.js"></script>
-    <script src="characterMenu.js"></script>
+    <!-- LEVEL UP -->
+    <div id="levelup-menu" class="menu hidden">
+        <h2>Choisissez un upgrade</h2>
+        <div id="upgrade-choices"></div>
+    </div>
+
+    <!-- PANEL UPGRADES -->
+    <div id="upgrade-panel" class="side-panel hidden">
+        <h3>Upgrades</h3>
+        <ul id="upgrade-list"></ul>
+    </div>
+
+    <!-- BARRE DE VIE -->
+    <div id="healthbar-container" class="hidden">
+        <div id="healthbar"></div>
+    </div>
+
+    <!-- BARRE D'XP -->
+    <div id="xpbar-container" class="hidden">
+        <div id="xpbar"></div>
+    </div>
+
+    <!-- CANVAS -->
+    <canvas id="game-canvas" class="hidden"></canvas>
+
+    <!-- ÉCRAN DE MORT -->
+    <div id="death-screen" class="death-panel hidden">
+        <h1>Vous êtes mort</h1>
+        <button class="btn" id="retry-button">Recommencer</button>
+    </div>
+
+    <!-- SCRIPTS CORRIGÉS -->
+    <script type="module" src="js/core/main.js"></script>
+    <script type="module" src="js/menu/characterMenu.js"></script>
+
+    <!-- QUITTER ELECTRON -->
+    <script>
+        const quitBtn = document.getElementById("quit-btn");
+        if (quitBtn) {
+            quitBtn.addEventListener("click", () => {
+                if (window.electronAPI?.quitGame) {
+                    window.electronAPI.quitGame();
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
