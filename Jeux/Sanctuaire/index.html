@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <!-- ÉCRAN DE SÉLECTION DE PERSONNAGE — STYLE DIABLO II -->
+    <!-- ÉCRAN DE SÉLECTION DE PERSONNAGE -->
     <div id="character-select-menu" class="character-screen">
 
         <!-- PANNEAU GAUCHE -->
@@ -15,8 +15,6 @@
             <img src="icon.png" class="game-logo" alt="Game Logo">
             <div class="left-menu">
                 <button class="btn left-btn" id="options-btn">Options</button>
-
-                <!-- 🔥 BOUTON QUITTER FONCTIONNEL -->
                 <button class="btn left-btn" id="quit-btn">Quitter</button>
             </div>
         </div>
@@ -31,18 +29,15 @@
         <div class="right-panel">
             <h2 class="panel-title">Personnages</h2>
 
-            <div id="character-list" class="character-list">
-                <!-- Personnages injectés via JS -->
-            </div>
+            <div id="character-list" class="character-list"></div>
 
             <button class="btn create-btn" id="create-character-btn">Créer un nouveau</button>
-
             <button class="delete-btn hidden" id="delete-character-btn">Supprimer</button>
         </div>
 
     </div>
 
-    <!-- PANNEAU OPTIONS -->
+    <!-- PANEL OPTIONS -->
     <div id="options-panel" class="options-overlay hidden">
         <div class="options-window">
             <h2>Options</h2>
@@ -54,13 +49,13 @@
         </div>
     </div>
 
-    <!-- 🔥 PANEL DE CRÉATION DE PERSONNAGE -->
+    <!-- PANEL CRÉATION DE PERSONNAGE -->
     <div id="create-panel" class="create-overlay hidden">
         <div class="create-window">
             <h2>Créer un personnage</h2>
 
             <label>Pseudo :</label>
-            <input type="text" id="char-name-input" maxlength="20">
+            <input type="text" id="character-name-input" maxlength="20">
 
             <label>Race :</label>
             <div class="race-select">
@@ -85,7 +80,7 @@
         <button class="btn" id="back-menu-btn">Menu principal</button>
     </div>
 
-    <!-- MENU LEVEL UP -->
+    <!-- LEVEL UP -->
     <div id="levelup-menu" class="menu hidden">
         <h2>Choisissez un upgrade</h2>
         <div id="upgrade-choices"></div>
@@ -107,7 +102,7 @@
         <div id="xpbar"></div>
     </div>
 
-    <!-- CANVAS DU JEU -->
+    <!-- CANVAS -->
     <canvas id="game-canvas" class="hidden"></canvas>
 
     <!-- ÉCRAN DE MORT -->
@@ -116,16 +111,16 @@
         <button class="btn" id="retry-button">Recommencer</button>
     </div>
 
-    <!-- SCRIPTS -->
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/characterMenu.js"></script>
+    <!-- SCRIPTS CORRIGÉS -->
+    <script type="module" src="js/core/main.js"></script>
+    <script type="module" src="js/menu/characterMenu.js"></script>
 
-    <!-- 🔥 SCRIPT QUI CONNECTE LE BOUTON QUITTER À ELECTRON -->
+    <!-- QUITTER ELECTRON -->
     <script>
         const quitBtn = document.getElementById("quit-btn");
         if (quitBtn) {
             quitBtn.addEventListener("click", () => {
-                if (window.electronAPI && window.electronAPI.quitGame) {
+                if (window.electronAPI?.quitGame) {
                     window.electronAPI.quitGame();
                 }
             });
