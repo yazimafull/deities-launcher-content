@@ -1,121 +1,45 @@
-﻿import { GameState, setState, getState } from "./state.js";
-import { initUI } from "../ui/ui.js";
-import { initSanctuary, updateSanctuary, renderSanctuary } from "../world/sanctuary.js";
+﻿// main.js
+// Gestion du menu principal (hors création de personnage)
 
-/* ============================================================
-   VARIABLES
-============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const playBtn = document.getElementById("play-btn");
+    const optionsBtn = document.getElementById("options-btn");
+    const quitBtn = document.getElementById("quit-btn");
 
-let canvas;
-let ctx;
-let lastTime = 0;
-let isRunning = false;
+    // Lancer la partie avec le personnage sélectionné
+    playBtn.addEventListener("click", () => {
+        if (playBtn.disabled) return;
 
-let currentCharacter = null;
+        const selectedItem = document.querySelector(".character-item.selected");
+        if (!selectedItem) {
+            console.warn("Aucun personnage sélectionné.");
+            return;
+        }
 
-/* ============================================================
-   INITIALISATION
-============================================================ */
+        const characterName = selectedItem.dataset.name;
+        console.log(`Lancement du jeu avec : ${characterName}`);
 
-function initCanvas() {
-    canvas = document.getElementById("game-canvas");
-    if (!canvas) return;
-    ctx = canvas.getContext("2d");
-}
+        // 👉 C’est ici que tu branches ton vrai lancement :
+        // - changement de scène
+        // - chargement du Sanctuaire
+        // - appel à ton moteur / Electron / etc.
+        // Exemple :
+        // window.location.href = "sanctuaire.html";
+    });
 
-function initGame(character) {
-    currentCharacter = character;
+    // Ouvrir les options (panel à faire plus tard)
+    optionsBtn.addEventListener("click", () => {
+        console.log("Ouverture du panneau d’options (à implémenter).");
+        // Tu pourras plus tard :
+        // - afficher un panel d’options
+        // - gérer le son, la résolution, etc.
+    });
 
-    // futur : initPlayer, initEnemies, initSystems...
-    initSanctuary();
-}
-
-/* ============================================================
-   LOOP
-============================================================ */
-
-function update(dt) {
-    if (getState() === GameState.SANCTUARY) {
-        updateSanctuary(dt);
-    }
-}
-
-function render() {
-    if (!ctx) return;
-
-    if (getState() === GameState.SANCTUARY) {
-        renderSanctuary(ctx);
-    }
-}
-
-function gameLoop(timestamp) {
-    if (!isRunning) return;
-
-    const dt = (timestamp - lastTime) / 1000;
-    lastTime = timestamp;
-
-    if (getState() !== GameState.PAUSED) {
-        update(dt);
-        render();
-    }
-
-    requestAnimationFrame(gameLoop);
-}
-
-/* ============================================================
-   UI / MENUS
-============================================================ */
-
-function showGameUI() {
-    document.getElementById("game-canvas")?.classList.remove("hidden");
-}
-
-function hideGameUI() {
-    document.getElementById("game-canvas")?.classList.add("hidden");
-}
-
-function showCharacterMenu() {
-    document.getElementById("character-select-menu")?.classList.remove("hidden");
-    hideGameUI();
-    setState(GameState.MENU);
-}
-
-/* ============================================================
-   EVENTS
-============================================================ */
-
-document.addEventListener("startGameWithCharacter", (e) => {
-    const character = e.detail;
-
-    initCanvas();
-    initGame(character);
-
-    document.getElementById("character-select-menu")?.classList.add("hidden");
-    showGameUI();
-
-    setState(GameState.SANCTUARY);
-
-    isRunning = true;
-    lastTime = performance.now();
-    requestAnimationFrame(gameLoop);
-});
-
-document.addEventListener("restartGame", () => {
-    if (!currentCharacter) return;
-    initGame(currentCharacter);
-    setState(GameState.SANCTUARY);
-});
-
-document.addEventListener("returnToMenu", () => {
-    isRunning = false;
-    showCharacterMenu();
-});
-
-/* ============================================================
-   STARTUP
-============================================================ */
-
-window.addEventListener("DOMContentLoaded", () => {
-    initUI();
-    setState(GameState.MENU);
+    // Quitter le jeu / fermer la fenêtre
+    quitBtn.addEventListener("click", () => {
+        console.log("Quitter le jeu (à brancher selon ton environnement).");
+        // Si tu es dans Electron :
+        // window.close();
+        // Ou tu envoies un message à ton process principal.
+    });
 });
