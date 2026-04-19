@@ -1,239 +1,185 @@
-/* ============================================================
-   CHARACTER MENU — VERSION DIABLO II
-   Fusion complète : ancien système + nouveau UI + options + souris
-   ============================================================ */
+window.addEventListener("DOMContentLoaded", () => {
 
-/* ------------------------------------------------------------
-   SÉLECTEURS
------------------------------------------------------------- */
+    const menu = document.getElementById("character-select-menu");
+    const listContainer = document.getElementById("character-list");
+    const playBtn = document.getElementById("play-character-btn");
+    const createBtn = document.getElementById("create-character-btn");
+    const deleteBtn = document.getElementById("delete-character-btn");
+    const gameCanvas = document.getElementById("game-canvas");
+    const characterDisplay = document.getElementById("selected-character-display");
 
-const menu = document.getElementById("character-select-menu");
-const listContainer = document.getElementById("character-list");
-const playBtn = document.getElementById("play-character-btn");
-const createBtn = document.getElementById("create-character-btn");
-const deleteBtn = document.getElementById("delete-character-btn");
-const gameCanvas = document.getElementById("game-canvas");
-const characterDisplay = document.getElementById("selected-character-display");
+    const optionsPanel = document.getElementById("options-panel");
+    const optionsBtn = document.getElementById("options-btn");
+    const closeOptionsBtn = document.getElementById("close-options-btn");
 
-/* Options */
-const optionsPanel = document.getElementById("options-panel");
-const optionsBtn = document.getElementById("options-btn");
-const closeOptionsBtn = document.getElementById("close-options-btn");
+    const quitBtn = document.getElementById("quit-btn");
 
-/* Quitter */
-const quitBtn = document.getElementById("quit-btn");
+    let selectedCharacterId = null;
 
-/* ------------------------------------------------------------
-   VARIABLES
------------------------------------------------------------- */
+    function loadCharacters() {
+        const raw = localStorage.getItem("MS_characters");
+        return raw ? JSON.parse(raw) : [];
+    }
 
-let selectedCharacterId = null;
+    function saveCharacters(chars) {
+        localStorage.setItem("MS_characters", JSON.stringify(chars));
+    }
 
-/* ------------------------------------------------------------
-   CHARGEMENT / SAUVEGARDE
------------------------------------------------------------- */
+    function refreshCharacterList() {
+        const characters = loadCharacters();
+        listContainer.innerHTML = "";
 
-function loadCharacters() {
-    const raw = localStorage.getItem("MS_characters");
-    return raw ? JSON.parse(raw) : [];
-}
+        characters.forEach(char => {
+            const div = document.createElement("div");
+            div.className = "character-entry";
+            div.textContent = `${char.name} — ${char.class} (Niv. ${char.level})`;
+            div.dataset.id = char.id;
 
-function saveCharacters(chars) {
-    localStorage.setItem("MS_characters", JSON.stringify(chars));
-}
+            if (char.id === selectedCharacterId) {
+                div.classList.add("selected");
+            }
 
-/* ------------------------------------------------------------
-   AFFICHAGE DE LA LISTE
------------------------------------------------------------- */
+            div.addEventListener("click", () => {
+                selectedCharacterId = char.id;
+                playBtn.disabled = false;
+                deleteBtn.classList.remove("hidden");
+                refreshCharacterList();
+                refreshCharacterDisplay();
+            });
 
-function refreshCharacterList() {
-    const characters = loadCharacters();
-    listContainer.innerHTML = "";
-
-    characters.forEach(char => {
-        const div = document.createElement("div");
-        div.className = "character-entry";
-        div.textContent = `${char.name} — ${char.class} (Niv. ${char.level})`;
-        div.dataset.id = char.id;
-
-        if (char.id === selectedCharacterId) {
-            div.classList.add("selected");
-        }
-
-        div.addEventListener("click", () => {
-            selectedCharacterId = char.id;
-            playBtn.disabled = false;
-            deleteBtn.classList.remove("hidden");
-            refreshCharacterList();
-            refreshCharacterDisplay();
+            listContainer.appendChild(div);
         });
 
-        listContainer.appendChild(div);
-    });
-
-    if (characters.length === 0) {
-        playBtn.disabled = true;
-        deleteBtn.classList.add("hidden");
-        refreshCharacterDisplay();
+        if (characters.length === 0) {
+            playBtn.disabled = true;
+            deleteBtn.classList.add("hidden");
+            refreshCharacterDisplay();
+        }
     }
-}
 
-/* ------------------------------------------------------------
-   AFFICHAGE DU PERSONNAGE AU CENTRE
------------------------------------------------------------- */
+    function refreshCharacterDisplay() {
+        if (!selectedCharacterId) {
+            characterDisplay.innerHTML = `
+                <div class="character-placeholder">
+                    Sélectionnez un personnage
+                </div>
+            `;
+            return;
+        }
 
-function refreshCharacterDisplay() {
-    if (!selectedCharacterId) {
+        const characters = loadCharacters();
+        const char = characters.find(c => c.id === selectedCharacterId);
+
         characterDisplay.innerHTML = `
             <div class="character-placeholder">
-                Sélectionnez un personnage
+                ${char.name}<br>
+                <span style="font-size:18px; opacity:0.8">${char.class}</span><br>
+                <span style="font-size:16px; opacity:0.6">Niveau ${char.level}</span>
             </div>
         `;
-        return;
     }
 
-    const characters = loadCharacters();
-    const char = characters.find(c => c.id === selectedCharacterId);
+    function createCharacter() {
+        const name = prompt("Nom du personnage :");
+        if (!name) return;
 
-    characterDisplay.innerHTML = `
-        <div class="character-placeholder">
-            ${char.name}<br>
-            <span style="font-size:18px; opacity:0.8">${char.class}</span><br>
-            <span style="font-size:16px; opacity:0.6">Niveau ${char.level}</span>
-        </div>
-    `;
-}
+        const charClass = prompt("Classe (Mage, Guerrier, etc.) :");
+        if (!charClass) return;
 
-/* ------------------------------------------------------------
-   CRÉATION DE PERSONNAGE
------------------------------------------------------------- */
+        const characters = loadCharacters();
 
-function createCharacter() {
-    const name = prompt("Nom du personnage :");
-    if (!name) return;
+        const newChar = {
+            id: Date.now(),
+            name: name,
+            class: charClass,
+            level: 1,
+            xp: 0,
+            stats: {},
+            inventory: [],
+            resources: {},
+            talents: [],
+            hubState: {}
+        };
 
-    const charClass = prompt("Classe (Mage, Guerrier, etc.) :");
-    if (!charClass) return;
+        characters.push(newChar);
+        saveCharacters(characters);
 
-    const characters = loadCharacters();
+        selectedCharacterId = newChar.id;
+        refreshCharacterList();
+        refreshCharacterDisplay();
+    }
 
-    const newChar = {
-        id: Date.now(),
-        name: name,
-        class: charClass,
-        level: 1,
-        xp: 0,
-        stats: {},
-        inventory: [],
-        resources: {},
-        talents: [],
-        hubState: {}
-    };
+    function deleteCharacter() {
+        if (!selectedCharacterId) return;
 
-    characters.push(newChar);
-    saveCharacters(characters);
+        if (!confirm("Supprimer ce personnage ?")) return;
 
-    selectedCharacterId = newChar.id;
-    refreshCharacterList();
-    refreshCharacterDisplay();
-}
+        let characters = loadCharacters();
+        characters = characters.filter(c => c.id !== selectedCharacterId);
 
-/* ------------------------------------------------------------
-   SUPPRESSION DE PERSONNAGE
------------------------------------------------------------- */
+        saveCharacters(characters);
 
-function deleteCharacter() {
-    if (!selectedCharacterId) return;
+        selectedCharacterId = null;
+        playBtn.disabled = true;
+        deleteBtn.classList.add("hidden");
 
-    if (!confirm("Supprimer ce personnage ?")) return;
+        refreshCharacterList();
+        refreshCharacterDisplay();
+    }
 
-    let characters = loadCharacters();
-    characters = characters.filter(c => c.id !== selectedCharacterId);
+    function playGame() {
+        if (!selectedCharacterId) return;
 
-    saveCharacters(characters);
+        menu.classList.add("hidden");
 
-    selectedCharacterId = null;
-    playBtn.disabled = true;
-    deleteBtn.classList.add("hidden");
+        gameCanvas.classList.remove("hidden");
+        document.getElementById("healthbar-container").classList.remove("hidden");
+        document.getElementById("xpbar-container").classList.remove("hidden");
 
-    refreshCharacterList();
-    refreshCharacterDisplay();
-}
+        showCursor();
 
-/* ------------------------------------------------------------
-   LANCER LE JEU
------------------------------------------------------------- */
+        const characters = loadCharacters();
+        const character = characters.find(c => c.id === selectedCharacterId);
 
-function playGame() {
-    if (!selectedCharacterId) return;
+        window.currentCharacter = character;
 
-    menu.classList.add("hidden");
+        document.dispatchEvent(new CustomEvent("startGameWithCharacter", {
+            detail: character
+        }));
+    }
 
-    gameCanvas.classList.remove("hidden");
-    document.getElementById("healthbar-container").classList.remove("hidden");
-    document.getElementById("xpbar-container").classList.remove("hidden");
+    optionsBtn.addEventListener("click", () => {
+        optionsPanel.classList.remove("hidden");
+        showCursor();
+    });
 
-    hideCursor();
+    closeOptionsBtn.addEventListener("click", () => {
+        optionsPanel.classList.add("hidden");
+    });
 
-    const characters = loadCharacters();
-    const character = characters.find(c => c.id === selectedCharacterId);
+    quitBtn.addEventListener("click", () => {
+        if (window.electronAPI?.quitGame) {
+            window.electronAPI.quitGame();
+        }
+    });
 
-    window.currentCharacter = character;
+    function showCursor() {
+        document.body.style.cursor = "default";
+    }
 
-    document.dispatchEvent(new CustomEvent("startGameWithCharacter", {
-        detail: character
-    }));
-}
+    function hideCursor() {
+        document.body.style.cursor = "none";
+    }
 
-/* ------------------------------------------------------------
-   OPTIONS PANEL
------------------------------------------------------------- */
+    window.showCursor = showCursor;
+    window.hideCursor = hideCursor;
 
-optionsBtn.addEventListener("click", () => {
-    optionsPanel.classList.remove("hidden");
     showCursor();
+
+    createBtn.addEventListener("click", createCharacter);
+    deleteBtn.addEventListener("click", deleteCharacter);
+    playBtn.addEventListener("click", playGame);
+
+    refreshCharacterList();
+    refreshCharacterDisplay();
 });
-
-closeOptionsBtn.addEventListener("click", () => {
-    optionsPanel.classList.add("hidden");
-});
-
-/* ------------------------------------------------------------
-   QUITTER LE JEU
------------------------------------------------------------- */
-
-quitBtn.addEventListener("click", () => {
-    window.electronAPI.quitGame();
-});
-
-/* ------------------------------------------------------------
-   GESTION DE LA SOURIS
------------------------------------------------------------- */
-
-function showCursor() {
-    document.body.style.cursor = "default";
-}
-
-function hideCursor() {
-    document.body.style.cursor = "none";
-}
-
-window.showCursor = showCursor;
-window.hideCursor = hideCursor;
-
-showCursor();
-
-/* ------------------------------------------------------------
-   ÉVÉNEMENTS
------------------------------------------------------------- */
-
-createBtn.addEventListener("click", createCharacter);
-deleteBtn.addEventListener("click", deleteCharacter);
-playBtn.addEventListener("click", playGame);
-
-/* ------------------------------------------------------------
-   INITIALISATION
------------------------------------------------------------- */
-
-refreshCharacterList();
-refreshCharacterDisplay();
