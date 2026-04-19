@@ -1,5 +1,5 @@
 {
-    "version": "1776589336761",
+    "version": "1776589850967",
     "files": [
         {
             "path": "background.jpg",
@@ -27,7 +27,7 @@
         },
         {
             "path": "js/characterMenu.js",
-            "sha256": "46f50ff0a7184aaebb744bc74cb30a9caddaf757ff8027ad3891a96ae1270ed6"
+            "sha256": "80d85a2bfefd3782fd2412b5ae29632ce3c354fdef7186b7ef48589ccd10eca4"
         },
         {
             "path": "js/collisionSystem.js",
