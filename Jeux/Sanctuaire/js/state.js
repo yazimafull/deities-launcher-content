@@ -2,12 +2,15 @@ export const GameState = {
     MENU: 0,
     PLAYING: 1,
     PAUSED: 2,
-    LEVELUP: 3,
-    GAMEOVER: 4
+    DEAD: 3
 };
 
-export let currentState = GameState.MENU;
+let currentState = GameState.MENU;
 
-export function setState(newState) {
-    currentState = newState;
+export function setState(state) {
+    currentState = state;
+}
+
+export function getState() {
+    return currentState;
 }
