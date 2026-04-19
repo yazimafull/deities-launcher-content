@@ -1,21 +1,101 @@
 {
-  "version": "1.0.0",
-  "files": [
-    { "path": "index.html", "sha256": "" },
-    { "path": "game.json", "sha256": "" },
-    { "path": "background.jpg", "sha256": "" },
-    { "path": "icon.png", "sha256": "" },
-    { "path": "style.css", "sha256": "" },
-
-    { "path": "js/boss.js", "sha256": "" },
-    { "path": "js/bullet.js", "sha256": "" },
-    { "path": "js/characterMenu.js", "sha256": "" },
-    { "path": "js/collisionSystem.js", "sha256": "" },
-    { "path": "js/damageSystem.js", "sha256": "" },
-    { "path": "js/enemy.js", "sha256": "" },
-    { "path": "js/main.js", "sha256": "" },
-    { "path": "js/player.js", "sha256": "" },
-    { "path": "js/upgradePanel.js", "sha256": "" }
-  ]
+    "version": "1776589336761",
+    "files": [
+        {
+            "path": "background.jpg",
+            "sha256": "5c9e5c030e889752a87e4a03a75e48205f639eadc30c1d494d6a79406f504dce"
+        },
+        {
+            "path": "game.json",
+            "sha256": "b57c31c57b1998ac208bb483fab991cf65f50378fd18a1160b1ccc2eb6015fed"
+        },
+        {
+            "path": "icon.png",
+            "sha256": "57e1be9a15bfc8862ae3d411eac636c2ab84fd6e47422c3bb945a7f4d4dbb70b"
+        },
+        {
+            "path": "index.html",
+            "sha256": "87113f8998cf891b96c985bc888f270941d111cb8cb51ab9e5fc4d1e4728422d"
+        },
+        {
+            "path": "js/boss.js",
+            "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+        },
+        {
+            "path": "js/bullet.js",
+            "sha256": "f6e5acf8ca6008a130d69e4ad14270a77f61e2cb2d677665253fb765b0839aa3"
+        },
+        {
+            "path": "js/characterMenu.js",
+            "sha256": "46f50ff0a7184aaebb744bc74cb30a9caddaf757ff8027ad3891a96ae1270ed6"
+        },
+        {
+            "path": "js/collisionSystem.js",
+            "sha256": "f24634677aa76090f6f3a4c182e019ce062e18ed468f05596a4044b86a35007d"
+        },
+        {
+            "path": "js/damageNumbers.js",
+            "sha256": "48b5ff3fe4d24ce1c1028dddd11dbc303de3d3f95c269a6c60a2f4238774e675"
+        },
+        {
+            "path": "js/damageSystem.js",
+            "sha256": "5c72e34aa0f6d14fd0515594c94583ed5daf387bf0c2ec5786f095dd5284e9b1"
+        },
+        {
+            "path": "js/deathSystem.js",
+            "sha256": "b4ae25de6b30102db57823e95c4b1e7dfcd99d9c6a8aae936b26520ed7b42c02"
+        },
+        {
+            "path": "js/enemy.js",
+            "sha256": "e9a4c08d3f22de0f2063ddbf1ba7a16b591fa6273d1afcdbbee53f059daa3845"
+        },
+        {
+            "path": "js/healthbar.js",
+            "sha256": "73d141c9b09a952843861f0b1f1f44af3ebc5d1afc4e66ffdea87676dc81bed9"
+        },
+        {
+            "path": "js/input.js",
+            "sha256": "89ae4d1d6da28e22ccea5663ed12b512705158e612ecaeaf8b8889531c570e24"
+        },
+        {
+            "path": "js/levelup.js",
+            "sha256": "a3602a70b552d1fbf2c56ccdc5b1aab16414563046c5055f995cb825bd966594"
+        },
+        {
+            "path": "js/main.js",
+            "sha256": "6972a25d7c70846c501b0f60ad457ddb6caec0573a726eed0e85876f28f24414"
+        },
+        {
+            "path": "js/player.js",
+            "sha256": "4345621a33d08661804d174127fd28d7d6173fb4af35c91d34385fdc7bb25865"
+        },
+        {
+            "path": "js/state.js",
+            "sha256": "199435db9235ba6b75fbfdee75ab9190b41e69a14730d37f3d4e40a809053ea1"
+        },
+        {
+            "path": "js/ui.js",
+            "sha256": "93cda555e70d28c1958fbac72ba33f35d93ca469e8ffa0ba91898d77e594aa66"
+        },
+        {
+            "path": "js/upgradePanel.js",
+            "sha256": "e42c9fc8ce6fa76232b9b599ccc1246c7f0e1af06bb0e41df789148ab765c0ca"
+        },
+        {
+            "path": "js/upgrades.js",
+            "sha256": "926ec50da2d57caa393d18569eceac5a03163e85d1187742a8ebb416f859e37a"
+        },
+        {
+            "path": "js/utils.js",
+            "sha256": "cf79c649327f9fd90950859a38347c370d902bd240a98e327fa37faef0b12166"
+        },
+        {
+            "path": "js/xp.js",
+            "sha256": "b10622e66b9166a36b56ff7353caef05b0852fe16512f9e9770649b72ff1264e"
+        },
+        {
+            "path": "style.css",
+            "sha256": "f41e34b988f4b0c15505a4d062540454ae025f03a83dc9f8b81eab62de67598a"
+        }
+    ]
 }
-

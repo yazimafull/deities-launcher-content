@@ -1,0 +1,21 @@
+{
+    "version": "1776589336753",
+    "files": [
+        {
+            "path": "background.jpg",
+            "sha256": "75d2038a1728eae86dc7a3d01095114ad739260d731d8bf78158f0d6d3537a87"
+        },
+        {
+            "path": "game.json",
+            "sha256": "e79021febc0ef3f3fea964b3a18920b3f16633c9904fcba7b47edba71ad7cc69"
+        },
+        {
+            "path": "icon.png",
+            "sha256": "96db152ed746b140c438d4934de619ffa998407100081ca19da700857eeed19f"
+        },
+        {
+            "path": "index.html",
+            "sha256": "ae0261647af6f38d87e242ee6a0cd4876266920b9cd1602a72777142ce33a5dc"
+        }
+    ]
+}
