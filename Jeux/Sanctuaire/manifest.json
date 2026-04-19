@@ -1,5 +1,5 @@
 {
-    "version": "1776601113270",
+    "version": "1776602640900",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "1f81a4d308c62b48eace5e3eee5f959737e5f6e8286ce18806cefc17b4b27c7d"
+            "sha256": "9a07692bb327d2eb14b34e7b544aaafd13e7e48b31c33df354ba11f1a9006015"
         },
         {
             "path": "js/boss.js",
@@ -99,7 +99,7 @@
         },
         {
             "path": "style.css",
-            "sha256": "1a163d8d2da1f8a1264191989a62681ce4e444d2f90e5422ce9b78f9014c1d7f"
+            "sha256": "c618919132a37670bc3146c358bd269d52bf583f5dfef59e4a1bb5e09b060c69"
         }
     ]
 }
