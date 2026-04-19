@@ -1,5 +1,5 @@
 {
-    "version": "1776591140594",
+    "version": "1776594940135",
     "files": [
         {
             "path": "background.jpg",
@@ -26,72 +26,76 @@
             "sha256": "f6e5acf8ca6008a130d69e4ad14270a77f61e2cb2d677665253fb765b0839aa3"
         },
         {
-            "path": "js/characterMenu.js",
-            "sha256": "52d9f7c6c7f3c0c3573202efd010a281863e54b41dd9cdecf71780d18f9edbf8"
+            "path": "js/core/input.js",
+            "sha256": "75e95bb47a89ecd5c0f6a7deae9753740b18ad433f4f23617b8b4e1536b56206"
         },
         {
-            "path": "js/collisionSystem.js",
-            "sha256": "f24634677aa76090f6f3a4c182e019ce062e18ed468f05596a4044b86a35007d"
+            "path": "js/core/main.js",
+            "sha256": "5d8541e121fcb2533f5ac4f1eb842695249117cc90d84ca2d8dc34b97a62cb91"
+        },
+        {
+            "path": "js/core/state.js",
+            "sha256": "1f02f43a591eb894d2500736e63b1b8dc5cdeb039b66a580d2988ff64053359c"
+        },
+        {
+            "path": "js/core/utils.js",
+            "sha256": "b29f90cbe9ac206ece46fd6568d27b9ab606137e67fe063e2041d859783864c6"
         },
         {
             "path": "js/damageNumbers.js",
             "sha256": "48b5ff3fe4d24ce1c1028dddd11dbc303de3d3f95c269a6c60a2f4238774e675"
         },
         {
-            "path": "js/damageSystem.js",
-            "sha256": "5c72e34aa0f6d14fd0515594c94583ed5daf387bf0c2ec5786f095dd5284e9b1"
-        },
-        {
-            "path": "js/deathSystem.js",
-            "sha256": "b4ae25de6b30102db57823e95c4b1e7dfcd99d9c6a8aae936b26520ed7b42c02"
-        },
-        {
-            "path": "js/enemy.js",
-            "sha256": "e9a4c08d3f22de0f2063ddbf1ba7a16b591fa6273d1afcdbbee53f059daa3845"
-        },
-        {
             "path": "js/healthbar.js",
             "sha256": "73d141c9b09a952843861f0b1f1f44af3ebc5d1afc4e66ffdea87676dc81bed9"
         },
         {
-            "path": "js/input.js",
-            "sha256": "89ae4d1d6da28e22ccea5663ed12b512705158e612ecaeaf8b8889531c570e24"
+            "path": "js/menu/characterMenu.js",
+            "sha256": "76b18b346c87d38e33f519c532edfd2de6c4ec59ec3f99f8274c18982bf9aa73"
         },
         {
-            "path": "js/levelup.js",
-            "sha256": "a3602a70b552d1fbf2c56ccdc5b1aab16414563046c5055f995cb825bd966594"
+            "path": "js/systems/collisionSystem.js",
+            "sha256": "ee09652e10630b2161cbca4cdb34fc6d83cfb09b4c52de70556d88ab5231bd30"
         },
         {
-            "path": "js/main.js",
-            "sha256": "6972a25d7c70846c501b0f60ad457ddb6caec0573a726eed0e85876f28f24414"
+            "path": "js/systems/damageSystem.js",
+            "sha256": "0c57185455121a4be3351ad37fe69fc3b5e190081fe6a04227771d0ce9dfdbcf"
         },
         {
-            "path": "js/player.js",
-            "sha256": "4345621a33d08661804d174127fd28d7d6173fb4af35c91d34385fdc7bb25865"
+            "path": "js/systems/deathSystem.js",
+            "sha256": "293ba35e94bf241f6ffe6963545c1e67e699529a3a0526984682e7974c08b760"
         },
         {
-            "path": "js/state.js",
-            "sha256": "7c078ea944e47081b346fee54062fd6ca72b90e38eee6361a3fd5751938b9d1c"
+            "path": "js/systems/enemy.js",
+            "sha256": "f391a8294ba911f95e9200c2d05fd2d83279e39f31fe8fb333aab4e2e715be7c"
         },
         {
-            "path": "js/ui.js",
-            "sha256": "ae146b9c870d0297b75e3ec0ee4f25c6d011a3a5ab8acfec018fb46e1831d8a1"
+            "path": "js/systems/levelup.js",
+            "sha256": "37d6fdfaa359e27f34f95ddff78e0a5aec1400bb6795e2242e7a501bc8fcc982"
         },
         {
-            "path": "js/upgradePanel.js",
-            "sha256": "e42c9fc8ce6fa76232b9b599ccc1246c7f0e1af06bb0e41df789148ab765c0ca"
+            "path": "js/systems/player.js",
+            "sha256": "2a23683fcc3a758cbe26b8aa67112017b99e073d0878808d5c8fbfe2ec77c70e"
         },
         {
-            "path": "js/upgrades.js",
-            "sha256": "926ec50da2d57caa393d18569eceac5a03163e85d1187742a8ebb416f859e37a"
+            "path": "js/systems/upgradePanel.js",
+            "sha256": "cc1ed649b1f6314f5428f7553c5f41351b78e4952711a9276e736bc280ebd1a4"
         },
         {
-            "path": "js/utils.js",
-            "sha256": "cf79c649327f9fd90950859a38347c370d902bd240a98e327fa37faef0b12166"
+            "path": "js/systems/upgrades.js",
+            "sha256": "571bca2efcf911ed21c7f95fd359b0d6879cdca5d471d2616e9cba337ccc250b"
         },
         {
-            "path": "js/xp.js",
-            "sha256": "b10622e66b9166a36b56ff7353caef05b0852fe16512f9e9770649b72ff1264e"
+            "path": "js/systems/xp.js",
+            "sha256": "eb2a41fcc7b3d16b1c87848ee6e74d2fc4ee73de68acc4b522d51278fc5acebf"
+        },
+        {
+            "path": "js/ui/ui.js",
+            "sha256": "059bd954d62298fd2b6acd932ea74c7c0dacc97cef4c92475be42c02ded5636a"
+        },
+        {
+            "path": "js/world/sanctuary.js",
+            "sha256": "036146ce0b3d8c4c05ccd5dd33160cff02cf888542a7d79a2ae066997e0562a6"
         },
         {
             "path": "style.css",
