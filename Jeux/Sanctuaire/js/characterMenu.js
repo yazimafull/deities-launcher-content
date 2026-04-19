@@ -1,4 +1,13 @@
+/* ============================================================
+   CHARACTER MENU — VERSION DIABLO II
+   Encapsulé DOMContentLoaded → Compatible Electron
+   ============================================================ */
+
 window.addEventListener("DOMContentLoaded", () => {
+
+    /* ------------------------------------------------------------
+       SÉLECTEURS
+    ------------------------------------------------------------ */
 
     const menu = document.getElementById("character-select-menu");
     const listContainer = document.getElementById("character-list");
@@ -8,13 +17,23 @@ window.addEventListener("DOMContentLoaded", () => {
     const gameCanvas = document.getElementById("game-canvas");
     const characterDisplay = document.getElementById("selected-character-display");
 
+    /* Options */
     const optionsPanel = document.getElementById("options-panel");
     const optionsBtn = document.getElementById("options-btn");
     const closeOptionsBtn = document.getElementById("close-options-btn");
 
+    /* Quitter */
     const quitBtn = document.getElementById("quit-btn");
 
+    /* ------------------------------------------------------------
+       VARIABLES
+    ------------------------------------------------------------ */
+
     let selectedCharacterId = null;
+
+    /* ------------------------------------------------------------
+       CHARGEMENT / SAUVEGARDE
+    ------------------------------------------------------------ */
 
     function loadCharacters() {
         const raw = localStorage.getItem("MS_characters");
@@ -24,6 +43,10 @@ window.addEventListener("DOMContentLoaded", () => {
     function saveCharacters(chars) {
         localStorage.setItem("MS_characters", JSON.stringify(chars));
     }
+
+    /* ------------------------------------------------------------
+       AFFICHAGE DE LA LISTE
+    ------------------------------------------------------------ */
 
     function refreshCharacterList() {
         const characters = loadCharacters();
@@ -57,6 +80,10 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    /* ------------------------------------------------------------
+       AFFICHAGE DU PERSONNAGE AU CENTRE
+    ------------------------------------------------------------ */
+
     function refreshCharacterDisplay() {
         if (!selectedCharacterId) {
             characterDisplay.innerHTML = `
@@ -78,6 +105,10 @@ window.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
     }
+
+    /* ------------------------------------------------------------
+       CRÉATION DE PERSONNAGE
+    ------------------------------------------------------------ */
 
     function createCharacter() {
         const name = prompt("Nom du personnage :");
@@ -109,6 +140,10 @@ window.addEventListener("DOMContentLoaded", () => {
         refreshCharacterDisplay();
     }
 
+    /* ------------------------------------------------------------
+       SUPPRESSION DE PERSONNAGE
+    ------------------------------------------------------------ */
+
     function deleteCharacter() {
         if (!selectedCharacterId) return;
 
@@ -127,6 +162,10 @@ window.addEventListener("DOMContentLoaded", () => {
         refreshCharacterDisplay();
     }
 
+    /* ------------------------------------------------------------
+       LANCER LE JEU
+    ------------------------------------------------------------ */
+
     function playGame() {
         if (!selectedCharacterId) return;
 
@@ -136,7 +175,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("healthbar-container").classList.remove("hidden");
         document.getElementById("xpbar-container").classList.remove("hidden");
 
-        showCursor();
+        hideCursor();
 
         const characters = loadCharacters();
         const character = characters.find(c => c.id === selectedCharacterId);
@@ -148,6 +187,10 @@ window.addEventListener("DOMContentLoaded", () => {
         }));
     }
 
+    /* ------------------------------------------------------------
+       OPTIONS PANEL
+    ------------------------------------------------------------ */
+
     optionsBtn.addEventListener("click", () => {
         optionsPanel.classList.remove("hidden");
         showCursor();
@@ -157,11 +200,19 @@ window.addEventListener("DOMContentLoaded", () => {
         optionsPanel.classList.add("hidden");
     });
 
+    /* ------------------------------------------------------------
+       QUITTER LE JEU
+    ------------------------------------------------------------ */
+
     quitBtn.addEventListener("click", () => {
         if (window.electronAPI?.quitGame) {
             window.electronAPI.quitGame();
         }
     });
+
+    /* ------------------------------------------------------------
+       GESTION DE LA SOURIS
+    ------------------------------------------------------------ */
 
     function showCursor() {
         document.body.style.cursor = "default";
@@ -176,9 +227,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
     showCursor();
 
+    /* ------------------------------------------------------------
+       ÉVÉNEMENTS
+    ------------------------------------------------------------ */
+
     createBtn.addEventListener("click", createCharacter);
     deleteBtn.addEventListener("click", deleteCharacter);
     playBtn.addEventListener("click", playGame);
+
+    /* ------------------------------------------------------------
+       INITIALISATION
+    ------------------------------------------------------------ */
 
     refreshCharacterList();
     refreshCharacterDisplay();
