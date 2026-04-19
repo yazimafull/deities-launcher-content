@@ -1,5 +1,5 @@
 {
-    "version": "1776596419294",
+    "version": "1776601113270",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "d2a9feb91eca2ca738cf0636c131f6a62df5a3bc212a0d5cd2fc4e53301a5620"
+            "sha256": "1f81a4d308c62b48eace5e3eee5f959737e5f6e8286ce18806cefc17b4b27c7d"
         },
         {
             "path": "js/boss.js",
@@ -31,7 +31,7 @@
         },
         {
             "path": "js/core/main.js",
-            "sha256": "5d8541e121fcb2533f5ac4f1eb842695249117cc90d84ca2d8dc34b97a62cb91"
+            "sha256": "942ef6b03238ccc648ed5f145a4afc098cce49bce40547bb71a645e821c2909a"
         },
         {
             "path": "js/core/state.js",
@@ -51,7 +51,7 @@
         },
         {
             "path": "js/menu/characterMenu.js",
-            "sha256": "76b18b346c87d38e33f519c532edfd2de6c4ec59ec3f99f8274c18982bf9aa73"
+            "sha256": "b568c53e8074aa3b8d69b6bdd0ba8c51831ea1843503e1a3be36a3f3ed38e061"
         },
         {
             "path": "js/systems/collisionSystem.js",
@@ -99,7 +99,7 @@
         },
         {
             "path": "style.css",
-            "sha256": "f41e34b988f4b0c15505a4d062540454ae025f03a83dc9f8b81eab62de67598a"
+            "sha256": "1a163d8d2da1f8a1264191989a62681ce4e444d2f90e5422ce9b78f9014c1d7f"
         }
     ]
 }
