@@ -1,5 +1,5 @@
 {
-    "version": "1776589948983",
+    "version": "1776591140594",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "87113f8998cf891b96c985bc888f270941d111cb8cb51ab9e5fc4d1e4728422d"
+            "sha256": "31e6c4e41da72490e12ad41697cb620506304dd4cb5e6398821eeac75c1202c7"
         },
         {
             "path": "js/boss.js",
@@ -71,11 +71,11 @@
         },
         {
             "path": "js/state.js",
-            "sha256": "199435db9235ba6b75fbfdee75ab9190b41e69a14730d37f3d4e40a809053ea1"
+            "sha256": "7c078ea944e47081b346fee54062fd6ca72b90e38eee6361a3fd5751938b9d1c"
         },
         {
             "path": "js/ui.js",
-            "sha256": "93cda555e70d28c1958fbac72ba33f35d93ca469e8ffa0ba91898d77e594aa66"
+            "sha256": "ae146b9c870d0297b75e3ec0ee4f25c6d011a3a5ab8acfec018fb46e1831d8a1"
         },
         {
             "path": "js/upgradePanel.js",
