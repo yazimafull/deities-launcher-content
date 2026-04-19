@@ -1,5 +1,5 @@
 {
-    "version": "1776594940135",
+    "version": "1776596419294",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "31e6c4e41da72490e12ad41697cb620506304dd4cb5e6398821eeac75c1202c7"
+            "sha256": "d2a9feb91eca2ca738cf0636c131f6a62df5a3bc212a0d5cd2fc4e53301a5620"
         },
         {
             "path": "js/boss.js",
