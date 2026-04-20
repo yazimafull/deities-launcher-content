@@ -48,7 +48,24 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("pylone-launch")?.addEventListener("click", () => {
         startLaunchCountdown();
     });
+    // Selection des choix dans le pylône
+    setupChoiceGroup("#biome-choices .pylone-choice");
+    setupChoiceGroup("#difficulty-choices .pylone-choice");
 });
+
+// ================================
+// SÉLECTION BIOME / DIFFICULTÉ
+// ================================
+function setupChoiceGroup(selector) {
+    const buttons = document.querySelectorAll(selector);
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            buttons.forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+        });
+    });
+}
+
 
 // ================================
 // PANELS "À VENIR"
