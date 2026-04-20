@@ -339,8 +339,8 @@ body {
 .class-card p {
     margin-bottom: 0;
     color: #b8c5e8;
-    font-family: 'Cinzel', serif;
-    font-size: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
 }
 
 .button-container {
@@ -493,3 +493,50 @@ body {
 }
 
 .death-panel.show { display: flex; }
+
+/* =============================== */
+/*    POPUP SUPPRESSION PERSO      */
+/* =============================== */
+
+.delete-container {
+    max-width: 500px;
+    text-align: center;
+}
+
+.delete-container h1 {
+    color: #d4af37;
+    font-size: 1.8em;
+    border-bottom-color: #b00000;
+    text-shadow: 0 0 10px #b00000;
+}
+
+.delete-warning {
+    font-family: 'Cinzel', serif;
+    color: #e2d3b5;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 20px 0 28px;
+}
+
+.delete-warning span {
+    color: #ff6666;
+    font-weight: 700;
+}
+
+.delete-warning strong {
+    color: #d4af37;
+}
+
+.delete-container .button-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.delete-container .generate-btn {
+    background: linear-gradient(to bottom, #7d1a1a, #5d0000);
+    border: 1px solid #b00000;
+}
+
+.delete-container .generate-btn:hover {
+    box-shadow: 0 0 20px #b00000;
+}
