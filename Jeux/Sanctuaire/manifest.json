@@ -1,5 +1,5 @@
 {
-    "version": "1776655483309",
+    "version": "1776655979076",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "2f0d9eb27b2d579241b75a5205a009815a7ecfc88307bb67944d6c149bdff20b"
+            "sha256": "718bf0240ed326d45da8355165650b18a0d4eb7d3a659e6ef0a3e1ee961fd559"
         },
         {
             "path": "js/boss.js",
@@ -51,7 +51,7 @@
         },
         {
             "path": "js/menu/characterMenu.js",
-            "sha256": "dc65b9ca972905fe173d5c257e5a40d223f4ffc57503d9a3b70886cac2f827b8"
+            "sha256": "1c015643d91dd539fe13a831732b4b19f24f0059643a51df653df4727e23318d"
         },
         {
             "path": "js/systems/collisionSystem.js",
@@ -99,7 +99,7 @@
         },
         {
             "path": "style.css",
-            "sha256": "b450c198e916d60a04b900f95e3a74c3c5785e64898d117158f393e6febc6853"
+            "sha256": "12ae2e93b86129b47653663272bd08d061cb8ef504aa2ff57f3ef46ac0d1960a"
         }
     ]
 }
