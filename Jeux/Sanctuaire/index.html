@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Deities: Sanctuaire</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">    
+    <link rel="stylesheet" href="sanctuary.css">
 </head>
 <body>
 
@@ -135,6 +136,116 @@
             window.electronAPI?.quitGame?.();
         });
     </script>
+
+    <!-- ========================================
+         ÉCRAN SANCTUAIRE
+    ========================================= -->
+    <div id="sanctuary-screen" class="hidden">
+
+        <!-- FOND ILLUSTRÉ -->
+        <div class="sanctuary-bg"></div>
+
+        <!-- NOM DU PERSONNAGE ACTIF -->
+        <div class="sanctuary-character-bar">
+            <span id="sanctuary-character-name"></span>
+        </div>
+
+        <!-- ZONES CLIQUABLES -->
+
+        <!-- Pylône sacré (centre) -->
+        <div class="sanctuary-zone zone-oval zone-pylone" id="zone-pylone">
+            <span class="zone-label">Pylône Sacré</span>
+        </div>
+
+        <!-- Marchand (droite) -->
+        <div class="sanctuary-zone zone-oval zone-marchand" id="zone-marchand">
+            <span class="zone-label">Marchand</span>
+        </div>
+
+        <!-- Coffre (bas gauche) -->
+        <div class="sanctuary-zone zone-rect zone-coffre" id="zone-coffre">
+            <span class="zone-label">Coffre</span>
+        </div>
+
+        <!-- Forge (bas centre-gauche) -->
+        <div class="sanctuary-zone zone-rect zone-forge" id="zone-forge">
+            <span class="zone-label">Forge</span>
+        </div>
+
+        <!-- Grimoire (bas droite) -->
+        <div class="sanctuary-zone zone-rect zone-grimoire" id="zone-grimoire">
+            <span class="zone-label">Grimoire</span>
+        </div>
+
+        <!-- Bouton retour menu -->
+        <button class="sanctuary-back-btn" id="sanctuary-back-btn">↩ Menu principal</button>
+
+    </div>
+
+    <!-- ========================================
+         POPUP PYLÔNE — CONFIG RUN
+    ========================================= -->
+    <div id="pylone-overlay" class="create-overlay hidden">
+        <div class="create-container pylone-container">
+            <h1>Configurer la Run</h1>
+
+            <div class="pylone-section">
+                <label class="pylone-label">Biome</label>
+                <div class="pylone-choices" id="biome-choices">
+                    <button class="pylone-choice selected" data-value="foret">Forêt Mourante</button>
+                    <button class="pylone-choice" data-value="ruines">Ruines Oubliées</button>
+                    <button class="pylone-choice" data-value="abysses">Abysses</button>
+                </div>
+            </div>
+
+            <div class="pylone-section">
+                <label class="pylone-label">Difficulté</label>
+                <div class="pylone-choices" id="difficulty-choices">
+                    <button class="pylone-choice selected" data-value="1">Niveau I</button>
+                    <button class="pylone-choice" data-value="2">Niveau II</button>
+                    <button class="pylone-choice" data-value="3">Niveau III</button>
+                </div>
+            </div>
+
+            <div class="pylone-section">
+                <label class="pylone-label">Modificateurs</label>
+                <div class="pylone-mods">
+                    <div class="pylone-mod">
+                        <input type="checkbox" id="mod-loot" class="pylone-checkbox">
+                        <label for="mod-loot">+Loot <span class="mod-malus">(+Difficulté)</span></label>
+                    </div>
+                    <div class="pylone-mod">
+                        <input type="checkbox" id="mod-xp" class="pylone-checkbox">
+                        <label for="mod-xp">+XP <span class="mod-malus">(+Ennemis)</span></label>
+                    </div>
+                    <div class="pylone-mod">
+                        <input type="checkbox" id="mod-elite" class="pylone-checkbox">
+                        <label for="mod-elite">+Élites <span class="mod-malus">(+Danger)</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <p id="pylone-countdown" class="pylone-countdown hidden"></p>
+
+            <div class="button-container">
+                <button class="generate-btn" id="pylone-launch">Lancer la Run</button>
+                <button class="back-btn" id="pylone-cancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         POPUP PANELS "À VENIR"
+    ========================================= -->
+    <div id="sanctuary-panel-overlay" class="create-overlay hidden">
+        <div class="create-container sanctuary-coming-soon">
+            <h1 id="sanctuary-panel-title">À venir</h1>
+            <p class="coming-soon-text">Cette fonctionnalité sera disponible prochainement.</p>
+            <div class="button-container">
+                <button class="back-btn" id="sanctuary-panel-close">Fermer</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
