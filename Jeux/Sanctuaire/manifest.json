@@ -1,5 +1,5 @@
 {
-    "version": "1776655979076",
+    "version": "1776661354933",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "718bf0240ed326d45da8355165650b18a0d4eb7d3a659e6ef0a3e1ee961fd559"
+            "sha256": "417a5d01d155e88bc02cf9d45e95dc771aa63be475d42dda18b887ab52baf50c"
         },
         {
             "path": "js/boss.js",
@@ -31,11 +31,11 @@
         },
         {
             "path": "js/core/main.js",
-            "sha256": "942ef6b03238ccc648ed5f145a4afc098cce49bce40547bb71a645e821c2909a"
+            "sha256": "7623558bc67f479ff5d5beb68b73c3b5b43ce6f0f6c2299e3002549f4aa4020e"
         },
         {
             "path": "js/core/state.js",
-            "sha256": "1f02f43a591eb894d2500736e63b1b8dc5cdeb039b66a580d2988ff64053359c"
+            "sha256": "dac0e1ecee1877d1a7edfab73ebebcc0fa5d57b4db7430795387210ea78f6253"
         },
         {
             "path": "js/core/utils.js",
@@ -95,7 +95,15 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "036146ce0b3d8c4c05ccd5dd33160cff02cf888542a7d79a2ae066997e0562a6"
+            "sha256": "77ee1714f4133a3196bfddc56c0e23041a466a45caed3e7243d34958450a8825"
+        },
+        {
+            "path": "sanctuary.css",
+            "sha256": "c25a8d477be49f409a85894e6801f0e32e6f16bcd2a68f425fabe6a24520d700"
+        },
+        {
+            "path": "sanctuary.jpg",
+            "sha256": "c0727235d81c4396f7e8fcbb3cf0644380b4215e1a0eb384ed56b691f86366f0"
         },
         {
             "path": "style.css",
