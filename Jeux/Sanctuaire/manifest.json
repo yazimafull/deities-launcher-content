@@ -1,5 +1,5 @@
 {
-    "version": "1776662558271",
+    "version": "1776663117593",
     "files": [
         {
             "path": "background.jpg",
@@ -95,7 +95,7 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "77ee1714f4133a3196bfddc56c0e23041a466a45caed3e7243d34958450a8825"
+            "sha256": "86186ed4ae5bb721dde0aeb63506f3aa1233393a1a81761af7c02a9ebad8147f"
         },
         {
             "path": "sanctuary.css",
