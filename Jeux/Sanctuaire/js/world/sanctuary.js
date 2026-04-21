@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Si un timer est actif → on l'annule mais on NE ferme PAS la fenêtre
         if (countdownInterval) {
             clearLaunchTimer();
-            return; // on reste dans la popup
+            return;
         }
 
         // Sinon → pas de timer → on ferme la popup
@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sélection biome
     document.querySelectorAll("#biome-choices .pylone-choice").forEach(btn => {
         btn.addEventListener("click", () => {
+            if (choicesLocked) return; // 🔒 Empêche de changer pendant le timer
             document.querySelectorAll("#biome-choices .pylone-choice")
                 .forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sélection difficulté
     document.querySelectorAll("#difficulty-choices .pylone-choice").forEach(btn => {
         btn.addEventListener("click", () => {
+            if (choicesLocked) return; // 🔒 Empêche de changer pendant le timer
             document.querySelectorAll("#difficulty-choices .pylone-choice")
                 .forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
@@ -83,6 +85,29 @@ function openSanctuaryPanel(zone) {
 // COUNTDOWN LANCEMENT RUN
 // ================================
 let countdownInterval = null;
+let choicesLocked = false;
+
+function lockChoices() {
+    choicesLocked = true;
+
+    document.querySelectorAll("#biome-choices .pylone-choice").forEach(b => b.classList.add("disabled"));
+    document.querySelectorAll("#difficulty-choices .pylone-choice").forEach(b => b.classList.add("disabled"));
+
+    document.getElementById("mod-loot").disabled = true;
+    document.getElementById("mod-xp").disabled = true;
+    document.getElementById("mod-elite").disabled = true;
+}
+
+function unlockChoices() {
+    choicesLocked = false;
+
+    document.querySelectorAll("#biome-choices .pylone-choice").forEach(b => b.classList.remove("disabled"));
+    document.querySelectorAll("#difficulty-choices .pylone-choice").forEach(b => b.classList.remove("disabled"));
+
+    document.getElementById("mod-loot").disabled = false;
+    document.getElementById("mod-xp").disabled = false;
+    document.getElementById("mod-elite").disabled = false;
+}
 
 function startLaunchCountdown() {
     const countdownEl = document.getElementById("pylone-countdown");
@@ -94,10 +119,13 @@ function startLaunchCountdown() {
     launchBtn.disabled = true;
     countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
 
+    lockChoices(); // 🔒 Verrouillage total
+
     countdownInterval = setInterval(() => {
         seconds--;
         if (seconds <= 0) {
             clearInterval(countdownInterval);
+            countdownInterval = null;
             launchRun();
         } else {
             countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
@@ -110,10 +138,14 @@ function clearLaunchTimer() {
         clearInterval(countdownInterval);
         countdownInterval = null;
     }
+
     const countdownEl = document.getElementById("pylone-countdown");
     const launchBtn   = document.getElementById("pylone-launch");
+
     if (countdownEl) countdownEl.classList.add("hidden");
     if (launchBtn)   launchBtn.disabled = false;
+
+    unlockChoices(); // 🔓 Réactivation
 }
 
 // ================================
@@ -137,3 +169,9 @@ function launchRun() {
         initBiomeWIP(biome);
     }
 }
+
+// =====================================================
+// 🔥 Permet à pauseMenu.js d'appeler un reset minimal
+// =====================================================
+window.clearLaunchTimer = clearLaunchTimer;
+window.unlockPyloneChoices = unlockChoices;

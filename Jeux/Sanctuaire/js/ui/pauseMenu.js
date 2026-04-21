@@ -1,5 +1,6 @@
 ﻿import { GameState, setState, getState } from "../core/state.js";
 import { cleanRun } from "../core/runManager.js";
+
 // =====================================================
 // 🔥 Fonction demandée par les biomes : openPause()
 // =====================================================
@@ -11,6 +12,9 @@ export function openPause() {
 
     setState(GameState.PAUSED);
 }
+
+// 🔥 Rendre openPause accessible globalement (évite les imports circulaires)
+window.openPause = openPause;
 
 export function initPauseMenu() {
 
@@ -91,14 +95,16 @@ export function initPauseMenu() {
     });
 
     btnConfirmYes.addEventListener("click", () => {
+
         // 🔥 Fermer TOUS les panneaux avant de changer de state
         pauseOverlay.classList.add("hidden");
         pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
-        cleanRun(); // 🔥 obligatoire
-        // Retour propre au Sanctuaire
+        // Nettoyage de la run
+        cleanRun();
         setState(GameState.SANCTUARY);
+
         // Ré‑afficher le sanctuaire
         document.getElementById("sanctuary-screen")?.classList.remove("hidden");
 
@@ -108,5 +114,20 @@ export function initPauseMenu() {
         // Cacher le HUD
         document.getElementById("healthbar-container")?.classList.add("hidden");
         document.getElementById("xpbar-container")?.classList.add("hidden");
+
+        // =====================================================
+        // 🔥 RESET MINIMAL DU PYLÔNE (aligné avec sanctuary.js)
+        // =====================================================
+
+        if (window.clearLaunchTimer) window.clearLaunchTimer();
+        if (window.unlockPyloneChoices) window.unlockPyloneChoices();
+
+        // Réactiver le bouton Lancer
+        document.getElementById("pylone-launch").disabled = false;
+
+        // Cacher le texte du countdown
+        document.getElementById("pylone-countdown")?.classList.add("hidden");
+
+        // NE PAS reset les sélections du joueur (biome/diff/mods)
     });
 }
