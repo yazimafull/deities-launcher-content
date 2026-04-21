@@ -1,5 +1,5 @@
 {
-    "version": "1776769623234",
+    "version": "1776770089560",
     "files": [
         {
             "path": "background.jpg",
@@ -111,7 +111,7 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "1bfa496a005e1734f4a02058fde0585656d36030766421ca3d4abdb65dc71e2e"
+            "sha256": "fbcde31520b9fd3633574274dab90a6d9a0a9dfd995f540851fa1f70f941831c"
         },
         {
             "path": "js/world/biome_wip.js",
