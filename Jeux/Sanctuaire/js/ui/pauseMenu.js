@@ -1,10 +1,9 @@
 ﻿import { GameState, setState, getState } from "../core/state.js";
 
 // =====================================================
-// 🔥 Fonction demandée par tes biomes : openPause()
+// 🔥 Fonction demandée par les biomes : openPause()
 // =====================================================
 export function openPause() {
-    // On ne peut ouvrir la pause QUE si on est en PLAYING
     if (getState() !== GameState.PLAYING) return;
 
     const pauseOverlay = document.getElementById("pause-overlay");
@@ -15,18 +14,18 @@ export function openPause() {
 
 export function initPauseMenu() {
 
-    const pauseOverlay = document.getElementById("pause-overlay");
+    const pauseOverlay        = document.getElementById("pause-overlay");
     const pauseOptionsOverlay = document.getElementById("pause-options-overlay");
     const pauseConfirmOverlay = document.getElementById("pause-confirm-overlay");
 
-    const btnResume = document.getElementById("pause-resume");
-    const btnOptions = document.getElementById("pause-options");
-    const btnSanctuary = document.getElementById("pause-sanctuary");
+    const btnResume     = document.getElementById("pause-resume");
+    const btnOptions    = document.getElementById("pause-options");
+    const btnSanctuary  = document.getElementById("pause-sanctuary");
 
     const btnOptionsClose = document.getElementById("pause-options-close");
 
     const btnConfirmYes = document.getElementById("pause-confirm-yes");
-    const btnConfirmNo = document.getElementById("pause-confirm-no");
+    const btnConfirmNo  = document.getElementById("pause-confirm-no");
 
     // =====================================================
     // ESC → ouvrir / fermer pause (UNIQUEMENT EN PLAYING/PAUSED)
@@ -42,7 +41,11 @@ export function initPauseMenu() {
         if (pauseOverlay.classList.contains("hidden")) {
             openPause();
         } else {
+            // fermer pause
             pauseOverlay.classList.add("hidden");
+            pauseOptionsOverlay.classList.add("hidden");
+            pauseConfirmOverlay.classList.add("hidden");
+
             setState(GameState.PLAYING);
         }
     });
@@ -52,6 +55,8 @@ export function initPauseMenu() {
     // =====================================================
     btnResume.addEventListener("click", () => {
         pauseOverlay.classList.add("hidden");
+        pauseOptionsOverlay.classList.add("hidden");
+        pauseConfirmOverlay.classList.add("hidden");
 
         if (getState() === GameState.PAUSED) {
             setState(GameState.PLAYING);
@@ -76,6 +81,7 @@ export function initPauseMenu() {
     // =====================================================
     btnSanctuary.addEventListener("click", () => {
         pauseOverlay.classList.add("hidden");
+        pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.remove("hidden");
     });
 
@@ -85,9 +91,12 @@ export function initPauseMenu() {
     });
 
     btnConfirmYes.addEventListener("click", () => {
+        // 🔥 Fermer TOUS les panneaux avant de changer de state
+        pauseOverlay.classList.add("hidden");
+        pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
-        // 🔥 Retour propre au Sanctuaire
+        // Retour propre au Sanctuaire
         setState(GameState.SANCTUARY);
     });
 }
