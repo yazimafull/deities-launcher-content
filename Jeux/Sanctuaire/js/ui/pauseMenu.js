@@ -1,4 +1,4 @@
-﻿import { GameState, setState } from "../core/state.js";
+﻿import { GameState, setState, getState } from "../core/state.js";
 
 export function initPauseMenu() {
 
@@ -15,9 +15,10 @@ export function initPauseMenu() {
     const btnConfirmYes = document.getElementById("pause-confirm-yes");
     const btnConfirmNo = document.getElementById("pause-confirm-no");
 
-    // ESC → ouvrir / fermer pause
+    // ESC → ouvrir / fermer pause (UNIQUEMENT en RUN)
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
+        if (e.key === "Escape" && getState() === GameState.RUN) {
+
             if (pauseOverlay.classList.contains("hidden")) {
                 pauseOverlay.classList.remove("hidden");
                 setState(GameState.PAUSED);
@@ -28,10 +29,13 @@ export function initPauseMenu() {
         }
     });
 
-    // ▶ Reprendre
+    // ▶ Reprendre (ne remet RUN que si on était en RUN)
     btnResume.addEventListener("click", () => {
         pauseOverlay.classList.add("hidden");
-        setState(GameState.RUN);
+
+        if (getState() === GameState.PAUSED) {
+            setState(GameState.RUN);
+        }
     });
 
     // ⚙ Options
