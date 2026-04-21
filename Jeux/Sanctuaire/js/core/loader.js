@@ -22,9 +22,6 @@ import "../systems/upgradePanel.js";
 import "../systems/xp.js";
 import "../systems/boss.js";
 
-// --- UI ROOT ---
-import "../UI/ui.js";
-
 // --- UI / MENUS ---
 import "../UI/menu/characterMenu.js";
 import "../UI/menu/pauseMenu.js";
