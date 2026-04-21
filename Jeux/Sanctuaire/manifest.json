@@ -1,5 +1,5 @@
 {
-    "version": "1776807159534",
+    "version": "1776807728154",
     "files": [
         {
             "path": "background.jpg",
@@ -43,7 +43,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "3fcc17f3e75631765bf1ad328ad9573d758289e87d63ea9b4f551b93b23d20b1"
+            "sha256": "513e0be4cb231b60719b5937b3f9bcc3e1302138f19c5e33658fe7902c7d03df"
         },
         {
             "path": "js/core/main.js",
@@ -112,10 +112,6 @@
         {
             "path": "js/ui/hud/hudSystem.js",
             "sha256": "810bf416f973b13bd67eb8c329d10f383f9c91c7e90614b50fb3a1571cea5107"
-        },
-        {
-            "path": "js/ui/ui.js",
-            "sha256": "4fe607fd936715b98be70e68a3f9703facd1bce4b6b8bf19a68bf4068efa883d"
         },
         {
             "path": "js/world/biome_foret.js",
