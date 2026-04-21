@@ -1,44 +1,20 @@
-﻿// ui.js
+﻿// UI/ui.js
+
+import { GameState, setState } from "../core/state.js";
 
 function initUI() {
-
-    const pauseMenu   = document.getElementById("pause-menu");
-    const resumeBtn   = document.getElementById("resume-btn");
-    const restartBtn  = document.getElementById("restart-btn");
-    const backMenuBtn = document.getElementById("back-menu-btn");
+    const pauseOverlay  = document.getElementById("pause-overlay");
+    const resumeBtn     = document.getElementById("pause-resume");
+    const pauseOptionsBtn = document.getElementById("pause-options");
+    const pauseSanctuaryBtn = document.getElementById("pause-sanctuary");
 
     // ▶ Reprendre
     if (resumeBtn) {
         resumeBtn.addEventListener("click", () => {
-            pauseMenu?.classList.add("hidden");
-            setState(GameState.SANCTUARY);
+            pauseOverlay?.classList.add("hidden");
+            setState(GameState.PLAYING);
         });
     }
 
-    // ↻ Redémarrer la run
-    if (restartBtn) {
-        restartBtn.addEventListener("click", () => {
-            document.dispatchEvent(new Event("restartGame"));
-        });
-    }
-
-    // ↩ Retour menu principal
-    if (backMenuBtn) {
-        backMenuBtn.addEventListener("click", () => {
-            document.dispatchEvent(new Event("returnToMenu"));
-        });
-    }
-
-    // ESC → ouvrir / fermer pause
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (pauseMenu?.classList.contains("hidden")) {
-                pauseMenu.classList.remove("hidden");
-                setState(GameState.PAUSED);
-            } else {
-                pauseMenu.classList.add("hidden");
-                setState(GameState.SANCTUARY);
-            }
-        }
-    });
-}
+    // ⚙ Options (en j
+

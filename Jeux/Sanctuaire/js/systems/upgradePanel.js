@@ -1,17 +1,21 @@
-// upgradePanel.js
+// systems/upgradePanel.js
 
-const chosenUpgrades = [];
+export const chosenUpgrades = [];
 
-function addUpgradeToPanel(up) {
+export function addUpgradeToPanel(up) {
     chosenUpgrades.push(up);
 
     const list = document.getElementById("upgrade-list");
+    if (!list) return;
+
     const li = document.createElement("li");
     li.textContent = up.name;
     list.appendChild(li);
 }
 
-function toggleUpgradePanel() {
+export function toggleUpgradePanel() {
     const panel = document.getElementById("upgrade-panel");
+    if (!panel) return;
+
     panel.classList.toggle("hidden");
 }

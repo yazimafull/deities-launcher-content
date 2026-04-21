@@ -90,9 +90,6 @@ export function openLevelUpMenu() {
     });
 }
 
-// Rendre accessible globalement si tu veux l'appeler sans import
-window.openLevelUpMenu = openLevelUpMenu;
-
 // --------------------------------------------------
 // UTILITAIRE
 // --------------------------------------------------

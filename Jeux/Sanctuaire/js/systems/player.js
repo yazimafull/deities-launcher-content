@@ -1,10 +1,10 @@
-﻿// player.js
+﻿// systems/player.js
 // Stats et comportement du joueur — source unique de vérité
 
 // ================================
 // STATS DU JOUEUR
 // ================================
-const playerStats = {
+export const playerStats = {
     // --- MOUVEMENT ---
     speed:               1.5,
     moveSpeedMultiplier: 1.0,
@@ -47,7 +47,7 @@ const playerStats = {
 // ================================
 // TIR AUTOMATIQUE
 // ================================
-function tryShoot(player, mobs, spawnBulletFn) {
+export function tryShoot(player, mobs, spawnBulletFn) {
     if (!mobs || mobs.length === 0) return;
 
     const now = performance.now();
@@ -77,7 +77,7 @@ function tryShoot(player, mobs, spawnBulletFn) {
 // ================================
 // DESSIN DU JOUEUR
 // ================================
-function drawPlayerSprite(ctx, player) {
+export function drawPlayerSprite(ctx, player) {
     // Ombre
     ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.beginPath();

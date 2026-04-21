@@ -1,4 +1,4 @@
-// core/gameLoop.js
+﻿// core/gameLoop.js
 
 import { GameState, getState, setState } from "./state.js";
 import { cleanRun } from "./runManager.js";
@@ -6,8 +6,11 @@ import { cleanRun } from "./runManager.js";
 import { updateBiomeForet, drawBiomeForet, initBiomeForet } from "../world/biome_foret.js";
 
 import { updateProjectiles, drawProjectiles, projectiles, handleProjectileCollisions } from "../systems/projectile.js";
-import { enemies } from "../systems/enemySystem.js";
+import { enemies, updateEnemies, drawEnemies } from "../systems/enemySystem.js";
 import { damageEnemy } from "../systems/damageSystem.js";
+import { playerStats } from "../systems/player.js";
+import { updateXP, drawXP, drawXPBar } from "../systems/xp.js";
+import { updateDamageNumbers, drawDamageNumbers } from "../systems/damageSystem.js";
 
 // ================================
 // VARIABLES GLOBALES
@@ -17,17 +20,14 @@ let player = null;
 let lastTime = 0;
 
 // ================================
-// INIT PLAYER (placeholder)
+// INIT PLAYER
 // ================================
 function initPlayer() {
     player = {
         x: 400,
         y: 300,
-        speed: 0.25,
-        hp: 100,
-        maxHp: 100,
-        xp: 0,
-        xpMax: 100
+        size: 20,
+        ...playerStats
     };
 }
 
@@ -37,19 +37,25 @@ function initPlayer() {
 function update(dt) {
     if (getState() !== GameState.PLAYING) return;
 
-    // D�placement placeholder
-    player.x += 0;
-    player.y += 0;
-
     // Projectiles
     updateProjectiles(projectiles);
 
+    // Ennemis
+    updateEnemies(dt, player);
+
+    // Collisions projectiles → ennemis
     handleProjectileCollisions(projectiles, enemies, (p, m) => {
         damageEnemy(m, {
             base: p.damage,
             type: p.element
         });
     });
+
+    // XP
+    updateXP(player);
+
+    // Dégâts affichés
+    updateDamageNumbers(dt);
 
     // Biome
     updateBiomeForet(dt, player);
@@ -64,8 +70,12 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawBiomeForet(ctx, canvas, player);
-
+    drawEnemies(ctx);
     drawProjectiles(ctx, projectiles);
+    drawXP(ctx);
+    drawDamageNumbers(ctx);
+
+    drawXPBar();
 }
 
 // ================================
@@ -82,7 +92,7 @@ function gameLoop(timestamp) {
 }
 
 // ================================
-// LANCEMENT D�UNE RUN
+// LANCEMENT D'UNE RUN
 // ================================
 export function startRun(config) {
 
