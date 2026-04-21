@@ -100,5 +100,14 @@ export function initPauseMenu() {
         cleanRun(); // 🔥 obligatoire
         // Retour propre au Sanctuaire
         setState(GameState.SANCTUARY);
+        // Ré‑afficher le sanctuaire
+        document.getElementById("sanctuary-screen")?.classList.remove("hidden");
+
+        // Ré‑afficher le canvas (si ton sanctuaire l’utilise)
+        document.getElementById("game-canvas")?.classList.remove("hidden");
+
+        // Cacher le HUD
+        document.getElementById("healthbar-container")?.classList.add("hidden");
+        document.getElementById("xpbar-container")?.classList.add("hidden");
     });
 }
