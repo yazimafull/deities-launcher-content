@@ -1,5 +1,5 @@
 {
-    "version": "1776785911679",
+    "version": "1776788553691",
     "files": [
         {
             "path": "background.jpg",
@@ -15,15 +15,11 @@
         },
         {
             "path": "index.html",
-            "sha256": "2d4a793bc91b35352e2330bba16cdc42ebe267d70eedd9dabf868e73d24d0c70"
+            "sha256": "2c1e127ebd835f4d2c5d26c42e9cb72045ccb4b36924ee86f51814387eab43ee"
         },
         {
             "path": "js/boss.js",
             "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
-        },
-        {
-            "path": "js/bullet.js",
-            "sha256": "f6e5acf8ca6008a130d69e4ad14270a77f61e2cb2d677665253fb765b0839aa3"
         },
         {
             "path": "js/core/gameLoop.js",
@@ -32,6 +28,10 @@
         {
             "path": "js/core/input.js",
             "sha256": "75e95bb47a89ecd5c0f6a7deae9753740b18ad433f4f23617b8b4e1536b56206"
+        },
+        {
+            "path": "js/core/loader.js",
+            "sha256": "e0c343c794f95a40a1f6e7400974de5341285a6653e7941c5be71af00434fdd8"
         },
         {
             "path": "js/core/main.js",
