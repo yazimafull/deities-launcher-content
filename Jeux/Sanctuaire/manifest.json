@@ -1,5 +1,5 @@
 {
-    "version": "1776791727567",
+    "version": "1776792152304",
     "files": [
         {
             "path": "background.jpg",
@@ -32,6 +32,10 @@
         {
             "path": "js/UI/menu/pauseMenu.js",
             "sha256": "0909298d3c18b0ec7a0409d48177d7f187216231cacaea87abbc40843a8c1fb5"
+        },
+        {
+            "path": "js/UI/pauseMenu.js",
+            "sha256": "d6ecdf096cdeb01f6f5a0e57577e1b7a92ee0194efb2e11eebfd47f5886e3a1f"
         },
         {
             "path": "js/core/gameLoop.js",
@@ -123,15 +127,15 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "002a45c7aef5db0f97cfc385a62e8951151c6ef6900109e41f34eefde96cae96"
+            "sha256": "6c12ba0eb4718e1cd4cc0967dcf1ec89a7612dfd3550b53a0d92ff5bd5eac714"
         },
         {
             "path": "js/world/biome_wip.js",
-            "sha256": "1973aaa9e721bccd8d1c4ccd5b8fa6de3fbb6357e745ed98b63eb0a753c5f9dd"
+            "sha256": "d61100471411ab0025d93b960de19653489d70e52aba1e7e782edb5c1cd78485"
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "a6d775b180beaf5d6b8f5d219fd9bce031570c332ef17a60e83784bc347188cd"
+            "sha256": "4138cd7a9e7ad49e996a2fecc4a647ce4675d32330cec9a0f54c491cd71ba510"
         },
         {
             "path": "sanctuary.css",
