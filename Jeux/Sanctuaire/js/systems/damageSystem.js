@@ -1,65 +1,147 @@
-﻿// damageSystem.js
+﻿// systems/damageSystem.js
+// Damage system simple + DoT simple + compatible avec un futur éditeur d'habilités
 
-export function applyDamage(attacker, target, amount, type = "physical") {
-    let dmg = amount;
-    let isCrit = false;
+// ================================
+// DAMAGE NUMBERS
+// ================================
+let dmgNumbers = [];
 
-    // 1) ESQUIVE (capacité du défenseur)
-    if (Math.random() < (target.dodgeChance || 0)) {
-        return { dmgTaken: 0, reason: "dodge" };
+export function updateDamageNumbers(dt) {
+    for (let i = dmgNumbers.length - 1; i >= 0; i--) {
+        const n = dmgNumbers[i];
+        n.y -= dt * 0.05;
+        n.alpha -= dt * 0.0008;
+
+        if (n.alpha <= 0) dmgNumbers.splice(i, 1);
+    }
+}
+
+export function drawDamageNumbers(ctx) {
+    for (let n of dmgNumbers) {
+        ctx.save();
+        ctx.globalAlpha = n.alpha;
+        ctx.font = n.isCrit ? "bold 20px Cinzel" : "16px Cinzel";
+        ctx.fillStyle = n.isPlayer ? "#ff4444" : "#ffcc88";
+        ctx.textAlign = "center";
+        ctx.fillText(n.value, n.x, n.y);
+        ctx.restore();
+    }
+}
+
+function spawnDamageNumber(x, y, value, isCrit = false, isPlayer = false) {
+    dmgNumbers.push({
+        x,
+        y,
+        value,
+        isCrit,
+        isPlayer,
+        alpha: 1
+    });
+}
+
+// ================================
+// DOT SYSTEM (simple, individuel)
+// ================================
+export function updateDots(dt, entity) {
+    if (!entity.dots) return;
+
+    for (let i = entity.dots.length - 1; i >= 0; i--) {
+        const dot = entity.dots[i];
+
+        dot.timer += dt;
+
+        // Tick toutes les 1000 ms
+        if (dot.timer >= 1000) {
+            dot.timer = 0;
+            applyDamage(entity, dot.amount, { type: dot.type });
+        }
+
+        dot.remaining -= dt;
+        if (dot.remaining <= 0) {
+            entity.dots.splice(i, 1);
+        }
+    }
+}
+
+export function applyDot(entity, dotConfig) {
+    if (!entity.dots) entity.dots = [];
+
+    entity.dots.push({
+        type: dotConfig.type,
+        amount: dotConfig.amount,
+        remaining: dotConfig.duration * 1000,
+        timer: 0
+    });
+}
+
+// ================================
+// DAMAGE APPLICATION
+// ================================
+export function damageEnemy(mob, dmgPacket) {
+    if (mob.dead) return;
+
+    const finalDamage = computeDamage(mob, dmgPacket);
+
+    mob.hp = Math.max(0, mob.hp - finalDamage);
+
+    spawnDamageNumber(mob.x, mob.y, finalDamage, dmgPacket.isCrit);
+
+    // DoT simple
+    if (dmgPacket.dot) {
+        applyDot(mob, dmgPacket.dot);
+    }
+}
+
+export function damagePlayer(player, dmgPacket) {
+    const finalDamage = computeDamage(player, dmgPacket);
+
+    player.hp = Math.max(0, player.hp - finalDamage);
+
+    spawnDamageNumber(player.x, player.y, finalDamage, dmgPacket.isCrit, true);
+
+    if (dmgPacket.dot) {
+        applyDot(player, dmgPacket.dot);
+    }
+}
+
+// ================================
+// DAMAGE CALCULATION
+// ================================
+function computeDamage(target, dmgPacket) {
+    let dmg = dmgPacket.base ?? 0;
+
+    // Multiplicateur (habilité)
+    if (dmgPacket.multiplier) {
+        dmg *= dmgPacket.multiplier;
     }
 
-    // 2) PARADE (capacité du défenseur)
-    if (Math.random() < (target.parryChance || 0)) {
-        dmg *= (1 - (target.parryReduction || 0));
-        return { dmgTaken: dmg, reason: "parry" };
+    // Résistances simples
+    if (dmgPacket.type && target.resistances) {
+        const res = target.resistances[dmgPacket.type] ?? 0;
+        dmg *= (1 - res);
     }
 
-    // 3) BLOCAGE (capacité du défenseur)
-    if (Math.random() < (target.blockChance || 0)) {
-        dmg -= (target.blockValue || 0);
-        if (dmg < 0) dmg = 0;
-        return { dmgTaken: dmg, reason: "block" };
+    return Math.floor(dmg);
+}
+
+// ================================
+// BIOME DAMAGE (DoT externe)
+// ================================
+let biomeTickTimer = 0;
+
+export function applyBiomeDamage(dt, difficulty, player) {
+    const dmgPerSecond = Math.max(0, difficulty - 1);
+
+    if (dmgPerSecond <= 0) return;
+
+    biomeTickTimer += dt;
+
+    if (biomeTickTimer >= 1000) {
+        biomeTickTimer = 0;
+
+        damagePlayer(player, {
+            base: dmgPerSecond,
+            type: "biome"
+        });
     }
-
-    // 4) CRITIQUE (capacité de l'attaquant)
-    if (attacker && attacker.critChance && Math.random() < attacker.critChance) {
-        isCrit = true;
-        dmg *= (attacker.critMultiplier || 2);
-    }
-
-    // 5) BOUCLIER PHYSIQUE / MAGIQUE (du défenseur)
-    if (type === "physical" && (target.shieldPhysical || 0) > 0) {
-        let absorbed = Math.min(dmg, target.shieldPhysical);
-        target.shieldPhysical -= absorbed;
-        dmg -= absorbed;
-        if (dmg <= 0) return { dmgTaken: absorbed, reason: "shieldPhysical" };
-    }
-
-    if (type === "magic" && (target.shieldMagic || 0) > 0) {
-        let absorbed = Math.min(dmg, target.shieldMagic);
-        target.shieldMagic -= absorbed;
-        dmg -= absorbed;
-        if (dmg <= 0) return { dmgTaken: absorbed, reason: "shieldMagic" };
-    }
-
-    // 6) ARMURE (réduction fixe du défenseur)
-    if (type === "physical") {
-        dmg -= (target.armor || 0);
-        if (dmg < 0) dmg = 0;
-    }
-
-    // 7) RÉSISTANCE (réduction % du défenseur)
-    dmg *= (1 - (target.resistance || 0));
-    if (dmg < 0) dmg = 0;
-
-    // 8) APPLICATION DES DÉGÂTS
-    target.hp -= dmg;
-    if (target.hp < 0) target.hp = 0;
-
-    if (isCrit) {
-        return { dmgTaken: dmg, reason: "crit" };
-    }
-
-    return { dmgTaken: dmg, reason: "hp" };
 }

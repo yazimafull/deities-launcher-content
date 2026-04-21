@@ -1,8 +1,8 @@
 ﻿// sanctuary.js
 import { goToMenu } from "../core/main.js";
 import { setState, GameState } from "../core/state.js";
-import { initForet } from "./biome_foret.js";
 import { initBiomeWIP } from "./biome_wip.js";
+import { startRun } from "../core/gameLoop.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -164,7 +164,7 @@ function launchRun() {
     document.getElementById("sanctuary-screen")?.classList.add("hidden");
 
     if (biome === "foret") {
-        initForet(config);
+        startRun(config);
     } else {
         initBiomeWIP(biome);
     }

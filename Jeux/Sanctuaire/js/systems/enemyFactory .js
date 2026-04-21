@@ -1,64 +1,60 @@
-// enemyFactory.js — génère un ennemi selon son type + biome + difficulté
+// enemyFactory.js
+// Version C : charge local en priorité, GitHub en fallback
 
-import { enemyTypes } from "./enemyTypes.js";
+const LOCAL_PATH = "./data/mobs/";
+const GITHUB_PATH = "https://yazimafull.github.io/deities-launcher-content/data/mobs/";
 
-// Ranges par défaut selon le type
-const RANGES = {
-    normal: { aggroRange: 280,   leashRange: 500,   damageCd: 800  },
-    elite:  { aggroRange: 320,   leashRange: 600,   damageCd: 1000 },
-    aggro:  { aggroRange: 350,   leashRange: 450,   damageCd: 600  },
-    boss:   { aggroRange: 99999, leashRange: 99999, damageCd: 1200 }
-};
-
-export function createEnemy(type, biome, difficulty, x, y) {
-    const base = enemyTypes[type];
-    if (!base) {
-        console.error("Type d'ennemi inconnu :", type);
-        return null;
+export async function loadMobBlueprint(name) {
+    // 1) Essayer en local
+    try {
+        const local = await fetch(LOCAL_PATH + name + ".json");
+        if (local.ok) {
+            return await local.json();
+        }
+    } catch (e) {
+        console.warn("Local mob not found:", name);
     }
 
-    const ranges = RANGES[type] || RANGES["normal"];
+    // 2) Fallback GitHub
+    try {
+        const remote = await fetch(GITHUB_PATH + name + ".json");
+        if (remote.ok) {
+            return await remote.json();
+        }
+    } catch (e) {
+        console.error("GitHub mob not found:", name);
+    }
 
-    // Scaling selon la difficulté
-    const hp     = Math.floor(base.baseHp     * (1 + (difficulty - 1) * 0.35));
-    const damage = Math.floor(base.baseDamage * (1 + (difficulty - 1) * 0.25));
-    const speed  =            base.baseSpeed  * (1 + (difficulty - 1) * 0.05);
+    console.error("Mob blueprint introuvable :", name);
+    return null;
+}
 
-    return {
-        // Identité
-        type,
-        biome,
-        isElite: type === "elite",
-        isBoss:  type === "boss",
+export async function createMob(name, x, y) {
+    const blueprint = await loadMobBlueprint(name);
+    if (!blueprint) return null;
 
-        // Position
+    const mob = {
+        name: blueprint.name,
+        rarity: blueprint.rarity,
+        biomes: blueprint.biomes,
+        levels: blueprint.levels,
+
         x, y,
-        spawnX: x,
-        spawnY: y,
+        hp: blueprint.stats.hp,
+        maxHp: blueprint.stats.hp,
+        damage: blueprint.stats.baseDamage,
+        speed: blueprint.stats.speed,
+        size: blueprint.stats.size,
 
-        // Stats
-        hp,
-        maxHp: hp,
-        damage,
-        speed,
-        size:   base.baseSize,
-        color:  base.color,
+        resistances: blueprint.defenses.resistances || {},
+        armor: blueprint.defenses.armor || 0,
+        critChance: blueprint.defenses.critChance || 0,
 
-        // Ranges IA
-        aggroRange: ranges.aggroRange,
-        leashRange: ranges.leashRange,
-        damageCd:   ranges.damageCd,
+        abilities: blueprint.abilities || [],
+        dots: [],
 
-        // Gameplay
-        progressValue: base.progressValue,
-        dropHealth:    base.dropHealth,
-
-        // État IA
-        state:       "idle",
-        lastDmgTime: 0,
-        dead:        false,
-
-        // Transparence (révélation sous les arbres)
-        alpha: 1.0
+        dead: false
     };
+
+    return mob;
 }
