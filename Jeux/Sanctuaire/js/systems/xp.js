@@ -1,14 +1,20 @@
-﻿// xp.js
+﻿// systems/xp.js
 
-const xpOrbs = [];
+import { randRange } from "../core/utils.js";
+import { openLevelUpMenu } from "./levelup.js";
 
-const xpSystem = {
+export const xpOrbs = [];
+
+export const xpSystem = {
     xp: 0,
     xpToNext: 50,
     level: 1
 };
 
-function spawnXP(x, y) {
+// --------------------------------------------------
+// SPAWN XP
+// --------------------------------------------------
+export function spawnXP(x, y) {
     xpOrbs.push({
         x,
         y,
@@ -17,48 +23,60 @@ function spawnXP(x, y) {
     });
 }
 
-function updateXP(player) {
+// --------------------------------------------------
+// UPDATE XP
+// --------------------------------------------------
+export function updateXP(player) {
     for (let i = xpOrbs.length - 1; i >= 0; i--) {
-        let o = xpOrbs[i];
+        const o = xpOrbs[i];
 
-        let dx = player.x - o.x;
-        let dy = player.y - o.y;
-        let d = Math.sqrt(dx * dx + dy * dy);
+        const dx = player.x - o.x;
+        const dy = player.y - o.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
 
+        // Attraction vers le joueur
         if (d > 0) {
-            dx /= d;
-            dy /= d;
-            o.x += dx * 1.5;
-            o.y += dy * 1.5;
+            o.x += (dx / d) * 1.5;
+            o.y += (dy / d) * 1.5;
         }
 
+        // Pickup
         if (d < 20) {
             xpSystem.xp += o.value;
             xpOrbs.splice(i, 1);
 
+            // Level up
             if (xpSystem.xp >= xpSystem.xpToNext) {
                 xpSystem.xp -= xpSystem.xpToNext;
                 xpSystem.level++;
                 xpSystem.xpToNext = Math.floor(xpSystem.xpToNext * 1.25);
 
-                showLevelUpMenu();
+                // OUVERTURE DU MENU LEVEL-UP
+                openLevelUpMenu();
             }
         }
     }
 }
 
-function drawXP(ctx) {
+// --------------------------------------------------
+// DRAW XP ORBS
+// --------------------------------------------------
+export function drawXP(ctx) {
     ctx.fillStyle = "#4aa3ff";
-    for (let o of xpOrbs) {
+    for (const o of xpOrbs) {
         ctx.beginPath();
         ctx.arc(o.x, o.y, o.size / 2, 0, Math.PI * 2);
         ctx.fill();
     }
 }
 
-function drawXPBar() {
+// --------------------------------------------------
+// DRAW XP BAR
+// --------------------------------------------------
+export function drawXPBar() {
     const bar = document.getElementById("xpbar");
     if (!bar) return;
+
     const pct = xpSystem.xp / xpSystem.xpToNext;
     bar.style.width = (pct * 100) + "%";
 }

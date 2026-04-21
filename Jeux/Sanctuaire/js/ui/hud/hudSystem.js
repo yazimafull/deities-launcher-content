@@ -15,12 +15,12 @@ let hudData = {
 // ================================
 // PUBLIC API
 // ================================
-function updateHUD(data) {
+export function updateHUD(data) {
     hudData = { ...hudData, ...data };
     updateHTMLBars();
 }
 
-function drawHUD(ctx, canvas) {
+export function drawHUD(ctx, canvas) {
     drawObjectiveText(ctx, canvas);
     drawTimer(ctx, canvas);
     drawBossIndicator(ctx, canvas);

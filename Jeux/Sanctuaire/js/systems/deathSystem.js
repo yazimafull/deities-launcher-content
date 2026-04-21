@@ -1,15 +1,12 @@
-// deathSystem.js
-
-function onPlayerDeath() {
+export function onPlayerDeath() {
     const deathScreen = document.getElementById("death-screen");
     if (!deathScreen) return;
 
-    // Afficher l'écran
     deathScreen.classList.remove("hidden");
     deathScreen.classList.add("show");
 }
 
-function hideDeathScreen() {
+export function hideDeathScreen() {
     const deathScreen = document.getElementById("death-screen");
     if (!deathScreen) return;
 

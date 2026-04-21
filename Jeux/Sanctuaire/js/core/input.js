@@ -1,6 +1,6 @@
 // input.js
 
-const keys = {};
+export const keys = {};
 
 // Enregistre les touches enfoncées
 window.addEventListener("keydown", e => {
@@ -13,6 +13,6 @@ window.addEventListener("keyup", e => {
 });
 
 // Fonction utilitaire pour vérifier si une touche est enfoncée
-function isDown(key) {
+export function isDown(key) {
     return keys[key.toLowerCase()] === true;
 }

@@ -1,4 +1,4 @@
-// state.js
+// js/core/state.js
 
 export const GameState = {
     MENU: 0,        // écran sélection personnage

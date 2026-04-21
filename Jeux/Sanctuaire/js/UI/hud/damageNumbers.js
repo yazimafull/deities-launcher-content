@@ -1,8 +1,8 @@
 // damageNumbers.js
 
-const damageNumbers = [];
+export const damageNumbers = [];
 
-function spawnDamageNumber(x, y, value, reason) {
+export function spawnDamageNumber(x, y, value, reason) {
     let text = "";
     let color = "#ffffff";
     let size = 20;
@@ -73,7 +73,7 @@ function spawnDamageNumber(x, y, value, reason) {
     });
 }
 
-function updateDamageNumbers() {
+export function updateDamageNumbers() {
     const now = performance.now();
 
     for (let dn of damageNumbers) {
@@ -100,7 +100,7 @@ function updateDamageNumbers() {
     }
 }
 
-function drawDamageNumbers(ctx) {
+export function drawDamageNumbers(ctx) {
     ctx.save();
 
     for (let dn of damageNumbers) {

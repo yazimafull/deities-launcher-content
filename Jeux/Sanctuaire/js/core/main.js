@@ -1,5 +1,8 @@
 ﻿// main.js
 
+import { setState, GameState } from "./core/state.js";
+import { initPauseMenu } from "./ui/pauseMenu.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const playBtn = document.getElementById("play-character-btn");
@@ -28,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // TRANSITION → SANCTUAIRE
-function goToSanctuary() {
+export function goToSanctuary() {
     document.getElementById("character-select-menu")?.classList.add("hidden");
     document.getElementById("sanctuary-screen")?.classList.remove("hidden");
     setState(GameState.SANCTUARY);
@@ -41,7 +44,7 @@ function goToSanctuary() {
 }
 
 // TRANSITION → MENU
-function goToMenu() {
+export function goToMenu() {
     document.getElementById("sanctuary-screen")?.classList.add("hidden");
     document.getElementById("character-select-menu")?.classList.remove("hidden");
     setState(GameState.MENU);

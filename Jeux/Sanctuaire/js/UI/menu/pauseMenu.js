@@ -39,13 +39,11 @@ export function initPauseMenu() {
 
         const state = getState();
 
-        // 🔥 ESC ne fonctionne QUE pendant une run
         if (state !== GameState.PLAYING && state !== GameState.PAUSED) return;
 
         if (pauseOverlay.classList.contains("hidden")) {
             openPause();
         } else {
-            // fermer pause
             pauseOverlay.classList.add("hidden");
             pauseOptionsOverlay.classList.add("hidden");
             pauseConfirmOverlay.classList.add("hidden");
@@ -96,38 +94,28 @@ export function initPauseMenu() {
 
     btnConfirmYes.addEventListener("click", () => {
 
-        // 🔥 Fermer TOUS les panneaux avant de changer de state
         pauseOverlay.classList.add("hidden");
         pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
-        // Nettoyage de la run
         cleanRun();
         setState(GameState.SANCTUARY);
 
-        // Ré‑afficher le sanctuaire
+        // Afficher Sanctuaire
         document.getElementById("sanctuary-screen")?.classList.remove("hidden");
 
-        // Ré‑afficher le canvas (si ton sanctuaire l’utilise)
-        document.getElementById("game-canvas")?.classList.remove("hidden");
+        // Cacher canvas (correct)
+        document.getElementById("game-canvas")?.classList.add("hidden");
 
-        // Cacher le HUD
+        // Cacher HUD
         document.getElementById("healthbar-container")?.classList.add("hidden");
         document.getElementById("xpbar-container")?.classList.add("hidden");
 
-        // =====================================================
-        // 🔥 RESET MINIMAL DU PYLÔNE (aligné avec sanctuary.js)
-        // =====================================================
-
+        // RESET MINIMAL DU PYLÔNE
         if (window.clearLaunchTimer) window.clearLaunchTimer();
         if (window.unlockPyloneChoices) window.unlockPyloneChoices();
 
-        // Réactiver le bouton Lancer
         document.getElementById("pylone-launch").disabled = false;
-
-        // Cacher le texte du countdown
         document.getElementById("pylone-countdown")?.classList.add("hidden");
-
-        // NE PAS reset les sélections du joueur (biome/diff/mods)
     });
 }

@@ -37,9 +37,11 @@ function initPlayer() {
 function update(dt) {
     if (getState() !== GameState.PLAYING) return;
 
+    // Déplacement placeholder
     player.x += 0;
     player.y += 0;
 
+    // Projectiles
     updateProjectiles(projectiles);
 
     handleProjectileCollisions(projectiles, enemies, (p, m) => {
@@ -49,6 +51,7 @@ function update(dt) {
         });
     });
 
+    // Biome
     updateBiomeForet(dt, player);
 }
 
@@ -82,11 +85,12 @@ function gameLoop(timestamp) {
 // LANCEMENT D’UNE RUN
 // ================================
 export function startRun(config) {
+
+    cleanRun(); // Nettoyage AVANT d'afficher le canvas
+
     canvas = document.getElementById("game-canvas");
     ctx = canvas.getContext("2d");
     canvas.classList.remove("hidden");
-
-    cleanRun();
 
     initBiomeForet(config);
     initPlayer();

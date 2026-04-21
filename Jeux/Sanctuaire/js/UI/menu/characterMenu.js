@@ -1,31 +1,31 @@
 // characterMenu.js
 
-let selectedClass = null;
-let selectedCharacterName = null;
+export let selectedClass = null;
+export let selectedCharacterName = null;
 
-function loadCharacters() {
+export function loadCharacters() {
     return JSON.parse(localStorage.getItem('deitiesPersonnages') || '[]');
 }
 
-function saveCharacters(characters) {
+export function saveCharacters(characters) {
     localStorage.setItem('deitiesPersonnages', JSON.stringify(characters));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const createBtn       = document.getElementById("create-character-btn");
-    const createOverlay   = document.getElementById("create-overlay");
-    const confirmBtn      = document.getElementById("confirm-create-btn");
-    const cancelBtn       = document.getElementById("cancel-create-btn");
-    const playBtn         = document.getElementById("play-character-btn");
-    const deleteBtn       = document.getElementById("delete-character-btn");
-    const deleteOverlay   = document.getElementById("delete-overlay");
+    const createBtn        = document.getElementById("create-character-btn");
+    const createOverlay    = document.getElementById("create-overlay");
+    const confirmBtn       = document.getElementById("confirm-create-btn");
+    const cancelBtn        = document.getElementById("cancel-create-btn");
+    const playBtn          = document.getElementById("play-character-btn");
+    const deleteBtn        = document.getElementById("delete-character-btn");
+    const deleteOverlay    = document.getElementById("delete-overlay");
     const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
     const cancelDeleteBtn  = document.getElementById("cancel-delete-btn");
     const deleteNameLabel  = document.getElementById("delete-character-name");
-    const optionsBtn      = document.getElementById("options-btn");
-    const optionsPanel    = document.getElementById("options-panel");
-    const closeOptionsBtn = document.getElementById("close-options-btn");
+    const optionsBtn       = document.getElementById("options-btn");
+    const optionsPanel     = document.getElementById("options-panel");
+    const closeOptionsBtn  = document.getElementById("close-options-btn");
 
     // Charger les personnages existants
     loadCharacters().forEach(c => addCharacterToList(c));
@@ -85,12 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // ================================
     deleteBtn.addEventListener("click", () => {
         if (!selectedCharacterName) return;
-        // Afficher le nom dans la popup
         deleteNameLabel.textContent = selectedCharacterName;
         deleteOverlay.classList.remove("hidden");
     });
 
-    // Annuler suppression
     cancelDeleteBtn.addEventListener("click", () => {
         deleteOverlay.classList.add("hidden");
     });
@@ -99,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target === deleteOverlay) deleteOverlay.classList.add("hidden");
     });
 
-    // Confirmer suppression
     confirmDeleteBtn.addEventListener("click", () => {
         let characters = loadCharacters();
         characters = characters.filter(c => c.name !== selectedCharacterName);
@@ -121,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeOptionsBtn.addEventListener("click", () => optionsPanel.classList.add("hidden"));
 });
 
-function addCharacterToList(character) {
+export function addCharacterToList(character) {
     const list = document.getElementById("character-list");
     const item = document.createElement("div");
     item.classList.add("character-item");
@@ -134,7 +131,7 @@ function addCharacterToList(character) {
     list.appendChild(item);
 }
 
-function selectCharacter(name) {
+export function selectCharacter(name) {
     selectedCharacterName = name;
     document.querySelectorAll(".character-item").forEach(i => i.classList.remove("selected"));
     const item = document.querySelector(`.character-item[data-name="${name}"]`);
@@ -143,7 +140,7 @@ function selectCharacter(name) {
     document.getElementById("delete-character-btn").classList.remove("hidden");
 }
 
-function resetCreatePanel() {
+export function resetCreatePanel() {
     document.getElementById("character-name-input").value = "";
     selectedClass = null;
     document.querySelectorAll(".class-card").forEach(c => c.classList.remove("selected"));

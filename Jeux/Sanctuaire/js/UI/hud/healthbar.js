@@ -1,7 +1,7 @@
 // healthbar.js
 // Gère : Vie + Bouclier Physique + Bouclier Magique
 
-function updateHealthBar(player) {
+export function updateHealthBar(player) {
 
     // ================================
     // VIE

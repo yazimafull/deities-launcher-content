@@ -41,14 +41,12 @@ function updateMobAI(mob, player, dt) {
     const AGGRO_RANGE  = mob.aggroRange ?? 350;
     const ATTACK_RANGE = (mob.size ?? 20) + 20;
 
-    // Agro
     if (dist < AGGRO_RANGE) {
         mob.target = player;
     }
 
     if (!mob.target) return;
 
-    // Déplacement
     if (dist > ATTACK_RANGE) {
         const angle = Math.atan2(dy, dx);
         mob.x += Math.cos(angle) * mob.speed * dt * 0.1;
@@ -132,17 +130,19 @@ function resolvePlayerCollision(player) {
 // --------------------------------------------------
 export function drawEnemies(ctx) {
     for (let mob of enemies) {
+        const size = mob.size ?? 20;
+
         ctx.fillStyle = mob.color ?? "#55aa55";
         ctx.beginPath();
-        ctx.arc(mob.x, mob.y, mob.size ?? 20, 0, Math.PI * 2);
+        ctx.arc(mob.x, mob.y, size, 0, Math.PI * 2);
         ctx.fill();
 
         // Barre de vie
         ctx.fillStyle = "red";
-        ctx.fillRect(mob.x - mob.size, mob.y - mob.size - 10, mob.size * 2, 5);
+        ctx.fillRect(mob.x - size, mob.y - size - 10, size * 2, 5);
 
         ctx.fillStyle = "lime";
         const hpRatio = mob.hp / mob.maxHp;
-        ctx.fillRect(mob.x - mob.size, mob.y - mob.size - 10, mob.size * 2 * hpRatio, 5);
+        ctx.fillRect(mob.x - size, mob.y - size - 10, size * 2 * hpRatio, 5);
     }
 }

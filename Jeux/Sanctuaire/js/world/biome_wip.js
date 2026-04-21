@@ -54,6 +54,10 @@ export function stopBiomeWIP() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.classList.add("hidden");
     }
+
+    // Cacher HUD (cohérence avec biome forêt)
+    document.getElementById("healthbar-container")?.classList.add("hidden");
+    document.getElementById("xpbar-container")?.classList.add("hidden");
 }
 
 // ================================

@@ -1,26 +1,13 @@
 ﻿// world/biome_foret.js
 
 import { updateEnemies, drawEnemies, spawnEnemy } from "../systems/enemySystem.js";
-import { createMob } from "../enemyFactory.js";
-import { updateCollisions } from "../systems/collisionSystem.js";
-import { updateXP } from "../systems/xpSystem.js";
-import { updateLoot } from "../systems/lootSystem.js";
-import { updateObjective } from "../systems/objectiveSystem.js";
-import { spawnBoss, updateBoss, drawBoss } from "../systems/bossSystem.js";
-import { updateHUD } from "../ui/hud.js";
-import { updateTimer } from "../systems/timerSystem.js";
+import { createMob } from "../systems/enemyFactory.js";
 
 // ================================
 // VARIABLES DU BIOME
 // ================================
 let trees = [];
 let spawnCooldown = 0;
-let bossSpawned = false;
-
-const OBJECTIVE_MAX = 50;
-let objectivePoints = 0;
-
-let biomeTimer = 5 * 60 * 1000;
 
 // ================================
 // INIT BIOME
@@ -28,51 +15,21 @@ let biomeTimer = 5 * 60 * 1000;
 export function initBiomeForet() {
     trees = generateTrees();
     spawnCooldown = 0;
-    bossSpawned = false;
-    objectivePoints = 0;
-    biomeTimer = 5 * 60 * 1000;
 }
 
 // ================================
 // UPDATE
 // ================================
-export function updateBiomeForet(dt, player) {
-
-    biomeTimer = updateTimer(biomeTimer, dt);
+export async function updateBiomeForet(dt, player) {
 
     // --- Spawn mobs ---
     spawnCooldown -= dt;
-    if (spawnCooldown <= 0 && !bossSpawned) {
-        spawnBiomeMobs(player.x, player.y);
+    if (spawnCooldown <= 0) {
+        await spawnBiomeMobs(player.x, player.y);
         spawnCooldown = 1500;
     }
 
     updateEnemies(dt, player);
-    updateCollisions(player);
-    updateXP(player);
-    updateLoot(player);
-
-    const objData = updateObjective(objectivePoints, OBJECTIVE_MAX);
-    objectivePoints = objData.current;
-
-    // --- Boss ---
-    if (!bossSpawned && objectivePoints >= OBJECTIVE_MAX) {
-        spawnBoss(player);
-        bossSpawned = true;
-    }
-
-    updateBoss(dt, player);
-
-    updateHUD({
-        hp: player.hp,
-        maxHp: player.maxHp,
-        xp: player.xp,
-        xpMax: player.xpMax,
-        objective: objectivePoints,
-        objectiveMax: OBJECTIVE_MAX,
-        timer: biomeTimer,
-        bossSpawned: bossSpawned
-    });
 }
 
 // ================================
@@ -82,7 +39,6 @@ export function drawBiomeForet(ctx, canvas, player) {
     drawBackground(ctx, canvas);
     drawTrees(ctx);
     drawEnemies(ctx);
-    drawBoss(ctx);
     drawPlayer(ctx, player);
 }
 
