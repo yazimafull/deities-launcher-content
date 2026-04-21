@@ -1,4 +1,4 @@
-// js/core/loader.js
+ï»¿// js/core/loader.js
 
 // --- CORE ---
 import "./state.js";
@@ -40,4 +40,4 @@ import "../world/sanctuary.js";
 import "../world/biome_foret.js";
 import "../world/biome_wip.js";
 
-console.log("Loader chargé avec UI en majuscule : tout est prêt.");
+console.log("Loader chargÃ© avec UI en majuscule : tout est prÃªt.");

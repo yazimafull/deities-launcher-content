@@ -1,47 +1,8 @@
 ﻿// systems/levelup.js
 
 import { GameState, setState } from "../core/state.js";
-import { player } from "./player.js";
-
-export const chosenUpgrades = [];
-
-// Pool d'upgrades
-const ALL_UPGRADES = [
-    {
-        name: "Vitesse +10%",
-        apply: () => {
-            if (!player.moveSpeedMultiplier) player.moveSpeedMultiplier = 1;
-            player.moveSpeedMultiplier += 0.1;
-        }
-    },
-    {
-        name: "Dégâts +20%",
-        apply: () => {
-            player.damage *= 1.2;
-        }
-    },
-    {
-        name: "HP max +20",
-        apply: () => {
-            player.maxHp += 20;
-            player.hp += 20;
-        }
-    },
-    {
-        name: "Crit +5%",
-        apply: () => {
-            if (!player.critChance) player.critChance = 0;
-            player.critChance += 0.05;
-        }
-    },
-    {
-        name: "Bouclier +10",
-        apply: () => {
-            if (!player.shieldPhysical) player.shieldPhysical = 0;
-            player.shieldPhysical += 10;
-        }
-    }
-];
+import { allUpgrades } from "./upgrades.js";
+import { addUpgradeToPanel } from "./upgradePanel.js";
 
 let panel = null;
 let container = null;
@@ -79,8 +40,8 @@ export function openLevelUpMenu() {
         btn.textContent = up.name;
 
         btn.onclick = () => {
-            up.apply();
-            chosenUpgrades.push(up);
+            up.apply();              // applique l'upgrade
+            addUpgradeToPanel(up);   // l'affiche dans le HUD
 
             panel.classList.add("hidden");
             setState(GameState.PLAYING);
@@ -94,7 +55,7 @@ export function openLevelUpMenu() {
 // UTILITAIRE
 // --------------------------------------------------
 function pickRandomUpgrades(n) {
-    const pool = [...ALL_UPGRADES];
+    const pool = [...allUpgrades];
     const result = [];
 
     while (result.length < n && pool.length > 0) {

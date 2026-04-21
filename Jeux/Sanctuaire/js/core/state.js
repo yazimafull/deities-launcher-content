@@ -1,14 +1,14 @@
-// js/core/state.js
+ï»¿// js/core/state.js
 
 export const GameState = {
-    MENU: 0,        // écran sélection personnage
+    MENU: 0,        // Ã©cran sÃ©lection personnage
     SANCTUARY: 1,   // Hub Sanctuaire
-    PREPARING: 2,   // Config de la run (pylône)
+    PREPARING: 2,   // Config de la run (pylÃ´ne)
     PLAYING: 3,     // Run en cours
     PAUSED: 4,      // Pause en jeu
     LEVELUP: 5,     // Choix upgrade en jeu
     DEAD: 6,        // Mort du joueur
-    REWARDS: 7      // Panel récompenses fin de map
+    REWARDS: 7      // Panel rÃ©compenses fin de map
 };
 
 let currentState = GameState.MENU;
