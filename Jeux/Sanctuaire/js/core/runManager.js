@@ -1,5 +1,5 @@
-﻿import { stopForet } from "../biomes/biome_foret.js";
-import { stopBiomeWIP } from "../biomes/biome_wip.js";
+﻿import { stopForet } from "../world/biome_foret.js";
+import { stopBiomeWIP } from "../world/biome_wip.js";
 
 export function cleanRun() {
 
