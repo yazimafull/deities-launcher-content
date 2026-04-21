@@ -15,26 +15,26 @@ export function initPauseMenu() {
     const btnConfirmYes = document.getElementById("pause-confirm-yes");
     const btnConfirmNo = document.getElementById("pause-confirm-no");
 
-    // ESC → ouvrir / fermer pause (UNIQUEMENT en RUN)
+    // ESC → ouvrir / fermer pause (UNIQUEMENT en PLAYING)
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && getState() === GameState.RUN) {
+        if (e.key === "Escape" && getState() === GameState.PLAYING) {
 
             if (pauseOverlay.classList.contains("hidden")) {
                 pauseOverlay.classList.remove("hidden");
                 setState(GameState.PAUSED);
             } else {
                 pauseOverlay.classList.add("hidden");
-                setState(GameState.RUN);
+                setState(GameState.PLAYING);
             }
         }
     });
 
-    // ▶ Reprendre (ne remet RUN que si on était en RUN)
+    // ▶ Reprendre
     btnResume.addEventListener("click", () => {
         pauseOverlay.classList.add("hidden");
 
         if (getState() === GameState.PAUSED) {
-            setState(GameState.RUN);
+            setState(GameState.PLAYING);
         }
     });
 
