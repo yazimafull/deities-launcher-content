@@ -1,5 +1,5 @@
 {
-    "version": "1776806873419",
+    "version": "1776807159534",
     "files": [
         {
             "path": "background.jpg",
@@ -43,7 +43,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "b529fb6cd6ba2f675545e12182b8b78ee524225a3e3c2ac4e692407908a53d1f"
+            "sha256": "3fcc17f3e75631765bf1ad328ad9573d758289e87d63ea9b4f551b93b23d20b1"
         },
         {
             "path": "js/core/main.js",
@@ -115,7 +115,7 @@
         },
         {
             "path": "js/ui/ui.js",
-            "sha256": "feab4d0e6341205f29620c26cc38842e21d69adbfaa165b5527f6ef527f0e38a"
+            "sha256": "4fe607fd936715b98be70e68a3f9703facd1bce4b6b8bf19a68bf4068efa883d"
         },
         {
             "path": "js/world/biome_foret.js",
