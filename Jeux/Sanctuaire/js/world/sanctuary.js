@@ -1,6 +1,8 @@
 ﻿// sanctuary.js
 import { goToMenu } from "../core/main.js";
 import { setState, GameState } from "../core/state.js";
+import { initForet } from "./biome_foret.js";
+import { initBiomeWIP } from "./biome_wip.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -19,53 +21,39 @@ document.addEventListener("DOMContentLoaded", () => {
         clearLaunchTimer();
     });
 
-    // COFFRE
-    document.getElementById("zone-coffre")?.addEventListener("click", () => {
-        openSanctuaryPanel("coffre");
+    // Sélection biome
+    document.querySelectorAll("#biome-choices .pylone-choice").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll("#biome-choices .pylone-choice")
+                .forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+        });
     });
 
-    // FORGE
-    document.getElementById("zone-forge")?.addEventListener("click", () => {
-        openSanctuaryPanel("forge");
+    // Sélection difficulté
+    document.querySelectorAll("#difficulty-choices .pylone-choice").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll("#difficulty-choices .pylone-choice")
+                .forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+        });
     });
 
-    // MARCHAND
-    document.getElementById("zone-marchand")?.addEventListener("click", () => {
-        openSanctuaryPanel("marchand");
-    });
+    // ZONES "À VENIR"
+    document.getElementById("zone-coffre")?.addEventListener("click",   () => openSanctuaryPanel("coffre"));
+    document.getElementById("zone-forge")?.addEventListener("click",    () => openSanctuaryPanel("forge"));
+    document.getElementById("zone-marchand")?.addEventListener("click", () => openSanctuaryPanel("marchand"));
+    document.getElementById("zone-grimoire")?.addEventListener("click", () => openSanctuaryPanel("grimoire"));
 
-    // GRIMOIRE
-    document.getElementById("zone-grimoire")?.addEventListener("click", () => {
-        openSanctuaryPanel("grimoire");
-    });
-
-    // Fermer les panels "à venir"
     document.getElementById("sanctuary-panel-close")?.addEventListener("click", () => {
         document.getElementById("sanctuary-panel-overlay")?.classList.add("hidden");
     });
 
-    // LANCER LA RUN avec countdown
+    // LANCER LA RUN
     document.getElementById("pylone-launch")?.addEventListener("click", () => {
         startLaunchCountdown();
     });
-    // Selection des choix dans le pylône
-    setupChoiceGroup("#biome-choices .pylone-choice");
-    setupChoiceGroup("#difficulty-choices .pylone-choice");
 });
-
-// ================================
-// SÉLECTION BIOME / DIFFICULTÉ
-// ================================
-function setupChoiceGroup(selector) {
-    const buttons = document.querySelectorAll(selector);
-    buttons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            buttons.forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-        });
-    });
-}
-
 
 // ================================
 // PANELS "À VENIR"
@@ -78,10 +66,9 @@ const panelTitles = {
 };
 
 function openSanctuaryPanel(zone) {
-    const overlay = document.getElementById("sanctuary-panel-overlay");
-    const title   = document.getElementById("sanctuary-panel-title");
+    const title = document.getElementById("sanctuary-panel-title");
     if (title) title.textContent = panelTitles[zone] || zone;
-    overlay?.classList.remove("hidden");
+    document.getElementById("sanctuary-panel-overlay")?.classList.remove("hidden");
 }
 
 // ================================
@@ -97,7 +84,7 @@ function startLaunchCountdown() {
     let seconds = 5;
     countdownEl.classList.remove("hidden");
     launchBtn.disabled = true;
-    countdownEl.textContent = `Lancement dans ${seconds}s...`;
+    countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
 
     countdownInterval = setInterval(() => {
         seconds--;
@@ -105,7 +92,7 @@ function startLaunchCountdown() {
             clearInterval(countdownInterval);
             launchRun();
         } else {
-            countdownEl.textContent = `Lancement dans ${seconds}s...`;
+            countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
         }
     }, 1000);
 }
@@ -118,20 +105,27 @@ function clearLaunchTimer() {
     const countdownEl = document.getElementById("pylone-countdown");
     const launchBtn   = document.getElementById("pylone-launch");
     if (countdownEl) countdownEl.classList.add("hidden");
-    if (launchBtn) launchBtn.disabled = false;
+    if (launchBtn)   launchBtn.disabled = false;
 }
 
+// ================================
+// LANCEMENT DE LA RUN
+// ================================
 function launchRun() {
+    const biome      = document.querySelector("#biome-choices .pylone-choice.selected")?.dataset.value || "foret";
+    const difficulte = document.querySelector("#difficulty-choices .pylone-choice.selected")?.dataset.value || "1";
+    const modLoot    = document.getElementById("mod-loot")?.checked  || false;
+    const modXP      = document.getElementById("mod-xp")?.checked    || false;
+    const modElite   = document.getElementById("mod-elite")?.checked || false;
+
+    const config = { biome, difficulte, modLoot, modXP, modElite };
+
     document.getElementById("pylone-overlay")?.classList.add("hidden");
     document.getElementById("sanctuary-screen")?.classList.add("hidden");
 
-    // Afficher les éléments de jeu
-    document.getElementById("game-canvas")?.classList.remove("hidden");
-    document.getElementById("healthbar-container")?.classList.remove("hidden");
-    document.getElementById("xpbar-container")?.classList.remove("hidden");
-
-    setState(GameState.PLAYING);
-
-    // TODO: brancher le vrai moteur de jeu ici
-    console.log("Run lancée !");
+    if (biome === "foret") {
+        initForet(config);
+    } else {
+        initBiomeWIP(biome);
+    }
 }
