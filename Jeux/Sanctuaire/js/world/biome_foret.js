@@ -1,9 +1,6 @@
 ﻿// biome_foret.js
 // Carte Forêt Mourante — déplacement souris, transparence arbres, zone révélation
-
-import { openPause } from "../ui/pauseMenu.js";
 import { getState, setState, GameState } from "../core/state.js";
-
 // ================================
 // CONSTANTES
 // ================================
@@ -52,7 +49,7 @@ const keys = {};
 // ================================
 window._foretKeydown = (e) => {
     keys[e.key.toLowerCase()] = true;
-    if (e.key === "Escape" && getState() === GameState.PLAYING) openPause();
+    if (e.key === "Escape" && getState() === GameState.PLAYING) window.openPause();
 };
 window._foretKeyup = (e) => {
     keys[e.key.toLowerCase()] = false;
