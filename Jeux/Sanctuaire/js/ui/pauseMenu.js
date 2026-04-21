@@ -1,4 +1,5 @@
 ﻿import { GameState, setState, getState } from "../core/state.js";
+import { cleanRun } from "../core/runManager.js";
 
 // =====================================================
 // 🔥 Fonction demandée par les biomes : openPause()
@@ -96,6 +97,7 @@ export function initPauseMenu() {
         pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
+        cleanRun(); // 🔥 obligatoire
         // Retour propre au Sanctuaire
         setState(GameState.SANCTUARY);
     });

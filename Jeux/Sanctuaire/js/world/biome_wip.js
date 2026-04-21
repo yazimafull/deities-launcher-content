@@ -8,9 +8,15 @@ let canvas, ctx;
 let animId = null;
 let biomeName = "";
 
-window.addEventListener("keydown", e => {
-    if (e.key === "Escape" && getState() === GameState.PLAYING) openPause();
-});
+// ================================
+// LISTENER ESC RETIRABLE
+// ================================
+window._wipKeydown = (e) => {
+    if (e.key === "Escape" && getState() === GameState.PLAYING) {
+        openPause();
+    }
+};
+window.addEventListener("keydown", window._wipKeydown);
 
 // ================================
 // INITIALISATION
@@ -31,9 +37,28 @@ export function initBiomeWIP(name) {
     animId = requestAnimationFrame(loop);
 }
 
+// ================================
+// STOP BIOME WIP
+// ================================
 export function stopBiomeWIP() {
+
+    // Stopper la boucle
     if (animId) cancelAnimationFrame(animId);
     animId = null;
+
+    // Retirer le listener ESC
+    if (window._wipKeydown) {
+        window.removeEventListener("keydown", window._wipKeydown);
+        window._wipKeydown = null;
+    }
+
+    // Nettoyer le canvas
+    const canvas = document.getElementById("game-canvas");
+    if (canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.classList.add("hidden");
+    }
 }
 
 // ================================
