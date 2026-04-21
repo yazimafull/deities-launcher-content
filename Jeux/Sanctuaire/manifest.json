@@ -1,5 +1,5 @@
 {
-    "version": "1776805625498",
+    "version": "1776806873419",
     "files": [
         {
             "path": "background.jpg",
@@ -74,7 +74,7 @@
             "sha256": "5de1950d58f9b0e09797ac5813ead616ec32be5df2691685dd30931c301547c5"
         },
         {
-            "path": "js/systems/enemyFactory .js",
+            "path": "js/systems/enemyFactory.js",
             "sha256": "1f90ea73b7055393ea2aa20890f73fae8346cb9510b110b4284d39d33125cc4b"
         },
         {
