@@ -1,8 +1,6 @@
 ﻿// biome_wip.js
 // Squelette pour Ruines Oubliées et Abysses — Work In Progress
-
-import { openPause } from "../ui/pauseMenu.js";
-import { getState, setState, GameState } from "../core/state.js";
+// Version sans import/export — tout global
 
 let canvas, ctx;
 let animId = null;
@@ -12,8 +10,8 @@ let biomeName = "";
 // LISTENER ESC RETIRABLE
 // ================================
 window._wipKeydown = (e) => {
-    if (e.key === "Escape" && getState() === GameState.PLAYING) {
-        openPause();
+    if (e.key === "Escape" && window.getState && getState() === GameState.PLAYING) {
+        if (window.openPause) window.openPause();
     }
 };
 window.addEventListener("keydown", window._wipKeydown);
@@ -21,7 +19,7 @@ window.addEventListener("keydown", window._wipKeydown);
 // ================================
 // INITIALISATION
 // ================================
-export function initBiomeWIP(name) {
+function initBiomeWIP(name) {
     biomeName = name;
 
     canvas = document.getElementById("game-canvas");
@@ -33,14 +31,15 @@ export function initBiomeWIP(name) {
     document.getElementById("healthbar-container")?.classList.remove("hidden");
     document.getElementById("xpbar-container")?.classList.remove("hidden");
 
-    setState(GameState.PLAYING);
+    if (window.setState) setState(GameState.PLAYING);
+
     animId = requestAnimationFrame(loop);
 }
 
 // ================================
 // STOP BIOME WIP
 // ================================
-export function stopBiomeWIP() {
+function stopBiomeWIP() {
 
     // Stopper la boucle
     if (animId) cancelAnimationFrame(animId);
@@ -65,7 +64,7 @@ export function stopBiomeWIP() {
 // LOOP
 // ================================
 function loop() {
-    if (getState() !== GameState.PLAYING) {
+    if (window.getState && getState() !== GameState.PLAYING) {
         animId = requestAnimationFrame(loop);
         return;
     }
@@ -112,3 +111,9 @@ function getBiomeLabel() {
     if (biomeName === "abysses") return "🌑 Abysses";
     return biomeName;
 }
+
+// ================================
+// 🔥 Rendre accessibles globalement
+// ================================
+window.initBiomeWIP = initBiomeWIP;
+window.stopBiomeWIP = stopBiomeWIP;

@@ -1,15 +1,6 @@
 ﻿// world/biome_foret.js
 // Biome Forêt — version propre, minimaliste, modulaire
-
-import { updateHUD } from "../ui/hud/hudSystem.js";
-import { updateEnemies, drawEnemies, spawnEnemyWave } from "../systems/enemySystem.js";
-import { updateCollisions } from "../systems/collisionSystem.js";
-import { updateXP } from "../systems/xpSystem.js";
-import { updateLoot } from "../systems/lootSystem.js";
-import { updateBoss, drawBoss, spawnBoss } from "../systems/bossSystem.js";
-import { updateTimer } from "../systems/timerSystem.js";
-import { updateObjective } from "../systems/objectiveSystem.js";
-
+// Version sans import/export — tout global
 
 // ================================
 // VARIABLES DU BIOME
@@ -27,7 +18,7 @@ let biomeTimer = 5 * 60 * 1000; // 5 minutes en ms
 // ================================
 // INIT BIOME
 // ================================
-export function initBiomeForet() {
+function initBiomeForet() {
     trees = generateTrees();
     spawnCooldown = 0;
     bossSpawned = false;
@@ -35,69 +26,79 @@ export function initBiomeForet() {
     biomeTimer = 5 * 60 * 1000;
 }
 
+window.initBiomeForet = initBiomeForet;
+
 
 // ================================
 // UPDATE
 // ================================
-export function updateBiomeForet(dt, player) {
+function updateBiomeForet(dt, player) {
 
     // --- Timer ---
-    biomeTimer = updateTimer(biomeTimer, dt);
+    if (window.updateTimer) biomeTimer = updateTimer(biomeTimer, dt);
 
     // --- Spawn mobs ---
     spawnCooldown -= dt;
     if (spawnCooldown <= 0 && !bossSpawned) {
-        spawnEnemyWave(player.x, player.y);
+        if (window.spawnEnemyWave) spawnEnemyWave(player.x, player.y);
         spawnCooldown = 1500; // toutes les 1.5 sec
     }
 
     // --- Ennemis ---
-    updateEnemies(dt, player);
+    if (window.updateEnemies) updateEnemies(dt, player);
 
     // --- Collisions ---
-    updateCollisions(player);
+    if (window.updateCollisions) updateCollisions(player);
 
     // --- XP ---
-    updateXP(player);
+    if (window.updateXP) updateXP(player);
 
     // --- Loot ---
-    updateLoot(player);
+    if (window.updateLoot) updateLoot(player);
 
     // --- Objectif ---
-    const objData = updateObjective(objectivePoints, OBJECTIVE_MAX);
-    objectivePoints = objData.current;
+    if (window.updateObjective) {
+        const objData = updateObjective(objectivePoints, OBJECTIVE_MAX);
+        objectivePoints = objData.current;
+    }
 
     // --- Boss ---
     if (!bossSpawned && objectivePoints >= OBJECTIVE_MAX) {
-        spawnBoss(player);
+        if (window.spawnBoss) spawnBoss(player);
         bossSpawned = true;
     }
-    updateBoss(dt, player);
+    if (window.updateBoss) updateBoss(dt, player);
 
     // --- HUD ---
-    updateHUD({
-        hp: player.hp,
-        maxHp: player.maxHp,
-        xp: player.xp,
-        xpMax: player.xpMax,
-        objective: objectivePoints,
-        objectiveMax: OBJECTIVE_MAX,
-        timer: biomeTimer,
-        bossSpawned: bossSpawned
-    });
+    if (window.updateHUD) {
+        updateHUD({
+            hp: player.hp,
+            maxHp: player.maxHp,
+            xp: player.xp,
+            xpMax: player.xpMax,
+            objective: objectivePoints,
+            objectiveMax: OBJECTIVE_MAX,
+            timer: biomeTimer,
+            bossSpawned: bossSpawned
+        });
+    }
 }
+
+window.updateBiomeForet = updateBiomeForet;
 
 
 // ================================
 // DRAW
 // ================================
-export function drawBiomeForet(ctx, canvas, player) {
+function drawBiomeForet(ctx, canvas, player) {
     drawBackground(ctx, canvas);
     drawTrees(ctx);
-    drawEnemies(ctx);
-    drawBoss(ctx);
+    if (window.drawEnemies) drawEnemies(ctx);
+    if (window.drawBoss) drawBoss(ctx);
     drawPlayer(ctx, player);
 }
+
+window.drawBiomeForet = drawBiomeForet;
 
 
 // ================================

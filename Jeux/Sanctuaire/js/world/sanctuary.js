@@ -1,14 +1,11 @@
 ﻿// sanctuary.js
-import { goToMenu } from "../core/main.js";
-import { setState, GameState } from "../core/state.js";
-import { initBiomeWIP } from "./biome_wip.js";
-import { startRun } from "../core/gameLoop.js";
+// Version sans import/export — tout global
 
 document.addEventListener("DOMContentLoaded", () => {
 
     // RETOUR AU MENU
     document.getElementById("sanctuary-back-btn")?.addEventListener("click", () => {
-        goToMenu();
+        if (window.goToMenu) window.goToMenu();
     });
 
     // PYLÔNE → popup config run
@@ -28,11 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("pylone-overlay")?.classList.add("hidden");
     });
 
-
     // Sélection biome
     document.querySelectorAll("#biome-choices .pylone-choice").forEach(btn => {
         btn.addEventListener("click", () => {
-            if (choicesLocked) return; // 🔒 Empêche de changer pendant le timer
+            if (choicesLocked) return;
             document.querySelectorAll("#biome-choices .pylone-choice")
                 .forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
@@ -42,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sélection difficulté
     document.querySelectorAll("#difficulty-choices .pylone-choice").forEach(btn => {
         btn.addEventListener("click", () => {
-            if (choicesLocked) return; // 🔒 Empêche de changer pendant le timer
+            if (choicesLocked) return;
             document.querySelectorAll("#difficulty-choices .pylone-choice")
                 .forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
@@ -119,7 +115,7 @@ function startLaunchCountdown() {
     launchBtn.disabled = true;
     countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
 
-    lockChoices(); // 🔒 Verrouillage total
+    lockChoices();
 
     countdownInterval = setInterval(() => {
         seconds--;
@@ -145,7 +141,7 @@ function clearLaunchTimer() {
     if (countdownEl) countdownEl.classList.add("hidden");
     if (launchBtn)   launchBtn.disabled = false;
 
-    unlockChoices(); // 🔓 Réactivation
+    unlockChoices();
 }
 
 // ================================
@@ -164,9 +160,9 @@ function launchRun() {
     document.getElementById("sanctuary-screen")?.classList.add("hidden");
 
     if (biome === "foret") {
-        startRun(config);
+        if (window.startRun) window.startRun(config);
     } else {
-        initBiomeWIP(biome);
+        if (window.initBiomeWIP) window.initBiomeWIP(biome);
     }
 }
 
