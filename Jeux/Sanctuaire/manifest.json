@@ -1,5 +1,5 @@
 {
-    "version": "1776743425450",
+    "version": "1776743992241",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "df99f76c6fbe1e5ea81537f222262a0650454b6a68996569a7b7da03d977fc0a"
+            "sha256": "2d4a793bc91b35352e2330bba16cdc42ebe267d70eedd9dabf868e73d24d0c70"
         },
         {
             "path": "js/boss.js",
@@ -94,8 +94,16 @@
             "sha256": "059bd954d62298fd2b6acd932ea74c7c0dacc97cef4c92475be42c02ded5636a"
         },
         {
+            "path": "js/world/biome_foret.js",
+            "sha256": "169fc5790d35b16417b09753624294df18911ef70af6bc39c40c3c9f5c134541"
+        },
+        {
+            "path": "js/world/biome_wip.js",
+            "sha256": "4786f51af1dee50a6e5107c57b332d1e16a0bfe28b09eb9412c7b413b556dc7d"
+        },
+        {
             "path": "js/world/sanctuary.js",
-            "sha256": "86186ed4ae5bb721dde0aeb63506f3aa1233393a1a81761af7c02a9ebad8147f"
+            "sha256": "6a88e9628ee91a2e5774a9f9939d853490c59ff98be5c3c0b3a9bc50d6511b4f"
         },
         {
             "path": "sanctuary.css",
