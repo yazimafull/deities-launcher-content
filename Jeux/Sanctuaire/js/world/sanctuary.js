@@ -17,9 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("pylone-cancel")?.addEventListener("click", () => {
+
+        // Si un timer est actif → on l'annule mais on NE ferme PAS la fenêtre
+        if (countdownInterval) {
+            clearLaunchTimer();
+            return; // on reste dans la popup
+        }
+
+        // Sinon → pas de timer → on ferme la popup
         document.getElementById("pylone-overlay")?.classList.add("hidden");
-        clearLaunchTimer();
     });
+
 
     // Sélection biome
     document.querySelectorAll("#biome-choices .pylone-choice").forEach(btn => {
