@@ -1,7 +1,7 @@
 ﻿// main.js
 
 import { setState, GameState } from "./core/state.js";
-import { initPauseMenu } from "./ui/pauseMenu.js";
+import { initPauseMenu } from "./UI/pauseMenu.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
