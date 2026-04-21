@@ -1,5 +1,6 @@
 ﻿// main.js
 import { setState, GameState } from "./state.js";
+import { initPauseMenu } from "../ui/pauseMenu.js"; // ← AJOUT 1 : l'import en haut
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -23,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         goToSanctuary();
     });
+
+    initPauseMenu(); // ← AJOUT 2 : initialisation du menu pause
+
 });
 
 // TRANSITION → SANCTUAIRE

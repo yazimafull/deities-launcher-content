@@ -9,10 +9,11 @@
 </head>
 <body>
 
-    <!-- ÉCRAN SÉLECTION PERSONNAGE -->
+    <!-- ========================================
+         ÉCRAN SÉLECTION PERSONNAGE
+    ========================================= -->
     <div id="character-select-menu" class="character-screen">
 
-        <!-- PANNEAU GAUCHE -->
         <div class="left-panel">
             <img src="icon.png" class="game-logo" alt="Game Logo">
             <div class="left-menu">
@@ -21,13 +22,11 @@
             </div>
         </div>
 
-        <!-- ZONE CENTRALE -->
         <div class="center-panel">
             <div id="selected-character-display"></div>
             <button class="btn play-btn" id="play-character-btn" disabled>Jouer</button>
         </div>
 
-        <!-- PANNEAU DROIT -->
         <div class="right-panel">
             <h2 class="panel-title">Personnages</h2>
             <div id="character-list" class="character-list"></div>
@@ -37,7 +36,73 @@
 
     </div>
 
-    <!-- POPUP CRÉATION PERSONNAGE (superposition) -->
+    <!-- ========================================
+         ÉCRAN SANCTUAIRE
+    ========================================= -->
+    <div id="sanctuary-screen" class="hidden">
+
+        <div class="sanctuary-bg"></div>
+
+        <div class="sanctuary-character-bar">
+            <span id="sanctuary-character-name"></span>
+        </div>
+
+        <div class="sanctuary-zone zone-oval zone-pylone" id="zone-pylone">
+            <span class="zone-label">Pylône Sacré</span>
+        </div>
+
+        <div class="sanctuary-zone zone-oval zone-marchand" id="zone-marchand">
+            <span class="zone-label">Marchand</span>
+        </div>
+
+        <div class="sanctuary-zone zone-rect zone-coffre" id="zone-coffre">
+            <span class="zone-label">Coffre</span>
+        </div>
+
+        <div class="sanctuary-zone zone-rect zone-forge" id="zone-forge">
+            <span class="zone-label">Forge</span>
+        </div>
+
+        <div class="sanctuary-zone zone-rect zone-grimoire" id="zone-grimoire">
+            <span class="zone-label">Grimoire</span>
+        </div>
+
+        <button class="sanctuary-back-btn" id="sanctuary-back-btn">↩ Menu principal</button>
+
+    </div>
+
+    <!-- ========================================
+         ÉLÉMENTS DE JEU
+    ========================================= -->
+
+    <div id="levelup-menu" class="menu hidden">
+        <h2>Choisissez un upgrade</h2>
+        <div id="upgrade-choices"></div>
+    </div>
+
+    <div id="upgrade-panel" class="side-panel hidden">
+        <h3>Upgrades</h3>
+        <ul id="upgrade-list"></ul>
+    </div>
+
+    <div id="healthbar-container" class="hidden">
+        <div id="healthbar"></div>
+    </div>
+
+    <div id="xpbar-container" class="hidden">
+        <div id="xpbar"></div>
+    </div>
+
+    <canvas id="game-canvas" class="hidden"></canvas>
+
+    <div id="death-screen" class="death-panel hidden">
+        <h1>Vous êtes mort</h1>
+        <button class="btn" id="retry-button">Recommencer</button>
+    </div>
+
+    <!-- ========================================
+         POPUP CRÉATION PERSONNAGE
+    ========================================= -->
     <div id="create-overlay" class="create-overlay hidden">
         <div class="create-container">
             <h1>Créer un nouveau destin</h1>
@@ -72,7 +137,9 @@
         </div>
     </div>
 
-    <!-- POPUP CONFIRMATION SUPPRESSION -->
+    <!-- ========================================
+         POPUP CONFIRMATION SUPPRESSION
+    ========================================= -->
     <div id="delete-overlay" class="create-overlay hidden">
         <div class="create-container delete-container">
             <h1>Supprimer ce destin ?</h1>
@@ -84,7 +151,9 @@
         </div>
     </div>
 
-    <!-- PANEL OPTIONS -->
+    <!-- ========================================
+         PANEL OPTIONS (menu principal)
+    ========================================= -->
     <div id="options-panel" class="options-overlay hidden">
         <div class="options-window">
             <h2>Options</h2>
@@ -93,95 +162,6 @@
             <p>Raccourcis clavier (à venir)</p>
             <button class="btn close-options-btn" id="close-options-btn">Fermer</button>
         </div>
-    </div>
-
-    <!-- ÉLÉMENTS DE JEU -->
-    <div id="pause-menu" class="menu hidden">
-        <h2>Pause</h2>
-        <button class="btn" id="resume-btn">Reprendre</button>
-        <button class="btn" id="restart-btn">Relancer</button>
-        <button class="btn" id="back-menu-btn">Menu principal</button>
-    </div>
-
-    <div id="levelup-menu" class="menu hidden">
-        <h2>Choisissez un upgrade</h2>
-        <div id="upgrade-choices"></div>
-    </div>
-
-    <div id="upgrade-panel" class="side-panel hidden">
-        <h3>Upgrades</h3>
-        <ul id="upgrade-list"></ul>
-    </div>
-
-    <div id="healthbar-container" class="hidden">
-        <div id="healthbar"></div>
-    </div>
-
-    <div id="xpbar-container" class="hidden">
-        <div id="xpbar"></div>
-    </div>
-
-    <canvas id="game-canvas" class="hidden"></canvas>
-
-    <div id="death-screen" class="death-panel hidden">
-        <h1>Vous êtes mort</h1>
-        <button class="btn" id="retry-button">Recommencer</button>
-    </div>
-
-    <script type="module" src="js/core/main.js"></script>
-    <script type="module" src="js/menu/characterMenu.js"></script>
-    <script type="module" src="js/world/sanctuary.js"></script>
-
-
-    <script>
-        document.getElementById("quit-btn")?.addEventListener("click", () => {
-            window.electronAPI?.quitGame?.();
-        });
-    </script>
-
-    <!-- ========================================
-         ÉCRAN SANCTUAIRE
-    ========================================= -->
-    <div id="sanctuary-screen" class="hidden">
-
-        <!-- FOND ILLUSTRÉ -->
-        <div class="sanctuary-bg"></div>
-
-        <!-- NOM DU PERSONNAGE ACTIF -->
-        <div class="sanctuary-character-bar">
-            <span id="sanctuary-character-name"></span>
-        </div>
-
-        <!-- ZONES CLIQUABLES -->
-
-        <!-- Pylône sacré (centre) -->
-        <div class="sanctuary-zone zone-oval zone-pylone" id="zone-pylone">
-            <span class="zone-label">Pylône Sacré</span>
-        </div>
-
-        <!-- Marchand (droite) -->
-        <div class="sanctuary-zone zone-oval zone-marchand" id="zone-marchand">
-            <span class="zone-label">Marchand</span>
-        </div>
-
-        <!-- Coffre (bas gauche) -->
-        <div class="sanctuary-zone zone-rect zone-coffre" id="zone-coffre">
-            <span class="zone-label">Coffre</span>
-        </div>
-
-        <!-- Forge (bas centre-gauche) -->
-        <div class="sanctuary-zone zone-rect zone-forge" id="zone-forge">
-            <span class="zone-label">Forge</span>
-        </div>
-
-        <!-- Grimoire (bas droite) -->
-        <div class="sanctuary-zone zone-rect zone-grimoire" id="zone-grimoire">
-            <span class="zone-label">Grimoire</span>
-        </div>
-
-        <!-- Bouton retour menu -->
-        <button class="sanctuary-back-btn" id="sanctuary-back-btn">↩ Menu principal</button>
-
     </div>
 
     <!-- ========================================
@@ -237,7 +217,7 @@
     </div>
 
     <!-- ========================================
-         POPUP PANELS "À VENIR"
+         POPUP PANELS "À VENIR" (coffre, forge...)
     ========================================= -->
     <div id="sanctuary-panel-overlay" class="create-overlay hidden">
         <div class="create-container sanctuary-coming-soon">
@@ -248,6 +228,72 @@
             </div>
         </div>
     </div>
+
+    <!-- ========================================
+         MENU PAUSE EN JEU (Echap)
+    ========================================= -->
+    <div id="pause-overlay" class="create-overlay hidden">
+        <div class="create-container pause-container">
+            <h1>Pause</h1>
+            <div class="pause-buttons">
+                <button class="pause-btn" id="pause-resume">▶ Reprendre</button>
+                <button class="pause-btn" id="pause-options">⚙ Options</button>
+                <button class="pause-btn pause-btn-danger" id="pause-sanctuary">↩ Retour au Sanctuaire</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         OPTIONS EN JEU
+    ========================================= -->
+    <div id="pause-options-overlay" class="create-overlay hidden">
+        <div class="create-container pause-container">
+            <h1>Options</h1>
+            <div class="options-section">
+                <label class="pylone-label">Volume musique</label>
+                <input type="range" class="options-slider" id="opt-music" min="0" max="100" value="80">
+            </div>
+            <div class="options-section">
+                <label class="pylone-label">Volume effets</label>
+                <input type="range" class="options-slider" id="opt-sfx" min="0" max="100" value="100">
+            </div>
+            <div class="button-container">
+                <button class="back-btn" id="pause-options-close">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         CONFIRMATION RETOUR SANCTUAIRE
+    ========================================= -->
+    <div id="pause-confirm-overlay" class="create-overlay hidden">
+        <div class="create-container delete-container">
+            <h1>Quitter la Run ?</h1>
+            <p class="delete-warning">
+                Toute la <span>progression de cette carte</span> sera perdue.<br>
+                Les modificateurs, l'XP de map et le loot<br>
+                <strong>ne seront pas conservés.</strong>
+            </p>
+            <div class="button-container">
+                <button class="generate-btn pause-confirm-yes" id="pause-confirm-yes">Retour au Sanctuaire</button>
+                <button class="back-btn" id="pause-confirm-no">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SCRIPTS
+    ========================================= -->
+    <script type="module" src="js/core/main.js"></script>
+    <script type="module" src="js/menu/characterMenu.js"></script>
+    <script type="module" src="js/world/sanctuary.js"></script>
+    <script type="module" src="js/ui/pauseMenu.js"></script>
+
+    <script>
+        document.getElementById("quit-btn")?.addEventListener("click", () => {
+            window.electronAPI?.quitGame?.();
+        });
+    </script>
 
 </body>
 </html>

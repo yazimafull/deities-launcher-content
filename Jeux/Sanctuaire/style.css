@@ -540,3 +540,80 @@ body {
 .delete-container .generate-btn:hover {
     box-shadow: 0 0 20px #b00000;
 }
+/* =============================== */
+/*         MENU PAUSE              */
+/* =============================== */
+
+.pause-container {
+    max-width: 420px;
+    text-align: center;
+}
+
+.pause-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.pause-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    background: rgba(10, 10, 30, 0.8);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: 0.25s;
+    position: relative;
+    overflow: hidden;
+}
+
+.pause-btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,106,0.15), transparent);
+    transition: 0.5s;
+}
+
+.pause-btn:hover {
+    background: rgba(201,168,106,0.15);
+    box-shadow: 0 0 16px rgba(201,168,106,0.5);
+}
+
+.pause-btn:hover::before { left: 100%; }
+
+.pause-btn-danger {
+    border-color: #b05a00;
+    color: #ffcf8a;
+}
+
+.pause-btn-danger:hover {
+    background: rgba(176,90,0,0.2);
+    box-shadow: 0 0 16px rgba(176,90,0,0.5);
+}
+
+.pause-confirm-yes {
+    background: linear-gradient(to bottom, #7d1a1a, #5d0000);
+    border: 1px solid #b00000;
+}
+
+.pause-confirm-yes:hover { box-shadow: 0 0 20px #b00000; }
+
+/* OPTIONS EN JEU */
+.options-section {
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.options-slider {
+    width: 100%;
+    margin-top: 10px;
+    accent-color: #d4af37;
+    cursor: pointer;
+}
