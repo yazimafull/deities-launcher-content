@@ -1,5 +1,5 @@
 {
-    "version": "1776802598758",
+    "version": "1776803584829",
     "files": [
         {
             "path": "background.jpg",
@@ -35,7 +35,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "97b1f8ca08c35b0ddbbd2b9a0523d545adb8b2db21301ea5dc356725deedad4a"
+            "sha256": "361bc377fcdd6d8ce83d6ba1ae56eb62d123f55ad21de628b867f9c2aa514681"
         },
         {
             "path": "js/core/input.js",
@@ -87,11 +87,11 @@
         },
         {
             "path": "js/systems/levelup.js",
-            "sha256": "2dd7a6456018b0ea3b71f94057ca503bbf19528171cea3df1802516b4674f344"
+            "sha256": "305e064976ffa7ec317fa3bbb1a64a83b023085d5f861b788ff6babed0b82991"
         },
         {
             "path": "js/systems/player.js",
-            "sha256": "03190ed7e48162016844ed579ab01d4cebfd44e7630c89dcfc5a6ad709937b52"
+            "sha256": "f87a7694b663c89d50f32e377a54ffa8980940e07338577a3bbdb879477b84ea"
         },
         {
             "path": "js/systems/projectile.js",
@@ -99,7 +99,7 @@
         },
         {
             "path": "js/systems/upgradePanel.js",
-            "sha256": "0ee3cbac94d5b788856fd642a49e5fd996b9839863953a169e0be5fa031d6286"
+            "sha256": "c56c99f2507bc48b0809df969ff332588c549d7da18efe1d7739a0b5c39e305d"
         },
         {
             "path": "js/systems/upgrades.js",
@@ -115,7 +115,7 @@
         },
         {
             "path": "js/ui/ui.js",
-            "sha256": "4e540546206c37871dbefdf3ee2b696e61aa2a7570387cc07af9133fa20b9304"
+            "sha256": "f02eb0bad090113a9e2712fc46af1d9935c98577a240dfbb6062311ccf293318"
         },
         {
             "path": "js/world/biome_foret.js",
