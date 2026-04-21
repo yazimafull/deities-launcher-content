@@ -1,22 +1,21 @@
-﻿// pauseMenu.js
-// Version sans import/export — tout global
+﻿// ui/pauseMenu.js
+
+import { getState, setState, GameState } from "../core/state.js";
+import { cleanRun } from "../core/runManager.js";
 
 // =====================================================
 // 🔥 Fonction demandée par les biomes : openPause()
 // =====================================================
-function openPause() {
-    if (window.getState && getState() !== GameState.PLAYING) return;
+export function openPause() {
+    if (getState() !== GameState.PLAYING) return;
 
     const pauseOverlay = document.getElementById("pause-overlay");
     pauseOverlay.classList.remove("hidden");
 
-    if (window.setState) setState(GameState.PAUSED);
+    setState(GameState.PAUSED);
 }
 
-// 🔥 Rendre openPause accessible globalement
-window.openPause = openPause;
-
-function initPauseMenu() {
+export function initPauseMenu() {
 
     const pauseOverlay        = document.getElementById("pause-overlay");
     const pauseOptionsOverlay = document.getElementById("pause-options-overlay");
@@ -32,26 +31,21 @@ function initPauseMenu() {
     const btnConfirmNo  = document.getElementById("pause-confirm-no");
 
     // =====================================================
-    // ESC → ouvrir / fermer pause (UNIQUEMENT EN PLAYING/PAUSED)
+    // ESC → ouvrir / fermer pause
     // =====================================================
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
 
-        if (!window.getState) return;
         const state = getState();
-
-        // 🔥 ESC ne fonctionne QUE pendant une run
         if (state !== GameState.PLAYING && state !== GameState.PAUSED) return;
 
         if (pauseOverlay.classList.contains("hidden")) {
             openPause();
         } else {
-            // fermer pause
             pauseOverlay.classList.add("hidden");
             pauseOptionsOverlay.classList.add("hidden");
             pauseConfirmOverlay.classList.add("hidden");
-
-            if (window.setState) setState(GameState.PLAYING);
+            setState(GameState.PLAYING);
         }
     });
 
@@ -63,8 +57,8 @@ function initPauseMenu() {
         pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
-        if (window.getState && getState() === GameState.PAUSED) {
-            if (window.setState) setState(GameState.PLAYING);
+        if (getState() === GameState.PAUSED) {
+            setState(GameState.PLAYING);
         }
     });
 
@@ -97,41 +91,23 @@ function initPauseMenu() {
 
     btnConfirmYes.addEventListener("click", () => {
 
-        // 🔥 Fermer TOUS les panneaux avant de changer de state
         pauseOverlay.classList.add("hidden");
         pauseOptionsOverlay.classList.add("hidden");
         pauseConfirmOverlay.classList.add("hidden");
 
-        // Nettoyage de la run
-        if (window.cleanRun) window.cleanRun();
-        if (window.setState) setState(GameState.SANCTUARY);
+        cleanRun();
+        setState(GameState.SANCTUARY);
 
-        // Ré‑afficher le sanctuaire
         document.getElementById("sanctuary-screen")?.classList.remove("hidden");
-
-        // Ré‑afficher le canvas (si ton sanctuaire l’utilise)
         document.getElementById("game-canvas")?.classList.remove("hidden");
 
-        // Cacher le HUD
         document.getElementById("healthbar-container")?.classList.add("hidden");
         document.getElementById("xpbar-container")?.classList.add("hidden");
-
-        // =====================================================
-        // 🔥 RESET MINIMAL DU PYLÔNE (aligné avec sanctuary.js)
-        // =====================================================
 
         if (window.clearLaunchTimer) window.clearLaunchTimer();
         if (window.unlockPyloneChoices) window.unlockPyloneChoices();
 
-        // Réactiver le bouton Lancer
         document.getElementById("pylone-launch").disabled = false;
-
-        // Cacher le texte du countdown
         document.getElementById("pylone-countdown")?.classList.add("hidden");
-
-        // NE PAS reset les sélections du joueur (biome/diff/mods)
     });
 }
-
-// 🔥 Rendre initPauseMenu global
-window.initPauseMenu = initPauseMenu;

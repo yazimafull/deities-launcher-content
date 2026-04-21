@@ -1,39 +1,28 @@
 // enemyFactory.js
-// Version C : charge local en priorité, GitHub en fallback
 
 const LOCAL_PATH = "./data/mobs/";
 const GITHUB_PATH = "https://yazimafull.github.io/deities-launcher-content/data/mobs/";
 
-async function loadMobBlueprint(name) {
-    // 1) Essayer en local
+export async function loadMobBlueprint(name) {
     try {
         const local = await fetch(LOCAL_PATH + name + ".json");
-        if (local.ok) {
-            return await local.json();
-        }
-    } catch (e) {
-        console.warn("Local mob not found:", name);
-    }
+        if (local.ok) return await local.json();
+    } catch {}
 
-    // 2) Fallback GitHub
     try {
         const remote = await fetch(GITHUB_PATH + name + ".json");
-        if (remote.ok) {
-            return await remote.json();
-        }
-    } catch (e) {
-        console.error("GitHub mob not found:", name);
-    }
+        if (remote.ok) return await remote.json();
+    } catch {}
 
     console.error("Mob blueprint introuvable :", name);
     return null;
 }
 
-async function createMob(name, x, y) {
+export async function createMob(name, x, y) {
     const blueprint = await loadMobBlueprint(name);
     if (!blueprint) return null;
 
-    const mob = {
+    return {
         name: blueprint.name,
         rarity: blueprint.rarity,
         biomes: blueprint.biomes,
@@ -55,6 +44,4 @@ async function createMob(name, x, y) {
 
         dead: false
     };
-
-    return mob;
 }

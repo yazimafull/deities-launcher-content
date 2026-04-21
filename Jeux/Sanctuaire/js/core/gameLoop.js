@@ -1,5 +1,14 @@
 // core/gameLoop.js
 
+import { GameState, getState, setState } from "./state.js";
+import { cleanRun } from "./runManager.js";
+
+import { updateBiomeForet, drawBiomeForet, initBiomeForet } from "../world/biome_foret.js";
+
+import { updateProjectiles, drawProjectiles, projectiles, handleProjectileCollisions } from "../systems/projectile.js";
+import { enemies } from "../systems/enemySystem.js";
+import { damageEnemy } from "../systems/damageSystem.js";
+
 // ================================
 // VARIABLES GLOBALES
 // ================================
@@ -28,11 +37,9 @@ function initPlayer() {
 function update(dt) {
     if (getState() !== GameState.PLAYING) return;
 
-    // Déplacement joueur (placeholder)
     player.x += 0;
     player.y += 0;
 
-    // Projectiles
     updateProjectiles(projectiles);
 
     handleProjectileCollisions(projectiles, enemies, (p, m) => {
@@ -42,7 +49,6 @@ function update(dt) {
         });
     });
 
-    // Biome
     updateBiomeForet(dt, player);
 }
 
@@ -54,10 +60,8 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Biome
     drawBiomeForet(ctx, canvas, player);
 
-    // Projectiles
     drawProjectiles(ctx, projectiles);
 }
 
@@ -77,23 +81,18 @@ function gameLoop(timestamp) {
 // ================================
 // LANCEMENT D’UNE RUN
 // ================================
-function startRun(config) {
-    // Canvas
+export function startRun(config) {
     canvas = document.getElementById("game-canvas");
     ctx = canvas.getContext("2d");
     canvas.classList.remove("hidden");
 
-    // Reset
     cleanRun();
 
-    // Init biome + player
     initBiomeForet(config);
     initPlayer();
 
-    // State
     setState(GameState.PLAYING);
 
-    // Start loop
     lastTime = performance.now();
     requestAnimationFrame(gameLoop);
 }

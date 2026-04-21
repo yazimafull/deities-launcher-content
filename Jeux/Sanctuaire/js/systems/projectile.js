@@ -1,12 +1,11 @@
 ﻿// projectile.js
-// Création, déplacement et dessin des projectiles du joueur
 
-const projectiles = [];
+export const projectiles = [];
 
 // ================================
 // SPAWN UN PROJECTILE
 // ================================
-function spawnProjectile(player, target) {
+export function spawnProjectile(player, target) {
     const dx = target.x - player.x;
     const dy = target.y - player.y;
     const d  = Math.hypot(dx, dy);
@@ -29,14 +28,13 @@ function spawnProjectile(player, target) {
 // ================================
 // UPDATE DES PROJECTILES
 // ================================
-function updateProjectiles(list) {
+export function updateProjectiles(list) {
     for (let p of list) {
         p.x        += p.vx;
         p.y        += p.vy;
         p.traveled += Math.hypot(p.vx, p.vy);
     }
 
-    // Supprimer hors portée
     for (let i = list.length - 1; i >= 0; i--) {
         if (list[i].traveled > list[i].range) {
             list.splice(i, 1);
@@ -47,7 +45,7 @@ function updateProjectiles(list) {
 // ================================
 // COLLISIONS PROJECTILES → MOBS
 // ================================
-function handleProjectileCollisions(list, mobs, onHit) {
+export function handleProjectileCollisions(list, mobs, onHit) {
     for (let i = list.length - 1; i >= 0; i--) {
         const p = list[i];
         let removed = false;
@@ -78,7 +76,7 @@ function handleProjectileCollisions(list, mobs, onHit) {
 // ================================
 // DESSIN DES PROJECTILES
 // ================================
-function drawProjectiles(ctx, list) {
+export function drawProjectiles(ctx, list) {
     ctx.fillStyle = "#ffe566";
     for (let p of list) {
         ctx.beginPath();

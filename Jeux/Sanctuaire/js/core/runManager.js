@@ -1,11 +1,14 @@
-﻿// runManager.js
+﻿// core/runManager.js
 
-function cleanRun() {
+import { stopBiomeForet } from "../world/biome_foret.js";
+import { stopBiomeWIP } from "../world/biome_wip.js";
+
+export function cleanRun() {
 
     console.log("🧹 Nettoyage complet de la run...");
 
-    // Stopper les biomes
-    stopForet();
+    // Stopper les biomes actifs
+    stopBiomeForet();
     stopBiomeWIP();
 
     // Nettoyer le canvas

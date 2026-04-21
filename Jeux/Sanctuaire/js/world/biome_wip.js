@@ -1,25 +1,20 @@
-﻿// biome_wip.js
-// Squelette pour Ruines Oubliées et Abysses — Work In Progress
-// Version sans import/export — tout global
+﻿// world/biome_wip.js
 
+import { getState, GameState } from "../core/state.js";
+import { openPause } from "../ui/pauseMenu.js";
+
+// ================================
+// VARIABLES
+// ================================
 let canvas, ctx;
 let animId = null;
 let biomeName = "";
-
-// ================================
-// LISTENER ESC RETIRABLE
-// ================================
-window._wipKeydown = (e) => {
-    if (e.key === "Escape" && window.getState && getState() === GameState.PLAYING) {
-        if (window.openPause) window.openPause();
-    }
-};
-window.addEventListener("keydown", window._wipKeydown);
+let escListener = null;
 
 // ================================
 // INITIALISATION
 // ================================
-function initBiomeWIP(name) {
+export function initBiomeWIP(name) {
     biomeName = name;
 
     canvas = document.getElementById("game-canvas");
@@ -27,11 +22,16 @@ function initBiomeWIP(name) {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    document.getElementById("game-canvas")?.classList.remove("hidden");
+    canvas.classList.remove("hidden");
     document.getElementById("healthbar-container")?.classList.remove("hidden");
     document.getElementById("xpbar-container")?.classList.remove("hidden");
 
-    if (window.setState) setState(GameState.PLAYING);
+    escListener = (e) => {
+        if (e.key === "Escape" && getState() === GameState.PLAYING) {
+            openPause();
+        }
+    };
+    window.addEventListener("keydown", escListener);
 
     animId = requestAnimationFrame(loop);
 }
@@ -39,19 +39,15 @@ function initBiomeWIP(name) {
 // ================================
 // STOP BIOME WIP
 // ================================
-function stopBiomeWIP() {
-
-    // Stopper la boucle
+export function stopBiomeWIP() {
     if (animId) cancelAnimationFrame(animId);
     animId = null;
 
-    // Retirer le listener ESC
-    if (window._wipKeydown) {
-        window.removeEventListener("keydown", window._wipKeydown);
-        window._wipKeydown = null;
+    if (escListener) {
+        window.removeEventListener("keydown", escListener);
+        escListener = null;
     }
 
-    // Nettoyer le canvas
     const canvas = document.getElementById("game-canvas");
     if (canvas) {
         const ctx = canvas.getContext("2d");
@@ -64,7 +60,7 @@ function stopBiomeWIP() {
 // LOOP
 // ================================
 function loop() {
-    if (window.getState && getState() !== GameState.PLAYING) {
+    if (getState() !== GameState.PLAYING) {
         animId = requestAnimationFrame(loop);
         return;
     }
@@ -73,7 +69,7 @@ function loop() {
 }
 
 // ================================
-// DRAW — placeholder visuel
+// DRAW
 // ================================
 function draw() {
     if (biomeName === "ruines") {
@@ -111,9 +107,3 @@ function getBiomeLabel() {
     if (biomeName === "abysses") return "🌑 Abysses";
     return biomeName;
 }
-
-// ================================
-// 🔥 Rendre accessibles globalement
-// ================================
-window.initBiomeWIP = initBiomeWIP;
-window.stopBiomeWIP = stopBiomeWIP;

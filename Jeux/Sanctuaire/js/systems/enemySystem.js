@@ -1,19 +1,20 @@
 ﻿// systems/enemySystem.js
-// IA + déplacement + agro + attaque + mort + collisions
 
-const enemies = [];
+import { damagePlayer } from "./damageSystem.js";
+
+export const enemies = [];
 
 // --------------------------------------------------
 // SPAWN
 // --------------------------------------------------
-function spawnEnemy(mob) {
+export function spawnEnemy(mob) {
     enemies.push(mob);
 }
 
 // --------------------------------------------------
 // UPDATE PRINCIPAL
 // --------------------------------------------------
-function updateEnemies(dt, player) {
+export function updateEnemies(dt, player) {
     for (let i = enemies.length - 1; i >= 0; i--) {
         const mob = enemies[i];
 
@@ -37,8 +38,8 @@ function updateMobAI(mob, player, dt) {
     const dy = player.y - mob.y;
     const dist = Math.hypot(dx, dy);
 
-    const AGGRO_RANGE = 350;
-    const ATTACK_RANGE = mob.size + 20;
+    const AGGRO_RANGE  = mob.aggroRange ?? 350;
+    const ATTACK_RANGE = (mob.size ?? 20) + 20;
 
     // Agro
     if (dist < AGGRO_RANGE) {
@@ -47,7 +48,7 @@ function updateMobAI(mob, player, dt) {
 
     if (!mob.target) return;
 
-    // Déplacement vers le joueur
+    // Déplacement
     if (dist > ATTACK_RANGE) {
         const angle = Math.atan2(dy, dx);
         mob.x += Math.cos(angle) * mob.speed * dt * 0.1;
@@ -58,14 +59,14 @@ function updateMobAI(mob, player, dt) {
 }
 
 // --------------------------------------------------
-// ATTAQUE (cooldown d'origine : 1000ms)
+// ATTAQUE
 // --------------------------------------------------
 function tryAttack(mob, player) {
     const now = performance.now();
 
     if (!mob.lastAttack) mob.lastAttack = 0;
 
-    const ATTACK_COOLDOWN = 1000;
+    const ATTACK_COOLDOWN = mob.damageCd ?? 1000;
 
     if (now - mob.lastAttack < ATTACK_COOLDOWN) return;
 
@@ -89,7 +90,7 @@ function resolveMobCollisions() {
             const dx = b.x - a.x;
             const dy = b.y - a.y;
             const dist = Math.hypot(dx, dy);
-            const minDist = a.size + b.size;
+            const minDist = (a.size ?? 20) + (b.size ?? 20);
 
             if (dist < minDist && dist > 0) {
                 const overlap = minDist - dist;
@@ -113,7 +114,7 @@ function resolvePlayerCollision(player) {
         const dx = mob.x - player.x;
         const dy = mob.y - player.y;
         const dist = Math.hypot(dx, dy);
-        const minDist = mob.size + player.size;
+        const minDist = (mob.size ?? 20) + (player.size ?? 20);
 
         if (dist < minDist && dist > 0) {
             const overlap = minDist - dist;
@@ -129,11 +130,11 @@ function resolvePlayerCollision(player) {
 // --------------------------------------------------
 // DESSIN
 // --------------------------------------------------
-function drawEnemies(ctx) {
+export function drawEnemies(ctx) {
     for (let mob of enemies) {
-        ctx.fillStyle = "#55aa55";
+        ctx.fillStyle = mob.color ?? "#55aa55";
         ctx.beginPath();
-        ctx.arc(mob.x, mob.y, mob.size, 0, Math.PI * 2);
+        ctx.arc(mob.x, mob.y, mob.size ?? 20, 0, Math.PI * 2);
         ctx.fill();
 
         // Barre de vie
