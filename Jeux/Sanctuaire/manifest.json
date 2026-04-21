@@ -1,5 +1,5 @@
 {
-    "version": "1776770089560",
+    "version": "1776771220822",
     "files": [
         {
             "path": "background.jpg",
@@ -71,7 +71,7 @@
         },
         {
             "path": "js/systems/enemy.js",
-            "sha256": "54cb7e177a5a1ef45c8355b5edcb9ce981377429774305cf38d6f2f76ba36ecf"
+            "sha256": "3a81ffb317c974e540bb71d95350d0b351ba831072a538949bd3366baf5b50e4"
         },
         {
             "path": "js/systems/enemyFactory .js",
@@ -87,7 +87,11 @@
         },
         {
             "path": "js/systems/player.js",
-            "sha256": "2a23683fcc3a758cbe26b8aa67112017b99e073d0878808d5c8fbfe2ec77c70e"
+            "sha256": "b177ef03da85bfed2142c14878e8f860f5d898f08c6b2b54070154cc9131f8c7"
+        },
+        {
+            "path": "js/systems/projectile.js",
+            "sha256": "5a089571204432753ffa17c26dc1033ddaa4fe5d2e8aed0960ca07f7d8946fc4"
         },
         {
             "path": "js/systems/upgradePanel.js",
@@ -111,7 +115,7 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "fbcde31520b9fd3633574274dab90a6d9a0a9dfd995f540851fa1f70f941831c"
+            "sha256": "33bf3ba5620158f2257ecf01f6398271efcbe01defe5fa7735deed57dacb4686"
         },
         {
             "path": "js/world/biome_wip.js",
