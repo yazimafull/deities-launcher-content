@@ -1,5 +1,5 @@
 {
-    "version": "1776803584829",
+    "version": "1776804951133",
     "files": [
         {
             "path": "background.jpg",
@@ -35,7 +35,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "361bc377fcdd6d8ce83d6ba1ae56eb62d123f55ad21de628b867f9c2aa514681"
+            "sha256": "1b1675b227a2d9de67cd39a81c22fe0db77a0a32cafc0be47412138f936fb0f7"
         },
         {
             "path": "js/core/input.js",
@@ -43,7 +43,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "25d4610fa64af312a0ac5161b04ce93550eff6eb6af3299d7ac61a04718b6e79"
+            "sha256": "b529fb6cd6ba2f675545e12182b8b78ee524225a3e3c2ac4e692407908a53d1f"
         },
         {
             "path": "js/core/main.js",
@@ -55,7 +55,7 @@
         },
         {
             "path": "js/core/state.js",
-            "sha256": "970b848018c74d12cc13fec1fe9b987aa313db2c77be7aa06fa59df34a195a00"
+            "sha256": "89942955b5eaecd6a24a0778d41f6d1a0713c0304a55d3c977edf4098e1e422c"
         },
         {
             "path": "js/core/utils.js",
@@ -75,7 +75,7 @@
         },
         {
             "path": "js/systems/enemyFactory .js",
-            "sha256": "d64f3d1acf2ed68c49d3e4a66a5f985b88a457f9e10eed52b1a919c25f5153c6"
+            "sha256": "1f90ea73b7055393ea2aa20890f73fae8346cb9510b110b4284d39d33125cc4b"
         },
         {
             "path": "js/systems/enemySystem.js",
@@ -87,7 +87,7 @@
         },
         {
             "path": "js/systems/levelup.js",
-            "sha256": "305e064976ffa7ec317fa3bbb1a64a83b023085d5f861b788ff6babed0b82991"
+            "sha256": "74611eb48cc206ca90dff28bdf51d9280a6b364218eae4180ad12dab77aca0f9"
         },
         {
             "path": "js/systems/player.js",
@@ -103,7 +103,7 @@
         },
         {
             "path": "js/systems/upgrades.js",
-            "sha256": "571bca2efcf911ed21c7f95fd359b0d6879cdca5d471d2616e9cba337ccc250b"
+            "sha256": "3e77e7dcf462a1105ebd4724734abad9327582dc45d82a54eaa9705eeab19486"
         },
         {
             "path": "js/systems/xp.js",
@@ -115,11 +115,11 @@
         },
         {
             "path": "js/ui/ui.js",
-            "sha256": "f02eb0bad090113a9e2712fc46af1d9935c98577a240dfbb6062311ccf293318"
+            "sha256": "4fe607fd936715b98be70e68a3f9703facd1bce4b6b8bf19a68bf4068efa883d"
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "178029078e4888c93b241b0f45c7b1e9dd95ba22e1dca85790b79e084d63e220"
+            "sha256": "edc6580dd3fec261e9fc305e9d8df7363b50170d6890a9e05d0f990b4ae4e03b"
         },
         {
             "path": "js/world/biome_wip.js",
