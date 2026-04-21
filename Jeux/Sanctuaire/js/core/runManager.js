@@ -1,7 +1,6 @@
-﻿import { stopForet } from "../world/biome_foret.js";
-import { stopBiomeWIP } from "../world/biome_wip.js";
+﻿// runManager.js
 
-export function cleanRun() {
+function cleanRun() {
 
     console.log("🧹 Nettoyage complet de la run...");
 

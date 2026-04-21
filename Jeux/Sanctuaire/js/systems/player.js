@@ -4,9 +4,9 @@
 // ================================
 // STATS DU JOUEUR
 // ================================
-export const playerStats = {
+const playerStats = {
     // --- MOUVEMENT ---
-    speed:               3.5,
+    speed:               1.5,
     moveSpeedMultiplier: 1.0,
 
     // --- VIE ---
@@ -47,7 +47,7 @@ export const playerStats = {
 // ================================
 // TIR AUTOMATIQUE
 // ================================
-export function tryShoot(player, mobs, spawnBulletFn) {
+function tryShoot(player, mobs, spawnBulletFn) {
     if (!mobs || mobs.length === 0) return;
 
     const now = performance.now();
@@ -76,9 +76,8 @@ export function tryShoot(player, mobs, spawnBulletFn) {
 
 // ================================
 // DESSIN DU JOUEUR
-// (appelé par le biome dans son ctx)
 // ================================
-export function drawPlayerSprite(ctx, player) {
+function drawPlayerSprite(ctx, player) {
     // Ombre
     ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.beginPath();

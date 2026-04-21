@@ -1,8 +1,4 @@
 ﻿// levelup.js
-import { GameState, setState } from "./state.js";
-import { chosenUpgrades } from "./upgradePanel.js";
-import { player } from "./player.js";
-import { resumeGame } from "./main.js";
 
 const ALL_UPGRADES = [
     { name: "Vitesse +10%", apply: () => player.moveSpeedMultiplier += 0.1 },
@@ -12,7 +8,7 @@ const ALL_UPGRADES = [
     { name: "Bouclier +10", apply: () => player.shieldPhysical += 10 },
 ];
 
-export function showLevelUpMenu() {
+function showLevelUpMenu() {
     setState(GameState.LEVELUP);
 
     const panel = document.getElementById("levelup-menu");
@@ -67,4 +63,3 @@ export function showLevelUpMenu() {
         container.appendChild(btn);
     });
 }
-

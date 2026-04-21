@@ -1,6 +1,6 @@
 // deathSystem.js
 
-export function onPlayerDeath() {
+function onPlayerDeath() {
     const deathScreen = document.getElementById("death-screen");
     if (!deathScreen) return;
 
@@ -9,7 +9,7 @@ export function onPlayerDeath() {
     deathScreen.classList.add("show");
 }
 
-export function hideDeathScreen() {
+function hideDeathScreen() {
     const deathScreen = document.getElementById("death-screen");
     if (!deathScreen) return;
 

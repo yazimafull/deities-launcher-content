@@ -6,7 +6,7 @@
 // ================================
 let dmgNumbers = [];
 
-export function updateDamageNumbers(dt) {
+function updateDamageNumbers(dt) {
     for (let i = dmgNumbers.length - 1; i >= 0; i--) {
         const n = dmgNumbers[i];
         n.y -= dt * 0.05;
@@ -16,7 +16,7 @@ export function updateDamageNumbers(dt) {
     }
 }
 
-export function drawDamageNumbers(ctx) {
+function drawDamageNumbers(ctx) {
     for (let n of dmgNumbers) {
         ctx.save();
         ctx.globalAlpha = n.alpha;
@@ -42,7 +42,7 @@ function spawnDamageNumber(x, y, value, isCrit = false, isPlayer = false) {
 // ================================
 // DOT SYSTEM (simple, individuel)
 // ================================
-export function updateDots(dt, entity) {
+function updateDots(dt, entity) {
     if (!entity.dots) return;
 
     for (let i = entity.dots.length - 1; i >= 0; i--) {
@@ -63,7 +63,7 @@ export function updateDots(dt, entity) {
     }
 }
 
-export function applyDot(entity, dotConfig) {
+function applyDot(entity, dotConfig) {
     if (!entity.dots) entity.dots = [];
 
     entity.dots.push({
@@ -77,7 +77,7 @@ export function applyDot(entity, dotConfig) {
 // ================================
 // DAMAGE APPLICATION
 // ================================
-export function damageEnemy(mob, dmgPacket) {
+function damageEnemy(mob, dmgPacket) {
     if (mob.dead) return;
 
     const finalDamage = computeDamage(mob, dmgPacket);
@@ -92,7 +92,7 @@ export function damageEnemy(mob, dmgPacket) {
     }
 }
 
-export function damagePlayer(player, dmgPacket) {
+function damagePlayer(player, dmgPacket) {
     const finalDamage = computeDamage(player, dmgPacket);
 
     player.hp = Math.max(0, player.hp - finalDamage);
@@ -129,7 +129,7 @@ function computeDamage(target, dmgPacket) {
 // ================================
 let biomeTickTimer = 0;
 
-export function applyBiomeDamage(dt, difficulty, player) {
+function applyBiomeDamage(dt, difficulty, player) {
     const dmgPerSecond = Math.max(0, difficulty - 1);
 
     if (dmgPerSecond <= 0) return;

@@ -8,19 +8,19 @@ let hudData = {
     xpMax: 1,
     objective: 0,
     objectiveMax: 1,
-    timer: 0,            // en millisecondes
+    timer: 0,
     bossSpawned: false
 };
 
 // ================================
 // PUBLIC API
 // ================================
-export function updateHUD(data) {
+function updateHUD(data) {
     hudData = { ...hudData, ...data };
     updateHTMLBars();
 }
 
-export function drawHUD(ctx, canvas) {
+function drawHUD(ctx, canvas) {
     drawObjectiveText(ctx, canvas);
     drawTimer(ctx, canvas);
     drawBossIndicator(ctx, canvas);
@@ -81,8 +81,7 @@ function drawTimer(ctx, canvas) {
     const seconds = Math.floor((remaining % 60000) / 1000);
     const timeStr = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-    // Dégradé blanc → rouge
-    const ratio = remaining / (5 * 60 * 1000); // basé sur 5 minutes
+    const ratio = remaining / (5 * 60 * 1000);
     const r = 255;
     const g = Math.floor(255 * ratio);
     const b = Math.floor(255 * ratio);
@@ -95,7 +94,6 @@ function drawTimer(ctx, canvas) {
     ctx.shadowColor = color;
     ctx.shadowBlur = 12;
 
-    // Pulse si < 1 minute
     if (remaining < 60000) {
         const pulse = 0.7 + 0.3 * Math.sin(performance.now() / 120);
         ctx.globalAlpha = pulse;
@@ -111,7 +109,6 @@ function drawTimer(ctx, canvas) {
 function drawBossIndicator(ctx, canvas) {
     if (!hudData.bossSpawned) return;
 
-    // Ici : juste un petit effet visuel en haut
     ctx.save();
     ctx.font = "14px 'Cinzel', serif";
     ctx.textAlign = "center";

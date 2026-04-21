@@ -1,6 +1,7 @@
 // state.js
-export const GameState = {
-    MENU: 0,        // Écran sélection personnage
+
+const GameState = {
+    MENU: 0,        // écran sélection personnage
     SANCTUARY: 1,   // Hub Sanctuaire
     PREPARING: 2,   // Config de la run (pylône)
     PLAYING: 3,     // Run en cours
@@ -12,10 +13,10 @@ export const GameState = {
 
 let currentState = GameState.MENU;
 
-export function setState(state) {
+function setState(state) {
     currentState = state;
 }
 
-export function getState() {
+function getState() {
     return currentState;
 }

@@ -1,7 +1,7 @@
 // enemyTypes.js
 // Données de base des ennemis — aucun comportement, juste les valeurs
 
-export const enemyTypes = {
+const enemyTypes = {
 
     // --------------------------------
     // NORMAL — mob standard

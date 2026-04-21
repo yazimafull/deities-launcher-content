@@ -4,7 +4,7 @@
 // ================================
 // UPDATE DE TOUS LES ENNEMIS
 // ================================
-export function updateEnemies(mobs, player, onMobDied) {
+function updateEnemies(mobs, player, onMobDied) {
     const now = performance.now();
 
     for (let i = mobs.length - 1; i >= 0; i--) {
@@ -86,7 +86,7 @@ function updateEnemyIA(m, player, now) {
 // ================================
 // INFLIGER DES DÉGÂTS À UN ENNEMI
 // ================================
-export function damageEnemy(mob, amount) {
+function damageEnemy(mob, amount) {
     if (mob.dead) return;
     mob.hp -= amount;
     if (mob.hp <= 0) mob.hp = 0;
@@ -95,7 +95,7 @@ export function damageEnemy(mob, amount) {
 // ================================
 // DESSIN DE TOUS LES ENNEMIS
 // ================================
-export function drawEnemies(ctx, mobs, camera, canvas) {
+function drawEnemies(ctx, mobs, camera, canvas) {
     for (let m of mobs) {
         if (m.dead) continue;
 

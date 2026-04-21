@@ -1,8 +1,8 @@
 // upgradePanel.js
 
-export const chosenUpgrades = [];
+const chosenUpgrades = [];
 
-export function addUpgradeToPanel(up) {
+function addUpgradeToPanel(up) {
     chosenUpgrades.push(up);
 
     const list = document.getElementById("upgrade-list");
@@ -11,7 +11,7 @@ export function addUpgradeToPanel(up) {
     list.appendChild(li);
 }
 
-export function toggleUpgradePanel() {
+function toggleUpgradePanel() {
     const panel = document.getElementById("upgrade-panel");
     panel.classList.toggle("hidden");
 }

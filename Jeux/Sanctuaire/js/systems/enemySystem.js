@@ -1,21 +1,19 @@
 ﻿// systems/enemySystem.js
 // IA + déplacement + agro + attaque + mort + collisions
 
-import { damagePlayer } from "./damageSystem.js";
-
-export const enemies = [];
+const enemies = [];
 
 // --------------------------------------------------
 // SPAWN
 // --------------------------------------------------
-export function spawnEnemy(mob) {
+function spawnEnemy(mob) {
     enemies.push(mob);
 }
 
 // --------------------------------------------------
 // UPDATE PRINCIPAL
 // --------------------------------------------------
-export function updateEnemies(dt, player) {
+function updateEnemies(dt, player) {
     for (let i = enemies.length - 1; i >= 0; i--) {
         const mob = enemies[i];
 
@@ -67,7 +65,7 @@ function tryAttack(mob, player) {
 
     if (!mob.lastAttack) mob.lastAttack = 0;
 
-    const ATTACK_COOLDOWN = 1000; // Valeur d'origine
+    const ATTACK_COOLDOWN = 1000;
 
     if (now - mob.lastAttack < ATTACK_COOLDOWN) return;
 
@@ -131,7 +129,7 @@ function resolvePlayerCollision(player) {
 // --------------------------------------------------
 // DESSIN
 // --------------------------------------------------
-export function drawEnemies(ctx) {
+function drawEnemies(ctx) {
     for (let mob of enemies) {
         ctx.fillStyle = "#55aa55";
         ctx.beginPath();

@@ -1,17 +1,14 @@
 ﻿// xp.js
-import { randRange } from "./utils.js";
-import { setState, GameState } from "./state.js";
-import { showLevelUpMenu } from "./levelup.js";
 
-export const xpOrbs = [];
+const xpOrbs = [];
 
-export const xpSystem = {
+const xpSystem = {
     xp: 0,
     xpToNext: 50,
     level: 1
 };
 
-export function spawnXP(x, y) {
+function spawnXP(x, y) {
     xpOrbs.push({
         x,
         y,
@@ -20,7 +17,7 @@ export function spawnXP(x, y) {
     });
 }
 
-export function updateXP(player) {
+function updateXP(player) {
     for (let i = xpOrbs.length - 1; i >= 0; i--) {
         let o = xpOrbs[i];
 
@@ -28,7 +25,6 @@ export function updateXP(player) {
         let dy = player.y - o.y;
         let d = Math.sqrt(dx * dx + dy * dy);
 
-        // ✅ Évite la division par zéro si l'orbe est exactement sur le joueur
         if (d > 0) {
             dx /= d;
             dy /= d;
@@ -36,12 +32,10 @@ export function updateXP(player) {
             o.y += dy * 1.5;
         }
 
-        // Pickup
         if (d < 20) {
             xpSystem.xp += o.value;
             xpOrbs.splice(i, 1);
 
-            // Level up
             if (xpSystem.xp >= xpSystem.xpToNext) {
                 xpSystem.xp -= xpSystem.xpToNext;
                 xpSystem.level++;
@@ -53,7 +47,7 @@ export function updateXP(player) {
     }
 }
 
-export function drawXP(ctx) {
+function drawXP(ctx) {
     ctx.fillStyle = "#4aa3ff";
     for (let o of xpOrbs) {
         ctx.beginPath();
@@ -62,7 +56,7 @@ export function drawXP(ctx) {
     }
 }
 
-export function drawXPBar() {
+function drawXPBar() {
     const bar = document.getElementById("xpbar");
     if (!bar) return;
     const pct = xpSystem.xp / xpSystem.xpToNext;

@@ -4,7 +4,7 @@
 const LOCAL_PATH = "./data/mobs/";
 const GITHUB_PATH = "https://yazimafull.github.io/deities-launcher-content/data/mobs/";
 
-export async function loadMobBlueprint(name) {
+async function loadMobBlueprint(name) {
     // 1) Essayer en local
     try {
         const local = await fetch(LOCAL_PATH + name + ".json");
@@ -29,7 +29,7 @@ export async function loadMobBlueprint(name) {
     return null;
 }
 
-export async function createMob(name, x, y) {
+async function createMob(name, x, y) {
     const blueprint = await loadMobBlueprint(name);
     if (!blueprint) return null;
 

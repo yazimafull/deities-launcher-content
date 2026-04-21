@@ -1,10 +1,4 @@
 // core/gameLoop.js
-import { GameState, getState, setState } from "./state.js";
-import { updateBiomeForet, drawBiomeForet, initBiomeForet } from "../world/biome_foret.js";
-import { updateProjectiles, drawProjectiles, projectiles, handleProjectileCollisions } from "../systems/projectile.js";
-import { enemies } from "../systems/enemySystem.js";
-import { damageEnemy } from "../systems/damageSystem.js";
-import { cleanRun } from "./runManager.js";
 
 // ================================
 // VARIABLES GLOBALES
@@ -35,7 +29,6 @@ function update(dt) {
     if (getState() !== GameState.PLAYING) return;
 
     // Déplacement joueur (placeholder)
-    // Tu brancheras ton vrai input ici
     player.x += 0;
     player.y += 0;
 
@@ -84,7 +77,7 @@ function gameLoop(timestamp) {
 // ================================
 // LANCEMENT D’UNE RUN
 // ================================
-export function startRun(config) {
+function startRun(config) {
     // Canvas
     canvas = document.getElementById("game-canvas");
     ctx = canvas.getContext("2d");
