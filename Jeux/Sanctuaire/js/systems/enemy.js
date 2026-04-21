@@ -1,110 +1,178 @@
-﻿// enemy.js
-import { dist2 } from "./utils.js";
-import { spawnXP } from "./xp.js";
+// enemy.js
+// Cerveau + corps des ennemis — IA, déplacement, dégâts, mort
 
-export const enemies = [];
+// ================================
+// UPDATE DE TOUS LES ENNEMIS
+// ================================
+export function updateEnemies(mobs, player, onMobDied) {
+    const now = performance.now();
 
-// -------------------------------
-// SPAWN DES ENNEMIS
-// -------------------------------
-export function spawnEnemy() {
-    const type = ["zombie", "runner", "tank"][Math.floor(Math.random() * 3)];
+    for (let i = mobs.length - 1; i >= 0; i--) {
+        const m = mobs[i];
+        if (m.dead) continue;
 
-    // Spawn sur les bords de l'écran
-    const side = Math.floor(Math.random() * 4);
-    let x, y;
-    if (side === 0) { x = Math.random() * window.innerWidth;  y = -50; }
-    if (side === 1) { x = window.innerWidth + 50;              y = Math.random() * window.innerHeight; }
-    if (side === 2) { x = Math.random() * window.innerWidth;  y = window.innerHeight + 50; }
-    if (side === 3) { x = -50;                                  y = Math.random() * window.innerHeight; }
-
-    let enemy = {
-        type,
-        x, y,
-        size: 25,
-        speed: 1,
-        hp: 20,
-        maxHp: 20,
-
-        // --- DÉFENSE ---
-        armor: 0,
-        resistance: 0,
-        dodgeChance: 0,
-        parryChance: 0,
-        parryReduction: 0.7,
-        blockChance: 0,
-        blockValue: 0,
-        shieldPhysical: 0,
-        shieldMagic: 0,
-
-        // --- ATTAQUE ---
-        damage: 5,
-        damageType: "physical",
-    };
-
-    // -------------------------------
-    // TYPES D'ENNEMIS
-    // -------------------------------
-    if (type === "zombie") {
-        enemy.hp = 20; enemy.maxHp = 20;
-        enemy.speed = 1.0;
-        enemy.size = 25;
-        enemy.damage = 5;
+        updateEnemyIA(m, player, now, onMobDied);
     }
-    if (type === "runner") {
-        enemy.hp = 15; enemy.maxHp = 15;
-        enemy.speed = 2.2;
-        enemy.size = 20;
-        enemy.damage = 4;
-        enemy.dodgeChance = 0.10;
+}
+
+// ================================
+// IA D'UN ENNEMI
+// ================================
+function updateEnemyIA(m, player, now, onMobDied) {
+    const dx = player.x - m.x;
+    const dy = player.y - m.y;
+    const distToPlayer = Math.hypot(dx, dy);
+
+    const sdx = m.spawnX - m.x;
+    const sdy = m.spawnY - m.y;
+    const distToSpawn = Math.hypot(sdx, sdy);
+
+    // ================================
+    // MACHINE À ÉTATS
+    // ================================
+    switch (m.state) {
+
+        // --------------------------------
+        case "idle":
+            // Rester sur place, vérifier si le joueur entre en range
+            if (distToPlayer < m.aggroRange) {
+                m.state = "chase";
+            }
+            break;
+
+        // --------------------------------
+        case "chase":
+            // Trop loin du spawn → retour leash
+            if (distToSpawn > m.leashRange) {
+                m.state = "leash";
+                break;
+            }
+
+            // Avancer vers le joueur
+            if (distToPlayer > 0) {
+                m.x += (dx / distToPlayer) * m.speed;
+                m.y += (dy / distToPlayer) * m.speed;
+            }
+
+            // Contact avec le joueur → dégâts
+            if (distToPlayer < (player.size / 2 + m.size / 2)) {
+                if (now - m.lastDmgTime > m.damageCd) {
+                    player.hp = Math.max(0, player.hp - m.damage);
+                    m.lastDmgTime = now;
+                }
+            }
+            break;
+
+        // --------------------------------
+        case "leash":
+            // Retour au point de spawn
+            if (distToSpawn > 4) {
+                m.x += (sdx / distToSpawn) * m.speed * 1.5;
+                m.y += (sdy / distToSpawn) * m.speed * 1.5;
+
+                // Régénération HP pendant le retour
+                m.hp = Math.min(m.maxHp, m.hp + 0.5);
+            } else {
+                // Arrivé au spawn
+                m.hp    = m.maxHp; // HP full au retour
+                m.state = "idle";
+            }
+
+            // Si le joueur revient en range → rechase
+            if (distToPlayer < m.aggroRange) {
+                m.state = "chase";
+            }
+            break;
     }
-    if (type === "tank") {
-        enemy.hp = 50; enemy.maxHp = 50;
-        enemy.speed = 0.7;
-        enemy.size = 35;
-        enemy.damage = 8;
-        enemy.armor = 3;
-        enemy.resistance = 0.10;
-        enemy.shieldPhysical = 10;
+}
+
+// ================================
+// INFLIGER DES DÉGÂTS À UN ENNEMI
+// ================================
+export function damageEnemy(mob, amount) {
+    if (mob.dead) return;
+
+    mob.hp -= amount;
+
+    if (mob.hp <= 0) {
+        mob.hp   = 0;
+        mob.dead = true;
+        mob.state = "dead";
+    }
+}
+
+// ================================
+// DESSIN DE TOUS LES ENNEMIS
+// ================================
+export function drawEnemies(ctx, mobs, camera, canvas) {
+    for (let m of mobs) {
+        if (m.dead) continue;
+
+        // Culling : ne dessiner que ce qui est visible
+        if (m.x < camera.x - 100 || m.x > camera.x + canvas.width  + 100) continue;
+        if (m.y < camera.y - 100 || m.y > camera.y + canvas.height + 100) continue;
+
+        drawEnemy(ctx, m);
+    }
+}
+
+function drawEnemy(ctx, m) {
+    // Opacité (révélation sous les arbres)
+    ctx.globalAlpha = m.alpha ?? 1.0;
+
+    // Ombre au sol
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    ctx.beginPath();
+    ctx.ellipse(m.x, m.y + m.size / 2 - 2, m.size / 2, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Corps
+    const color = m.state === "chase" ? brighten(m.color) : m.color;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Contour élite
+    if (m.isElite) {
+        ctx.strokeStyle = "#ffcc00";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
     }
 
-    enemies.push(enemy);
-} // ✅ accolade fermante de spawnEnemy
-
-// -------------------------------
-// UPDATE DES ENNEMIS
-// -------------------------------
-export function updateEnemies(player) {
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        const e = enemies[i];
-
-        // Déplacement vers le joueur
-        let dx = player.x - e.x;
-        let dy = player.y - e.y;
-        let d = Math.sqrt(dx * dx + dy * dy);
-        if (d > 0) {
-            dx /= d;
-            dy /= d;
-        }
-        e.x += dx * e.speed;
-        e.y += dy * e.speed;
-
-        // ✅ Mort de l'ennemi → spawn XP
-        if (e.hp <= 0) {
-            spawnXP(e.x, e.y);
-            enemies.splice(i, 1);
-        }
+    // Contour boss
+    if (m.isBoss) {
+        ctx.strokeStyle = "#dd00ff";
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
     }
-} // ✅ accolade fermante de updateEnemies
 
-// -------------------------------
-// DESSIN DES ENNEMIS
-// -------------------------------
-export function drawEnemies(ctx) {
-    for (let e of enemies) {
-        if (e.type === "zombie") ctx.fillStyle = "#ff4444";
-        if (e.type === "runner") ctx.fillStyle = "#ff8800";
-        if (e.type === "tank")   ctx.fillStyle = "#aa0000";
-        ctx.fillRect(e.x - e.size / 2, e.y - e.size / 2, e.size, e.size);
+    // Barre de vie
+    const barW = m.size * 1.4;
+    drawHealthBar(ctx, m.x - barW / 2, m.y - m.size / 2 - 10, barW, 5, m.hp / m.maxHp, m.isElite ? "#ffcc00" : "#ff4444");
+
+    ctx.globalAlpha = 1.0;
+}
+
+// ================================
+// UTILITAIRES
+// ================================
+function drawHealthBar(ctx, x, y, w, h, pct, color) {
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w * Math.max(0, pct), h);
+}
+
+// Éclaircit une couleur hex quand le mob est en chase
+function brighten(hex) {
+    try {
+        const r = parseInt(hex.slice(1,3), 16);
+        const g = parseInt(hex.slice(3,5), 16);
+        const b = parseInt(hex.slice(5,7), 16);
+        const br = (v) => Math.min(255, v + 40).toString(16).padStart(2, "0");
+        return `#${br(r)}${br(g)}${br(b)}`;
+    } catch {
+        return hex;
     }
-} // ✅ accolade fermante de drawEnemies
+}
