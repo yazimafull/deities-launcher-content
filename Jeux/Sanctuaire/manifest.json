@@ -1,5 +1,5 @@
 {
-    "version": "1776759506259",
+    "version": "1776760846433",
     "files": [
         {
             "path": "background.jpg",
@@ -95,7 +95,7 @@
         },
         {
             "path": "js/ui/pauseMenu.js",
-            "sha256": "d6b43eb6ced5912a437eb75c9b545f3c263d65e500ba39d378c41c1d1a5c6d1d"
+            "sha256": "0909298d3c18b0ec7a0409d48177d7f187216231cacaea87abbc40843a8c1fb5"
         },
         {
             "path": "js/ui/ui.js",
@@ -111,7 +111,7 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "75a40cb21a53c9ad4ca8be751e68d313b8ddbf89bc8234679ae411ff5e8f6d85"
+            "sha256": "4f438757787fa57890ffeb8dfb3cd1d66e77e3b9dd36d7c49b835c41cb86c952"
         },
         {
             "path": "sanctuary.css",
