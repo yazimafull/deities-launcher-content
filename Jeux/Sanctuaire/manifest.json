@@ -1,5 +1,5 @@
 {
-    "version": "1776747541451",
+    "version": "1776753515597",
     "files": [
         {
             "path": "background.jpg",
@@ -32,6 +32,10 @@
         {
             "path": "js/core/main.js",
             "sha256": "0741a53b762e0863d29c6660212a8a90be9753ab2b4afa95abb4655b44078c47"
+        },
+        {
+            "path": "js/core/runManager.js",
+            "sha256": "0565484962845a69becd8bfa5c7e67f7ecc295bdaa522569c0e240f81df07275"
         },
         {
             "path": "js/core/state.js",
@@ -91,7 +95,7 @@
         },
         {
             "path": "js/ui/pauseMenu.js",
-            "sha256": "38b901117133e4351d2136aaae1ae7f0d0ccee42226e2eb92554778af18a84bd"
+            "sha256": "da94e63611f934fcf5ba2353d7c44c773ffcb127a9ca040c18feacc363c10b95"
         },
         {
             "path": "js/ui/ui.js",
@@ -99,11 +103,11 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "169fc5790d35b16417b09753624294df18911ef70af6bc39c40c3c9f5c134541"
+            "sha256": "2ac62061b7de9790074737a3636b754c2829cd6bc19513d6bd9f7e9c3a429cd2"
         },
         {
             "path": "js/world/biome_wip.js",
-            "sha256": "4786f51af1dee50a6e5107c57b332d1e16a0bfe28b09eb9412c7b413b556dc7d"
+            "sha256": "1973aaa9e721bccd8d1c4ccd5b8fa6de3fbb6357e745ed98b63eb0a753c5f9dd"
         },
         {
             "path": "js/world/sanctuary.js",
