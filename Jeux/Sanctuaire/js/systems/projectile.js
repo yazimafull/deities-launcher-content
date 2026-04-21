@@ -1,0 +1,89 @@
+﻿// projectile.js
+// Création, déplacement et dessin des projectiles du joueur
+
+export const projectiles = [];
+
+// ================================
+// SPAWN UN PROJECTILE
+// ================================
+export function spawnProjectile(player, target) {
+    const dx = target.x - player.x;
+    const dy = target.y - player.y;
+    const d  = Math.hypot(dx, dy);
+    if (d === 0) return;
+
+    projectiles.push({
+        x:        player.x,
+        y:        player.y,
+        vx:       (dx / d) * player.bulletSpeed,
+        vy:       (dy / d) * player.bulletSpeed,
+        size:     player.bulletSize,
+        damage:   player.damage,
+        element:  player.element || "physical",
+        range:    player.bulletRange,
+        traveled: 0,
+        piercing: player.piercing
+    });
+}
+
+// ================================
+// UPDATE DES PROJECTILES
+// ================================
+export function updateProjectiles(projectiles) {
+    for (let p of projectiles) {
+        p.x        += p.vx;
+        p.y        += p.vy;
+        p.traveled += Math.hypot(p.vx, p.vy);
+    }
+
+    // Supprimer hors portée
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        if (projectiles[i].traveled > projectiles[i].range) {
+            projectiles.splice(i, 1);
+        }
+    }
+}
+
+// ================================
+// COLLISIONS PROJECTILES → MOBS
+// ================================
+export function handleProjectileCollisions(projectiles, mobs, onHit) {
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        let removed = false;
+
+        for (let j = mobs.length - 1; j >= 0; j--) {
+            const m = mobs[j];
+            if (m.dead) continue;
+
+            const dx   = m.x - p.x;
+            const dy   = m.y - p.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < (m.size/2 + p.size/2)) {
+                // Callback : le biome décide quoi faire (dégâts, score, etc.)
+                onHit(p, m, j);
+
+                if (!p.piercing) {
+                    projectiles.splice(i, 1);
+                    removed = true;
+                    break;
+                }
+            }
+        }
+
+        if (removed) continue;
+    }
+}
+
+// ================================
+// DESSIN DES PROJECTILES
+// ================================
+export function drawProjectiles(ctx, projectiles) {
+    ctx.fillStyle = "#ffe566";
+    for (let p of projectiles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}

@@ -1,34 +1,39 @@
-﻿// biome_foret.js — VERSION PROPRE
-// Biome Forêt Mourante — décor, arbres, caméra, spawn positions, indicateur boss
+﻿// biome_foret.js — VERSION COMPLÈTE
+// Décor, caméra, spawn, boucle — branchée sur player.js / enemy.js / projectile.js
 
 import { getState, setState, GameState } from "../core/state.js";
+import { openPause } from "../ui/pauseMenu.js";
 import { createEnemy } from "../systems/enemyFactory.js";
 import { updateEnemies, drawEnemies } from "../systems/enemy.js";
+import { playerStats, tryShoot, drawPlayerSprite } from "../systems/player.js";
+import { projectiles, spawnProjectile, updateProjectiles, handleProjectileCollisions, drawProjectiles } from "../systems/projectile.js";
 
 // ================================
 // CONSTANTES
 // ================================
-const TILE      = 64;
-const MAP_COLS  = 160;
-const MAP_ROWS  = 120;
-const MAP_W     = MAP_COLS * TILE;
-const MAP_H     = MAP_ROWS * TILE;
-const BORDER    = 8;
+const TILE     = 64;
+const MAP_COLS = 160;
+const MAP_ROWS = 120;
+const MAP_W    = MAP_COLS * TILE;
+const MAP_H    = MAP_ROWS * TILE;
+const BORDER   = 8;
 
-const MOB_COUNT_NORMAL  = 40;
-const MOB_COUNT_ELITE   = 3;
-const BOSS_TRIGGER_PCT  = 0.8;
+const MOB_COUNT_NORMAL = 40;
+const MOB_COUNT_ELITE  = 3;
+
+// Objectif : 50 points (normaux=1, élites=5, pack élite = 5+3×1 = 8 par pack)
+const MAP_OBJECTIVE_POINTS = 50;
 
 const REVEAL_RADIUS   = 640;
 const TREE_FADE_ALPHA = 0.25;
 const TREE_FULL_ALPHA = 1.0;
 
 // ================================
-// STATE
+// STATE LOCAL
 // ================================
 let canvas, ctx;
 let camera    = { x: 0, y: 0 };
-let player    = {};
+let player    = null;   // copie locale des stats joueur
 let target    = null;
 let trees     = [];
 let mobs      = [];
@@ -36,13 +41,15 @@ let boss      = null;
 let runConfig = {};
 let animId    = null;
 
-let mobsToKill  = 0;
-let mobsKilled  = 0;
+let mapPoints   = 0;    // points accumulés
 let bossSpawned = false;
 
 const keys = {};
-window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-window.addEventListener("keyup",   e => keys[e.key.toLowerCase()] = false);
+window.addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
+    if (e.key === "Escape" && getState() === GameState.PLAYING) openPause();
+});
+window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
 // ================================
 // INIT
@@ -62,28 +69,24 @@ export function initForet(config) {
 
     canvas.addEventListener("click", onCanvasClick);
 
+    // Copie locale des stats joueur (source : playerStats)
     player = {
-        x: MAP_W / 2,
-        y: MAP_H / 2,
-        size: 28,
-        speed: 3.5,
-        hp: 100,
-        maxHp: 100
+        ...playerStats,
+        x:    MAP_W / 2,
+        y:    MAP_H / 2,
+        size: 28
     };
 
     target      = null;
     boss        = null;
-    mobsKilled  = 0;
+    mapPoints   = 0;
     bossSpawned = false;
+    projectiles.length = 0;
 
     generateTrees();
     generateMobSpawns();
 
-    mobsToKill = Math.floor(
-        (MOB_COUNT_NORMAL + MOB_COUNT_ELITE * 4) * BOSS_TRIGGER_PCT
-    );
-
-    // ✅ CORRECTION : afficher le canvas et le HUD
+    // Afficher canvas + HUD
     document.getElementById("game-canvas")?.classList.remove("hidden");
     document.getElementById("healthbar-container")?.classList.remove("hidden");
     document.getElementById("xpbar-container")?.classList.remove("hidden");
@@ -106,9 +109,10 @@ export function stopForet() {
 // ================================
 function onCanvasClick(e) {
     if (getState() !== GameState.PLAYING) return;
+    const half = player.size / 2;
     target = {
-        x: e.clientX + camera.x,
-        y: e.clientY + camera.y
+        x: Math.max(half, Math.min(MAP_W - half, e.clientX + camera.x)),
+        y: Math.max(half, Math.min(MAP_H - half, e.clientY + camera.y))
     };
 }
 
@@ -126,9 +130,9 @@ function generateTrees() {
 
             if (inBorder || Math.random() < 0.15) {
                 trees.push({
-                    x: col * TILE + rand(4, TILE - 4),
-                    y: row * TILE + rand(4, TILE - 4),
-                    r: rand(14, 32),
+                    x:     col * TILE + rand(4, TILE - 4),
+                    y:     row * TILE + rand(4, TILE - 4),
+                    r:     rand(14, 32),
                     color: pickTreeColor(),
                     alpha: TREE_FULL_ALPHA
                 });
@@ -150,19 +154,20 @@ function generateMobSpawns() {
     const difficulty = Number(runConfig.difficulte || 1);
     const margin     = BORDER * TILE + 80;
 
+    // Normaux
     for (let i = 0; i < MOB_COUNT_NORMAL; i++) {
         const x = margin + Math.random() * (MAP_W - margin * 2);
         const y = margin + Math.random() * (MAP_H - margin * 2);
         mobs.push(createEnemy("normal", biome, difficulty, x, y));
     }
 
+    // Packs élites (1 élite + 3 normaux autour)
     for (let i = 0; i < MOB_COUNT_ELITE; i++) {
         const x = margin + Math.random() * (MAP_W - margin * 2);
         const y = margin + Math.random() * (MAP_H - margin * 2);
         mobs.push(createEnemy("elite", biome, difficulty, x, y));
 
-        const offsets = [{dx:40,dy:0},{dx:-40,dy:0},{dx:0,dy:40}];
-        for (let o of offsets) {
+        for (let o of [{dx:40,dy:0},{dx:-40,dy:0},{dx:0,dy:40}]) {
             mobs.push(createEnemy("normal", biome, difficulty, x+o.dx, y+o.dy));
         }
     }
@@ -190,11 +195,17 @@ function update() {
     updateTreeAlpha();
     updateEnemies(mobs, player, onMobDied);
     updateBoss();
-    updateHUD();
+    tryShoot(player, mobs, spawnProjectile);
+    updateProjectiles(projectiles);
+    handleProjectileCollisions(projectiles, mobs, onProjectileHit);
     checkBossTrigger();
     checkPlayerDeath();
+    updateHUD();
 }
 
+// --------------------------------
+// Déplacement joueur
+// --------------------------------
 function updatePlayer() {
     let dx = 0, dy = 0;
 
@@ -209,8 +220,8 @@ function updatePlayer() {
     if (keys["d"] || keys["arrowright"]) dx += 1;
 
     if (dx === 0 && dy === 0 && target) {
-        const tdx = target.x - player.x;
-        const tdy = target.y - player.y;
+        const tdx  = target.x - player.x;
+        const tdy  = target.y - player.y;
         const dist = Math.hypot(tdx, tdy);
         if (dist > 5) {
             dx = tdx / dist;
@@ -226,8 +237,10 @@ function updatePlayer() {
     }
 
     const half = player.size / 2;
-    player.x = Math.max(half, Math.min(MAP_W - half, player.x + dx * player.speed));
-    player.y = Math.max(half, Math.min(MAP_H - half, player.y + dy * player.speed));
+    player.x += dx * player.speed * player.moveSpeedMultiplier;
+    player.y += dy * player.speed * player.moveSpeedMultiplier;
+    player.x  = Math.max(half, Math.min(MAP_W - half, player.x));
+    player.y  = Math.max(half, Math.min(MAP_H - half, player.y));
 }
 
 function updateCamera() {
@@ -235,14 +248,16 @@ function updateCamera() {
     camera.y = Math.max(0, Math.min(MAP_H - canvas.height, player.y - canvas.height / 2));
 }
 
+// --------------------------------
+// Transparence arbres
+// --------------------------------
 function updateTreeAlpha() {
     for (let t of trees) {
-        const dist = Math.hypot(player.x - t.x, player.y - t.y);
-        const playerUnder = dist < t.r + player.size / 2;
+        const distP      = Math.hypot(player.x - t.x, player.y - t.y);
+        const playerUnder = distP < t.r + player.size / 2;
 
-        // Révélation mobs proches sous les arbres
         let mobUnder = false;
-        if (dist < REVEAL_RADIUS) {
+        if (distP < REVEAL_RADIUS) {
             for (let m of mobs) {
                 if (m.dead) continue;
                 if (Math.hypot(m.x - t.x, m.y - t.y) < t.r + m.size / 2) {
@@ -257,11 +272,14 @@ function updateTreeAlpha() {
     }
 }
 
+// --------------------------------
+// Boss
+// --------------------------------
 function updateBoss() {
     if (!boss || boss.dead) return;
 
-    const dx = player.x - boss.x;
-    const dy = player.y - boss.y;
+    const dx   = player.x - boss.x;
+    const dy   = player.y - boss.y;
     const dist = Math.hypot(dx, dy);
 
     if (dist > 0) {
@@ -269,11 +287,10 @@ function updateBoss() {
         boss.y += (dy / dist) * boss.speed;
     }
 
-    // Contact avec le joueur
-    if (dist < (player.size / 2 + boss.size / 2)) {
+    if (dist < (player.size/2 + boss.size/2)) {
         const now = performance.now();
         if (now - boss.lastDmgTime > boss.damageCd) {
-            player.hp = Math.max(0, player.hp - boss.damage);
+            player.hp       = Math.max(0, player.hp - boss.damage);
             boss.lastDmgTime = now;
         }
     }
@@ -281,7 +298,7 @@ function updateBoss() {
 
 function checkBossTrigger() {
     if (bossSpawned) return;
-    if (mobsKilled >= mobsToKill) {
+    if (mapPoints >= MAP_OBJECTIVE_POINTS) {
         bossSpawned = true;
         spawnBoss();
     }
@@ -289,9 +306,21 @@ function checkBossTrigger() {
 
 function spawnBoss() {
     const difficulty = Number(runConfig.difficulte || 1);
-    boss = createEnemy("boss", "foret", difficulty, player.x + 400, player.y);
+    boss = createEnemy("boss", "foret", difficulty, player.x + 500, player.y);
     boss.lastDmgTime = 0;
     showBossAlert();
+}
+
+// --------------------------------
+// Callbacks
+// --------------------------------
+function onMobDied(mob) {
+    mapPoints += mob.progressValue || 1;
+}
+
+function onProjectileHit(projectile, mob) {
+    // Appliquer les dégâts directement (simple pour l'instant)
+    mob.hp -= projectile.damage;
 }
 
 function checkPlayerDeath() {
@@ -303,10 +332,6 @@ function checkPlayerDeath() {
     }
 }
 
-function onMobDied(mob) {
-    mobsKilled += mob.progressValue || 1;
-}
-
 // ================================
 // HUD
 // ================================
@@ -315,15 +340,16 @@ function updateHUD() {
     const bar = document.getElementById("healthbar");
     if (bar) {
         const pct = player.hp / player.maxHp;
-        bar.style.width = (pct * 100) + "%";
+        bar.style.width      = (pct * 100) + "%";
         bar.style.background = pct > 0.6 ? "#00ff55" : pct > 0.3 ? "#ffaa00" : "#ff4444";
     }
 
-    // Barre de progression mobs (réutilise xpbar)
+    // Barre de progression objectif map
     const xpbar = document.getElementById("xpbar");
     if (xpbar) {
-        xpbar.style.width = (Math.min(mobsKilled / mobsToKill, 1) * 100) + "%";
-        xpbar.style.background = "#ff8800";
+        const pct = Math.min(mapPoints / MAP_OBJECTIVE_POINTS, 1);
+        xpbar.style.width      = (pct * 100) + "%";
+        xpbar.style.background = bossSpawned ? "#dd00ff" : "#ff8800";
     }
 }
 
@@ -340,15 +366,19 @@ function draw() {
     ctx.save();
     ctx.translate(-camera.x, -camera.y);
 
-    // Ordre : mobs → joueur → arbres (par-dessus) → boss → indicateur → cible
+    // Ordre : mobs → joueur → projectiles → arbres (par-dessus) → boss → indicateur → cible
     drawEnemies(ctx, mobs, camera, canvas);
-    if (boss && !boss.dead) drawBossSprite();
-    drawPlayer();
+    drawPlayerSprite(ctx, player);
+    drawProjectiles(ctx, projectiles);
     drawTrees();
+    if (boss && !boss.dead) drawBossSprite();
     drawBossIndicator();
     if (target) drawTarget();
 
     ctx.restore();
+
+    // HUD texte objectif (en coordonnées écran, hors ctx.save)
+    drawObjectiveText();
 }
 
 function drawTrees() {
@@ -361,12 +391,12 @@ function drawTrees() {
 
         ctx.fillStyle = "#4a2e0a";
         ctx.beginPath();
-        ctx.arc(t.x, t.y + t.r * 0.3, t.r * 0.3, 0, Math.PI * 2);
+        ctx.arc(t.x, t.y + t.r*0.3, t.r*0.3, 0, Math.PI*2);
         ctx.fill();
 
         ctx.fillStyle = t.color;
         ctx.beginPath();
-        ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+        ctx.arc(t.x, t.y, t.r, 0, Math.PI*2);
         ctx.fill();
 
         ctx.fillStyle = "rgba(255,255,255,0.06)";
@@ -381,13 +411,12 @@ function drawTrees() {
 function drawBossSprite() {
     ctx.fillStyle = boss.color || "#7700aa";
     ctx.beginPath();
-    ctx.arc(boss.x, boss.y, boss.size / 2, 0, Math.PI * 2);
+    ctx.arc(boss.x, boss.y, boss.size/2, 0, Math.PI*2);
     ctx.fill();
     ctx.strokeStyle = "#dd00ff";
-    ctx.lineWidth = 3;
+    ctx.lineWidth   = 3;
     ctx.stroke();
 
-    // Barre de vie boss
     const bw = 100;
     ctx.fillStyle = "rgba(0,0,0,0.55)";
     ctx.fillRect(boss.x - bw/2, boss.y - boss.size/2 - 14, bw, 8);
@@ -398,18 +427,14 @@ function drawBossSprite() {
 function drawBossIndicator() {
     if (!boss || boss.dead) return;
 
-    const bossScreenX = boss.x - camera.x;
-    const bossScreenY = boss.y - camera.y;
+    const bsx = boss.x - camera.x;
+    const bsy = boss.y - camera.y;
+    if (bsx >= 0 && bsx <= canvas.width && bsy >= 0 && bsy <= canvas.height) return;
 
-    if (bossScreenX >= 0 && bossScreenX <= canvas.width &&
-        bossScreenY >= 0 && bossScreenY <= canvas.height) return;
-
-    const dx = bossScreenX - canvas.width  / 2;
-    const dy = bossScreenY - canvas.height / 2;
-    const angle = Math.atan2(dy, dx);
+    const angle  = Math.atan2(bsy - canvas.height/2, bsx - canvas.width/2);
     const radius = Math.min(canvas.width, canvas.height) / 2 - 40;
-    const x = canvas.width  / 2 + Math.cos(angle) * radius;
-    const y = canvas.height / 2 + Math.sin(angle) * radius;
+    const x      = canvas.width/2  + Math.cos(angle) * radius;
+    const y      = canvas.height/2 + Math.sin(angle) * radius;
 
     ctx.save();
     ctx.translate(x, y);
@@ -424,23 +449,9 @@ function drawBossIndicator() {
     ctx.restore();
 }
 
-function drawPlayer() {
-    ctx.fillStyle = "rgba(0,0,0,0.25)";
-    ctx.beginPath();
-    ctx.ellipse(player.x, player.y + player.size/2 - 4, player.size/2, 6, 0, 0, Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle = "#4aa3ff";
-    ctx.fillRect(
-        player.x - player.size/2,
-        player.y - player.size/2,
-        player.size, player.size
-    );
-}
-
 function drawTarget() {
     ctx.strokeStyle = "rgba(255,255,255,0.5)";
-    ctx.lineWidth = 2;
+    ctx.lineWidth   = 2;
     ctx.beginPath();
     ctx.arc(target.x, target.y, 8, 0, Math.PI*2);
     ctx.stroke();
@@ -449,6 +460,20 @@ function drawTarget() {
     ctx.beginPath();
     ctx.arc(target.x, target.y, 4, 0, Math.PI*2);
     ctx.stroke();
+}
+
+function drawObjectiveText() {
+    // Texte au-dessus de la barre xp
+    const label = bossSpawned
+        ? "⚠ Boss en approche !"
+        : `Objectif : ${Math.min(mapPoints, MAP_OBJECTIVE_POINTS)} / ${MAP_OBJECTIVE_POINTS}`;
+
+    ctx.save();
+    ctx.font      = "14px 'Cinzel', serif";
+    ctx.fillStyle = bossSpawned ? "#dd00ff" : "#ffcc88";
+    ctx.textAlign = "center";
+    ctx.fillText(label, canvas.width / 2, canvas.height - 32);
+    ctx.restore();
 }
 
 // ================================
