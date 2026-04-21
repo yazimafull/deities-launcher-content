@@ -1,5 +1,5 @@
 {
-    "version": "1776807728154",
+    "version": "1776808231953",
     "files": [
         {
             "path": "background.jpg",
@@ -47,7 +47,7 @@
         },
         {
             "path": "js/core/main.js",
-            "sha256": "69d04bcf8cf055c7afd95db9eecfa0a08579fae3df538f20e984760b00192871"
+            "sha256": "4f24bf299a85ae93fb42f2b536d3631d3b8bc15ca50a1bc7862d3dfce4da0efd"
         },
         {
             "path": "js/core/runManager.js",
