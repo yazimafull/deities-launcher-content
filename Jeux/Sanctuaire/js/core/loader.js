@@ -10,7 +10,6 @@ import "./main.js";
 
 // --- SYSTEMS ---
 import "../systems/player.js";
-import "../systems/enemy.js";
 import "../systems/enemyTypes.js";
 import "../systems/enemyFactory.js";
 import "../systems/enemySystem.js";
