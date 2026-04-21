@@ -1,5 +1,5 @@
 {
-    "version": "1776746668761",
+    "version": "1776747032136",
     "files": [
         {
             "path": "background.jpg",
@@ -91,7 +91,7 @@
         },
         {
             "path": "js/ui/pauseMenu.js",
-            "sha256": "4b24fbe8de3ab31bbe7ab242631ada03c8a354bd7be52b659f56722a5e654c8f"
+            "sha256": "8605ae1ddab66c353bac075474ff1a5441b5cce4d20c4fbdb0f0f3eeac5edd67"
         },
         {
             "path": "js/ui/ui.js",
