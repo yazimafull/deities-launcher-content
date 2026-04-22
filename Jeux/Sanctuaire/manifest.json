@@ -1,5 +1,5 @@
 {
-    "version": "1776840553978",
+    "version": "1776840795514",
     "files": [
         {
             "path": "background.jpg",
@@ -31,7 +31,7 @@
         },
         {
             "path": "js/UI/menu/pauseMenu.js",
-            "sha256": "63bafd08cb411acbbcf1bbebed39cf8fd10d834b3e4b5569d6af4fb58d62b98c"
+            "sha256": "39e9b96a51f033358e35cebebaffc0a780d43e688e3c26d2922e4700e56eedaf"
         },
         {
             "path": "js/core/gameLoop.js",
