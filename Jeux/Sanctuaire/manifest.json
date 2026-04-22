@@ -1,5 +1,5 @@
 {
-    "version": "1776850845146",
+    "version": "1776868695253",
     "files": [
         {
             "path": "background.jpg",
@@ -15,7 +15,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "4ea1ab26ab18cff3f94249a5cb7cfacb69dabdfd6d8f1e1d5c7d7be8edc9bb90"
+            "sha256": "e820162b78763d637592d5b98142fcdd6d0cc49ba4f6bee8de6d2bc76ace308f"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
@@ -131,7 +131,7 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "4138cd7a9e7ad49e996a2fecc4a647ce4675d32330cec9a0f54c491cd71ba510"
+            "sha256": "b5c14d9a3d199f6a479fc47c5f0ee9674a47242cf813ecf1f43794aa0a757de1"
         },
         {
             "path": "sanctuary.css",
