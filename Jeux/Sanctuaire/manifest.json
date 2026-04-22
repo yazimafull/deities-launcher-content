@@ -1,5 +1,5 @@
 {
-    "version": "1776870307068",
+    "version": "1776881384639",
     "files": [
         {
             "path": "background.jpg",
@@ -10,12 +10,16 @@
             "sha256": "b57c31c57b1998ac208bb483fab991cf65f50378fd18a1160b1ccc2eb6015fed"
         },
         {
+            "path": "gameplay.css",
+            "sha256": "9ae0139ff9fefe83655b8a85872086a31c344fec3aed055634355216bc00a27e"
+        },
+        {
             "path": "icon.png",
             "sha256": "57e1be9a15bfc8862ae3d411eac636c2ab84fd6e47422c3bb945a7f4d4dbb70b"
         },
         {
             "path": "index.html",
-            "sha256": "e820162b78763d637592d5b98142fcdd6d0cc49ba4f6bee8de6d2bc76ace308f"
+            "sha256": "cfe1249ea66738301fb6231596c5aa0ff77bcd270f8363e1e775037c771933b8"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
@@ -35,7 +39,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "afe82d934dbccdc293be9b22e263af5490a86bbf4e5fdbccd3d823e3be53c6fd"
+            "sha256": "37e2bb6b7455e461fb41320d49cc3aff60a1d8898ecd73d6c9065254b32beeb0"
         },
         {
             "path": "js/core/input.js",
@@ -123,7 +127,7 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "e817a619f61d187979d3e0430f426ed8a4cd67a2882f527b936450721a5c2579"
+            "sha256": "95f7ee7caf69865bedf35048777cd6487f55f812b82ea5a6e723bdccffbbef8c"
         },
         {
             "path": "js/world/biome_wip.js",
@@ -131,19 +135,15 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "036b43f5b72b5a77ec9d5796d82a633eb4f47468e1c0347e80ec03ce0c1cf8f5"
-        },
-        {
-            "path": "sanctuary.css",
-            "sha256": "c25a8d477be49f409a85894e6801f0e32e6f16bcd2a68f425fabe6a24520d700"
+            "sha256": "43e5dc8b8c87294b6a62bd5b0bb21092057a921fd3c9760a3bec262e0039b113"
         },
         {
             "path": "sanctuary.jpg",
             "sha256": "c0727235d81c4396f7e8fcbb3cf0644380b4215e1a0eb384ed56b691f86366f0"
         },
         {
-            "path": "style.css",
-            "sha256": "4afd8cdebf15e99655d4cc480a21b00fd2aae16c181d2b73859ba73e8f57424d"
+            "path": "system.css",
+            "sha256": "855c4fa9a5bf791801fb079daeea0ced168bd7a8aeea5fb61e7a0d6e1eafc6d1"
         }
     ]
 }
