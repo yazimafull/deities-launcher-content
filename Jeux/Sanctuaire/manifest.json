@@ -1,5 +1,5 @@
 {
-    "version": "1776840795514",
+    "version": "1776850845146",
     "files": [
         {
             "path": "background.jpg",
@@ -62,6 +62,14 @@
             "sha256": "095656a30e3914e92befeb2ad16478f8a36ee622e5f79e1aa3234d20bbe3bf39"
         },
         {
+            "path": "js/data/bestiary.js",
+            "sha256": "e92818d1d84dee08a9ec81469113dda72943d196ea7bdbb17500c5317aabd42e"
+        },
+        {
+            "path": "js/systems/biomeSpawner.js",
+            "sha256": "2584ead3c57fd20be59e20d113ec1988c86a7b801ecbcc77dfa79b5821a346d8"
+        },
+        {
             "path": "js/systems/boss.js",
             "sha256": "7ecda56201d39387bd95033483e594c634e480be8d18bbebb4f2d8c84fc216de"
         },
@@ -75,11 +83,11 @@
         },
         {
             "path": "js/systems/enemyFactory.js",
-            "sha256": "7dfcdb1224746bacceb476ea8a090b39732d77337688b2f34a196fcf1b54fa91"
+            "sha256": "0fb0f5637f4119c36da9fb131bd1e7793f05d999d5dde83c0d1e385bf6c4136b"
         },
         {
             "path": "js/systems/enemySystem.js",
-            "sha256": "09c12bec469ab48055075ff9f2de83619fe2341f15a3677d98775ea9518e3246"
+            "sha256": "17ce366cfe24e46e2d53531c3b9e8ade061b40348be49f3045dfb88c3b86526d"
         },
         {
             "path": "js/systems/enemyTypes.js",
@@ -115,7 +123,7 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "3ef13e8dae47fae3496936c19822c3b47b8d2ee8ed7ba896d18429f7bade6480"
+            "sha256": "7566755cfa0b54dfdf42c6e81b4e8ae657af822ba76a9c1fde6884fc4a70269b"
         },
         {
             "path": "js/world/biome_wip.js",
