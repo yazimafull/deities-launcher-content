@@ -3,7 +3,7 @@
 import { GameState, getState, setState } from "./state.js";
 import { cleanRun } from "./runManager.js";
 
-import { initBiomeForet, updateBiomeForet, drawBiomeForet, stopBiomeForet, camera, MAP_W, MAP_H } from "../world/biome_foret.js";
+import { initBiomeForet, updateBiomeForet, drawBiomeForet, stopBiomeForet, camera, MAP_WIDTH, MAP_HEIGHT } from "../world/biome_foret.js";
 import { initBiomeWIP, stopBiomeWIP } from "../world/biome_wip.js";
 
 import { projectiles, spawnProjectile, updateProjectiles, drawProjectiles, handleProjectileCollisions } from "../systems/projectile.js";
@@ -33,8 +33,8 @@ const MAP_OBJECTIVE = 50;
 function initPlayer() {
     player = {
         ...playerStats,
-        x:        MAP_W / 2,
-        y:        MAP_H / 2,
+        x:        MAP_WIDTH / 2,
+        y:        MAP_HEIGHT / 2,
         size:     28,
         lastShot: 0
     };

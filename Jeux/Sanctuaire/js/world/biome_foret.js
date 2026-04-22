@@ -117,7 +117,7 @@ function pickTreeColor() {
 function generateMobSpawns() {
     const biomeId = "forest";
     const level = Number(runConfig.difficulte) || 1;
-    const affixes = runConfig.affixes || [];
+    const affixes = runConfig.affix ? [runConfig.affix] : [];
 
     const mobs = generateBiomeMobs(biomeId, level, affixes);
 
