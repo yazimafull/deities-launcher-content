@@ -168,56 +168,87 @@
     </div>
 
     <!-- ========================================
-         POPUP PYLÔNE — CONFIG RUN
+         POPUP PYLÔNE — CONFIG RUN (NOUVEAU PROTOTYPE)
     ========================================= -->
     <div id="pylone-overlay" class="create-overlay hidden">
-        <div class="create-container pylone-container">
-            <h1>Configurer la Run</h1>
+        <div class="popup">
 
-            <div class="pylone-section">
-                <label class="pylone-label">Biome</label>
-                <div class="pylone-choices" id="biome-choices">
-                    <button class="pylone-choice selected" data-value="foret">Forêt Mourante</button>
-                    <button class="pylone-choice" data-value="ruines">Ruines Oubliées</button>
-                    <button class="pylone-choice" data-value="abysses">Abysses</button>
+            <!-- GAUCHE -->
+            <div class="popup-left">
+
+                <div class="popup-title">CONFIGURER LA RUN</div>
+
+                <!-- BIOME -->
+                <div class="section">
+                    <div class="section-label">Biome</div>
+                    <div class="biome-row">
+                        <div class="biome-btn active">FORÊT MOURANTE</div>
+                        <div class="biome-btn">RUINES OUBLIÉES</div>
+                        <div class="biome-btn">ABYSSES</div>
+                    </div>
+                </div>
+
+                <!-- NIVEAU -->
+                <div class="section">
+                    <div class="section-label">Niveau</div>
+                    <div class="dropdown" id="levelDropdown">
+                        <div class="dropdown-toggle">
+                            <span id="levelLabel">Niveau I</span>
+                            <span class="caret">▼</span>
+                        </div>
+                        <div class="dropdown-menu" id="levelMenu">
+                            <div class="dropdown-item" data-level="1">Niveau I</div>
+                            <div class="dropdown-item" data-level="2">Niveau II</div>
+                            <div class="dropdown-item" data-level="3">Niveau III</div>
+                            <div class="dropdown-item" data-level="4">Niveau IV</div>
+                            <div class="dropdown-item" data-level="5">Niveau V</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AFFIXE -->
+                <div class="section">
+                    <div class="section-label">Pierre d'affixe</div>
+                    <div class="affix-row">
+                        <div class="affix-slot" id="affixSlot">
+                            CLIQUE<br>POUR CHOISIR
+                        </div>
+                        <div class="affix-summary" id="affixSummary">
+                            Aucune pierre sélectionnée.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIMER -->
+                <p id="pylone-countdown" class="pylone-countdown hidden"></p>
+
+            </div>
+
+            <!-- DROITE : RÉCAP -->
+            <div class="popup-right">
+                <div class="popup-title" style="visibility:hidden;">CONFIGURER LA RUN</div>
+
+                <div class="section">
+
+                    <div class="recap-title">Récapitulatif</div>
+
+                    <div class="recap-line" id="recapBiome">Biome : Forêt Mourante</div>
+                    <div class="recap-line" id="recapLevel">Niveau : I</div>
+                    <div class="recap-line" id="recapAffix">Affixe : Aucun</div>
+
+                    <div class="recap-affix-list" id="recapAffixList"></div>
                 </div>
             </div>
 
-            <div class="pylone-section">
-                <label class="pylone-label">Difficulté</label>
-                <div class="pylone-choices" id="difficulty-choices">
-                    <button class="pylone-choice selected" data-value="1">Niveau I</button>
-                    <button class="pylone-choice" data-value="2">Niveau II</button>
-                    <button class="pylone-choice" data-value="3">Niveau III</button>
-                </div>
+            <!-- FOOTER -->
+            <div class="popup-footer">
+                <button class="btn" id="pylone-cancel">Annuler</button>
+                <button class="btn btn-primary" id="pylone-launch">Lancer la run</button>
             </div>
 
-            <div class="pylone-section">
-                <label class="pylone-label">Modificateurs</label>
-                <div class="pylone-mods">
-                    <div class="pylone-mod">
-                        <input type="checkbox" id="mod-loot" class="pylone-checkbox">
-                        <label for="mod-loot">+Loot <span class="mod-malus">(+Difficulté)</span></label>
-                    </div>
-                    <div class="pylone-mod">
-                        <input type="checkbox" id="mod-xp" class="pylone-checkbox">
-                        <label for="mod-xp">+XP <span class="mod-malus">(+Ennemis)</span></label>
-                    </div>
-                    <div class="pylone-mod">
-                        <input type="checkbox" id="mod-elite" class="pylone-checkbox">
-                        <label for="mod-elite">+Élites <span class="mod-malus">(+Danger)</span></label>
-                    </div>
-                </div>
-            </div>
-
-            <p id="pylone-countdown" class="pylone-countdown hidden"></p>
-
-            <div class="button-container">
-                <button class="generate-btn" id="pylone-launch">Lancer la Run</button>
-                <button class="back-btn" id="pylone-cancel">Annuler</button>
-            </div>
         </div>
     </div>
+
 
     <!-- ========================================
          POPUP PANELS "À VENIR" (coffre, forge...)
