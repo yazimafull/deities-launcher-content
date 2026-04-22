@@ -1,5 +1,5 @@
 {
-    "version": "1776811551277",
+    "version": "1776840553978",
     "files": [
         {
             "path": "background.jpg",
@@ -35,7 +35,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "1b1675b227a2d9de67cd39a81c22fe0db77a0a32cafc0be47412138f936fb0f7"
+            "sha256": "afe82d934dbccdc293be9b22e263af5490a86bbf4e5fdbccd3d823e3be53c6fd"
         },
         {
             "path": "js/core/input.js",
@@ -43,7 +43,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "513e0be4cb231b60719b5937b3f9bcc3e1302138f19c5e33658fe7902c7d03df"
+            "sha256": "699d36a6d4bb1c8612a62296f8668bf4ed9092c18aef2191b67f76b30c7c4e82"
         },
         {
             "path": "js/core/main.js",
@@ -63,7 +63,7 @@
         },
         {
             "path": "js/systems/boss.js",
-            "sha256": "db8e89439629dddfec25f306880d9c46a08f8bc135e38d0e6adad201639999dc"
+            "sha256": "7ecda56201d39387bd95033483e594c634e480be8d18bbebb4f2d8c84fc216de"
         },
         {
             "path": "js/systems/damageSystem.js",
@@ -75,11 +75,11 @@
         },
         {
             "path": "js/systems/enemyFactory.js",
-            "sha256": "1f90ea73b7055393ea2aa20890f73fae8346cb9510b110b4284d39d33125cc4b"
+            "sha256": "7dfcdb1224746bacceb476ea8a090b39732d77337688b2f34a196fcf1b54fa91"
         },
         {
             "path": "js/systems/enemySystem.js",
-            "sha256": "80e89e7b6eff48f844f997d7f9e7740117737b2dcae26ba9aab07e4681bcb992"
+            "sha256": "09c12bec469ab48055075ff9f2de83619fe2341f15a3677d98775ea9518e3246"
         },
         {
             "path": "js/systems/enemyTypes.js",
@@ -103,7 +103,7 @@
         },
         {
             "path": "js/systems/upgrades.js",
-            "sha256": "3e77e7dcf462a1105ebd4724734abad9327582dc45d82a54eaa9705eeab19486"
+            "sha256": "8c680ca174f5c4d4beba65e2cc72df43a3d2e82f839762a7802a714b6ce989c2"
         },
         {
             "path": "js/systems/xp.js",
@@ -115,11 +115,11 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "edc6580dd3fec261e9fc305e9d8df7363b50170d6890a9e05d0f990b4ae4e03b"
+            "sha256": "3ef13e8dae47fae3496936c19822c3b47b8d2ee8ed7ba896d18429f7bade6480"
         },
         {
             "path": "js/world/biome_wip.js",
-            "sha256": "139da5e6b373eda97dd397376de38e9490ae3f935f14eb4c6b25aa37b8913eb0"
+            "sha256": "59a618d0b37cea52426f8adfefcde64daa901acb7be6da3be36c43c73f19433a"
         },
         {
             "path": "js/world/sanctuary.js",
