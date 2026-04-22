@@ -1,5 +1,5 @@
-﻿import { GameState, setState, getState } from "../core/state.js";
-import { cleanRun } from "../core/runManager.js";
+﻿import { GameState, setState, getState } from "../../core/state.js";
+import { cleanRun } from "../../core/runManager.js";
 
 // =====================================================
 // 🔥 Fonction demandée par les biomes : openPause()
