@@ -4,6 +4,8 @@
 import { getState, GameState } from "../core/state.js";
 import { createEnemy } from "../systems/enemyFactory.js";
 import { spawnEnemy, enemies } from "../systems/enemySystem.js";
+import { generateBiomeMobs } from "../systems/biomeSpawner.js";
+import { Bestiary } from "../data/bestiary.js"; // si besoin
 
 const TILE     = 64;
 const MAP_COLS = 160;
@@ -92,27 +94,19 @@ function pickTreeColor() {
 }
 
 function generateMobSpawns() {
-    const biome      = "foret";
-    const difficulty = Number(runConfig.difficulte || 1);
-    const margin     = BORDER * TILE + 80;
+    const biomeId   = "forest"; // identifiant du biome
+    const level     = Number(runConfig.difficulte || 1);
+    const affixes   = runConfig.affixes || []; // si tu veux ajouter des affixes plus tard
 
-    for (let i = 0; i < MOB_COUNT_NORMAL; i++) {
-        const x   = margin + Math.random() * (MAP_W - margin * 2);
-        const y   = margin + Math.random() * (MAP_H - margin * 2);
-        const mob = createEnemy("normal", biome, difficulty, x, y);
-        if (mob) spawnEnemy(mob);
-    }
+    const mobs = generateBiomeMobs(biomeId, level, affixes);
 
-    for (let i = 0; i < MOB_COUNT_ELITE; i++) {
-        const x     = margin + Math.random() * (MAP_W - margin * 2);
-        const y     = margin + Math.random() * (MAP_H - margin * 2);
-        const elite = createEnemy("elite", biome, difficulty, x, y);
-        if (elite) spawnEnemy(elite);
+    for (let mob of mobs) {
+        // Position aléatoire dans la map
+        const margin = BORDER * TILE + 80;
+        mob.x = margin + Math.random() * (MAP_W - margin * 2);
+        mob.y = margin + Math.random() * (MAP_H - margin * 2);
 
-        for (let o of [{dx:40,dy:0},{dx:-40,dy:0},{dx:0,dy:40}]) {
-            const normal = createEnemy("normal", biome, difficulty, x+o.dx, y+o.dy);
-            if (normal) spawnEnemy(normal);
-        }
+        spawnEnemy(mob);
     }
 }
 

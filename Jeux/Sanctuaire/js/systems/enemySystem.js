@@ -9,6 +9,36 @@ export const enemies = [];
 // ================================
 export function spawnEnemy(mob) {
     enemies.push(mob);
+
+    // ================================
+    // ENTOURAGE AUTOMATIQUE (ÉLITE)
+    // ================================
+    if (mob.elite && mob.entourage && mob.entourage > 0) {
+
+        const offsets = [
+            {dx: 40, dy: 0},
+            {dx:-40, dy: 0},
+            {dx: 0,  dy: 40},
+            {dx: 0,  dy:-40}
+        ];
+
+        for (let i = 0; i < mob.entourage; i++) {
+            const o = offsets[i % offsets.length];
+
+            const ally = {
+                ...structuredClone(mob),
+                elite: false,               // les alliés ne sont pas élites
+                entourage: 0,               // pas d’entourage en cascade
+                entourageType: null,
+                x: mob.x + o.dx,
+                y: mob.y + o.dy,
+                spawnX: mob.x + o.dx,
+                spawnY: mob.y + o.dy
+            };
+
+            enemies.push(ally);
+        }
+    }
 }
 
 // ================================
