@@ -33,6 +33,9 @@ export const allUpgrades = [
     },
     {
         name: "+20 HP max",
-        apply() { playerStats.maxHp += 20; playerStats.hp = Math.min(playerStats.hp + 20, playerStats.maxHp); }
+        apply() {
+            playerStats.maxHp += 20;
+            playerStats.hp = Math.min(playerStats.hp + 20, playerStats.maxHp);
+        }
     }
 ];

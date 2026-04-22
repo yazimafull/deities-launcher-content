@@ -1,14 +1,10 @@
-﻿// world/biome_foret.js
+// world/biome_foret.js
 // Décor, arbres, caméra, spawn positions, mouvement joueur
-// NE gère PAS les stats ennemis — c'est enemySystem + enemyFactory
 
 import { getState, GameState } from "../core/state.js";
 import { createEnemy } from "../systems/enemyFactory.js";
 import { spawnEnemy, enemies } from "../systems/enemySystem.js";
 
-// ================================
-// CONSTANTES
-// ================================
 const TILE     = 64;
 const MAP_COLS = 160;
 const MAP_ROWS = 120;
@@ -23,9 +19,6 @@ const REVEAL_RADIUS   = 640;
 const TREE_FADE_ALPHA = 0.25;
 const TREE_FULL_ALPHA = 1.0;
 
-// ================================
-// STATE LOCAL
-// ================================
 let canvas;
 export let camera = { x: 0, y: 0 };
 let target    = null;
@@ -33,14 +26,10 @@ let trees     = [];
 let runConfig = {};
 let active    = false;
 
-// Touches
 const keys = {};
 window.addEventListener("keydown", e => { keys[e.key.toLowerCase()] = true; });
 window.addEventListener("keyup",   e => { keys[e.key.toLowerCase()] = false; });
 
-// ================================
-// INIT
-// ================================
 export function initBiomeForet(config) {
     runConfig = config || {};
     active    = true;
@@ -57,7 +46,6 @@ export function initBiomeForet(config) {
     });
 
     canvas.addEventListener("click", onCanvasClick);
-
     target = null;
 
     generateTrees();
@@ -69,21 +57,14 @@ export function stopBiomeForet() {
     canvas?.removeEventListener("click", onCanvasClick);
 }
 
-// ================================
-// CLIC SOURIS → CIBLE
-// ================================
 function onCanvasClick(e) {
-    if (getState() !== GameState.PLAYING) return;
-    if (!active) return;
+    if (getState() !== GameState.PLAYING || !active) return;
     target = {
         x: e.clientX + camera.x,
         y: e.clientY + camera.y
     };
 }
 
-// ================================
-// GÉNÉRATION ARBRES
-// ================================
 function generateTrees() {
     trees = [];
     const rand = (a, b) => Math.random() * (b - a) + a;
@@ -110,9 +91,6 @@ function pickTreeColor() {
     return ["#1a4a1a","#1e5c1e","#145214","#2d6e2d","#0f3b0f"][Math.floor(Math.random()*5)];
 }
 
-// ================================
-// GÉNÉRATION MOBS
-// ================================
 function generateMobSpawns() {
     const biome      = "foret";
     const difficulty = Number(runConfig.difficulte || 1);
@@ -138,12 +116,8 @@ function generateMobSpawns() {
     }
 }
 
-// ================================
-// UPDATE (appelé par gameLoop)
-// ================================
 export function updateBiomeForet(dt, player) {
     if (!active || !player) return;
-
     updatePlayerMovement(player);
     updateCamera(player);
     updateTreeAlpha(player);
@@ -199,7 +173,6 @@ function updateTreeAlpha(player) {
         const dist        = Math.hypot(player.x - t.x, player.y - t.y);
         const playerUnder = dist < t.r + player.size / 2;
 
-        // Révélation mobs proches
         let mobUnder = false;
         if (dist < REVEAL_RADIUS) {
             for (let m of enemies) {
@@ -216,13 +189,9 @@ function updateTreeAlpha(player) {
     }
 }
 
-// ================================
-// DRAW (appelé par gameLoop)
-// ================================
 export function drawBiomeForet(ctx, canvas, player) {
     if (!active || !player) return;
 
-    // Fond herbe
     ctx.fillStyle = "#2d5a1b";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -231,7 +200,6 @@ export function drawBiomeForet(ctx, canvas, player) {
 
     drawPlayerSprite(ctx, player);
     drawTreesCanvas(ctx);
-
     if (target) drawTarget(ctx);
 
     ctx.restore();

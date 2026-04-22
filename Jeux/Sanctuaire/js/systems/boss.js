@@ -1,7 +1,7 @@
-﻿// boss.js — système boss indépendant
+// systems/boss.js
 
 import { createEnemy } from "./enemyFactory.js";
-import { applyDamage } from "./damageSystem.js";
+import { damageEnemy } from "./damageSystem.js";
 
 export let boss = null;
 let bossSpawned = false;
@@ -17,41 +17,38 @@ export function isBossSpawned() {
 
 export function spawnBoss(player, difficulty, biome = "foret") {
     bossSpawned = true;
-
     boss = createEnemy("boss", biome, difficulty, player.x + 500, player.y);
     boss.lastDmgTime = 0;
-
     showBossAlert();
 }
 
 export function updateBoss(player) {
     if (!boss || boss.dead) return;
 
-    const dx = player.x - boss.x;
-    const dy = player.y - boss.y;
+    const dx   = player.x - boss.x;
+    const dy   = player.y - boss.y;
     const dist = Math.hypot(dx, dy);
 
-    // Déplacement
     if (dist > 0) {
         boss.x += (dx / dist) * boss.speed;
         boss.y += (dy / dist) * boss.speed;
     }
 
-    // Dégâts au joueur
-    if (dist < (player.size/2 + boss.size/2)) {
+    // Dégâts au joueur au contact
+    if (dist < (player.size / 2 + boss.size / 2)) {
         const now = performance.now();
-        if (now - boss.lastDmgTime > boss.damageCd) {
-            applyDamage(boss, player, boss.damage, "physical");
+        if (now - boss.lastDmgTime > (boss.damageCd || 1200)) {
+            player.hp       = Math.max(0, player.hp - boss.damage);
             boss.lastDmgTime = now;
         }
     }
 }
 
-export function damageBoss(amount, type = "physical") {
+export function damageBoss(amount) {
     if (!boss || boss.dead) return;
     boss.hp -= amount;
     if (boss.hp <= 0) {
-        boss.hp = 0;
+        boss.hp   = 0;
         boss.dead = true;
     }
 }
@@ -61,7 +58,7 @@ export function drawBoss(ctx, camera, canvas) {
 
     ctx.fillStyle = boss.color || "#7700aa";
     ctx.beginPath();
-    ctx.arc(boss.x, boss.y, boss.size/2, 0, Math.PI*2);
+    ctx.arc(boss.x, boss.y, boss.size / 2, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.strokeStyle = "#dd00ff";
@@ -73,7 +70,7 @@ export function drawBoss(ctx, camera, canvas) {
     ctx.fillStyle = "rgba(0,0,0,0.55)";
     ctx.fillRect(boss.x - bw/2, boss.y - boss.size/2 - 14, bw, 8);
     ctx.fillStyle = "#dd00ff";
-    ctx.fillRect(boss.x - bw/2, boss.y - boss.size/2 - 14, bw * (boss.hp/boss.maxHp), 8);
+    ctx.fillRect(boss.x - bw/2, boss.y - boss.size/2 - 14, bw * (boss.hp / boss.maxHp), 8);
 }
 
 export function drawBossIndicator(ctx, camera, canvas) {
@@ -101,9 +98,7 @@ export function drawBossIndicator(ctx, camera, canvas) {
     ctx.fill();
     ctx.restore();
 }
-// ================================
-// BOSS ALERT
-// ================================
+
 function showBossAlert() {
     const el = document.createElement("div");
     el.style.cssText = `

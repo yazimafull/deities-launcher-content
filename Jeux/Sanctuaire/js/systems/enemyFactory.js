@@ -1,5 +1,5 @@
 // systems/enemyFactory.js
-// Version synchrone — génère un ennemi complet depuis enemyTypes.js
+// Version synchrone â€” gÃ©nÃ¨re un ennemi complet depuis enemyTypes.js
 
 import { enemyTypes } from "./enemyTypes.js";
 
@@ -53,7 +53,6 @@ export function createEnemy(type, biome, difficulty, x, y) {
         dead:        false,
         alpha:       1.0,
 
-        // Pour damageSystem
         resistances: {},
         dots:        []
     };

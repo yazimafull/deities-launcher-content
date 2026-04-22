@@ -1,19 +1,13 @@
-﻿// world/biome_wip.js
+// world/biome_wip.js
 
 import { getState, GameState } from "../core/state.js";
-import { openPause } from "../ui/pauseMenu.js";
+import { openPause } from "../UI/menu/pauseMenu.js"; // ✅ UI en majuscule
 
-// ================================
-// VARIABLES
-// ================================
 let canvas, ctx;
-let animId = null;
-let biomeName = "";
+let animId      = null;
+let biomeName   = "";
 let escListener = null;
 
-// ================================
-// INITIALISATION
-// ================================
 export function initBiomeWIP(name) {
     biomeName = name;
 
@@ -27,18 +21,13 @@ export function initBiomeWIP(name) {
     document.getElementById("xpbar-container")?.classList.remove("hidden");
 
     escListener = (e) => {
-        if (e.key === "Escape" && getState() === GameState.PLAYING) {
-            openPause();
-        }
+        if (e.key === "Escape" && getState() === GameState.PLAYING) openPause();
     };
     window.addEventListener("keydown", escListener);
 
     animId = requestAnimationFrame(loop);
 }
 
-// ================================
-// STOP BIOME WIP
-// ================================
 export function stopBiomeWIP() {
     if (animId) cancelAnimationFrame(animId);
     animId = null;
@@ -48,21 +37,16 @@ export function stopBiomeWIP() {
         escListener = null;
     }
 
-    const canvas = document.getElementById("game-canvas");
-    if (canvas) {
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.classList.add("hidden");
+    const c = document.getElementById("game-canvas");
+    if (c) {
+        c.getContext("2d").clearRect(0, 0, c.width, c.height);
+        c.classList.add("hidden");
     }
 
-    // Cacher HUD (cohérence avec biome forêt)
     document.getElementById("healthbar-container")?.classList.add("hidden");
     document.getElementById("xpbar-container")?.classList.add("hidden");
 }
 
-// ================================
-// LOOP
-// ================================
 function loop() {
     if (getState() !== GameState.PLAYING) {
         animId = requestAnimationFrame(loop);
@@ -72,37 +56,25 @@ function loop() {
     animId = requestAnimationFrame(loop);
 }
 
-// ================================
-// DRAW
-// ================================
 function draw() {
-    if (biomeName === "ruines") {
-        ctx.fillStyle = "#1a1510";
-    } else if (biomeName === "abysses") {
-        ctx.fillStyle = "#050510";
-    } else {
-        ctx.fillStyle = "#111";
-    }
+    if (biomeName === "ruines")       ctx.fillStyle = "#1a1510";
+    else if (biomeName === "abysses") ctx.fillStyle = "#050510";
+    else                              ctx.fillStyle = "#111";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-
     ctx.fillStyle = "rgba(201,168,106,0.15)";
     ctx.fillRect(canvas.width/2 - 300, canvas.height/2 - 80, 600, 160);
-
     ctx.strokeStyle = "#c9a86a";
     ctx.lineWidth = 2;
     ctx.strokeRect(canvas.width/2 - 300, canvas.height/2 - 80, 600, 160);
-
     ctx.fillStyle = "#d4af37";
     ctx.font = "bold 28px 'Cinzel', serif";
     ctx.textAlign = "center";
     ctx.fillText(getBiomeLabel(), canvas.width/2, canvas.height/2 - 20);
-
     ctx.fillStyle = "#b8a88a";
     ctx.font = "16px 'Cinzel', serif";
     ctx.fillText("Work In Progress — Appuyez sur Echap pour la pause", canvas.width/2, canvas.height/2 + 20);
-
     ctx.restore();
 }
 
