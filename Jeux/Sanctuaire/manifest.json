@@ -1,5 +1,5 @@
 {
-    "version": "1777021048148",
+    "version": "1777021951470",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -7,7 +7,7 @@
         },
         {
             "path": "css/global.css",
-            "sha256": "b644d9554513dcf922abca3c594661abf5a91cd9247570eb4b0c446d5354b1e1"
+            "sha256": "3acf798917aaad7c231cd70d2f38b5bd8e328a656f1ab6b009e285b2053d831e"
         },
         {
             "path": "css/hud.css",
@@ -15,7 +15,7 @@
         },
         {
             "path": "css/menu.css",
-            "sha256": "6ab5cab2260696482e2739753714c6316a9c1d7088a46759d562d7bd61327edd"
+            "sha256": "dcfbe6e84b40578bd8e577501076c967163d42186a6201d783d368f225319c06"
         },
         {
             "path": "css/pylone.css",
@@ -23,7 +23,7 @@
         },
         {
             "path": "css/sanctuaire.css",
-            "sha256": "df31d38589e744ea3b5f407b84409b20c033c48dd8bd9856b863b95bb81963b9"
+            "sha256": "7412224fb1268840b8b07ea71d0f96a8ec2e1a3bbd4fb31623982dc3a3f3d2f1"
         },
         {
             "path": "css/system.css",
