@@ -1,16 +1,16 @@
 ﻿// main.js
+
 import { setState, GameState } from "./state.js";
 import { initPauseMenu } from "../UI/menu/pauseMenu.js";
 
-// Constantes
-const MENU_ID = "character-select-menu";
-const SANCTUARY_ID = "sanctuary-screen";
 const ACTIVE_CHARACTER_KEY = "activeCharacter";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const playBtn = document.getElementById("play-character-btn");
+
+    const playBtn = document.querySelector('[data-action="play"]');
 
     playBtn?.addEventListener("click", () => {
+
         if (playBtn.disabled) return;
 
         const selectedItem = document.querySelector(".character-item.selected");
@@ -19,16 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const characterName = selectedItem.dataset.name;
         const characterClass = selectedItem.querySelector("small")?.textContent || "";
 
-        // Validation des données du personnage
         if (!characterName || !characterClass) {
-            console.error("Les données du personnage sont incomplètes");
+            console.error("Personnage invalide");
             return;
         }
 
-        // Stocker le personnage actif
         sessionStorage.setItem(
             ACTIVE_CHARACTER_KEY,
-            JSON.stringify({ name: characterName, avatarClass: characterClass })
+            JSON.stringify({
+                name: characterName,
+                avatarClass: characterClass
+            })
         );
 
         goToSanctuary();
@@ -37,28 +38,44 @@ document.addEventListener("DOMContentLoaded", () => {
     initPauseMenu();
 });
 
-// Transition vers le Sanctuaire
+
+// =========================
+// SANCTUARY
+// =========================
 export function goToSanctuary() {
-    document.getElementById(MENU_ID)?.classList.add("hidden");
-    document.getElementById(SANCTUARY_ID)?.classList.remove("hidden");
+
+    const menu = document.querySelector('[data-screen="character-select"]');
+    const sanctuary = document.querySelector('[data-screen="sanctuary"]');
+
+    menu?.classList.add("hidden");
+    sanctuary?.classList.remove("hidden");
+
     setState(GameState.SANCTUARY);
 
     const active = JSON.parse(sessionStorage.getItem(ACTIVE_CHARACTER_KEY) || "{}");
-    const nameEl = document.getElementById("sanctuary-character-name");
+
+    const nameEl = document.querySelector('[data-role="character-name"]');
+
     if (nameEl && active.name) {
-        nameEl.textContent = `${active.name} - ${active.avatarClass}`; // Correction : remplacement de `—` par `-`
+        nameEl.textContent = `${active.name} - ${active.avatarClass}`;
     }
 }
 
-// Expose la fonction globalement pour qu'elle soit accessible depuis d'autres scripts
 window.goToSanctuary = goToSanctuary;
 
-// Transition vers le Menu
+
+// =========================
+// MENU
+// =========================
 export function goToMenu() {
-    document.getElementById(SANCTUARY_ID)?.classList.add("hidden");
-    document.getElementById(MENU_ID)?.classList.remove("hidden");
+
+    const menu = document.querySelector('[data-screen="character-select"]');
+    const sanctuary = document.querySelector('[data-screen="sanctuary"]');
+
+    sanctuary?.classList.add("hidden");
+    menu?.classList.remove("hidden");
+
     setState(GameState.MENU);
 }
 
-// Expose la fonction globalement pour qu'elle soit accessible depuis d'autres scripts
 window.goToMenu = goToMenu;

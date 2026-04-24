@@ -1,33 +1,61 @@
-﻿import { Bestiary } from "../data/bestiary.js";
+﻿// systems/biomeMobGenerator.js
+
+import { Bestiary } from "../data/bestiary.js";
 import { createEnemy } from "./enemyFactory.js";
 
+/**
+ * Génère tous les mobs possibles d’un biome selon :
+ * - biomeId
+ * - level
+ * - affixes globaux éventuels
+ */
 export function generateBiomeMobs(biomeId, level, affixes = []) {
     const result = [];
 
-    for (let [type, data] of Object.entries(Bestiary)) {
+    for (const [type, data] of Object.entries(Bestiary)) {
 
-        // Filtre biome
+        // ================================
+        // 1. FILTRE BIOME
+        // ================================
         if (!data.biomes.includes(biomeId)) continue;
 
-        // Filtre niveau
+        // ================================
+        // 2. FILTRE LEVEL
+        // ================================
         if (level < data.minLevel || level > data.maxLevel) continue;
 
-        // Génération selon weight
-        for (let i = 0; i < data.weight; i++) {
+        // ================================
+        // 3. WEIGHT (densité spawn)
+        // ================================
+        const count = data.weight ?? 1;
 
-            // On crée le mob SANS position
+        for (let i = 0; i < count; i++) {
+
+            // ================================
+            // 4. CRÉATION DU MOB
+            // ================================
             const mob = createEnemy(
-                type,          // type du mob
-                biomeId,       // biome
-                level,         // difficulté / niveau
-                0, 0,          // position (sera définie dans le biome)
-                data           // bestiaryData → élite, points, stats, entourage
+                type,
+                biomeId,
+                level,
+                0,   // x sera assigné dans le biome
+                0,   // y sera assigné dans le biome
+                data // bestiaryData (élite, points, entourage...)
             );
 
-            if (mob) {
-                mob.affixes = affixes; // si tu veux appliquer des affixes plus tard
-                result.push(mob);
+            if (!mob) continue;
+
+            // ================================
+            // 5. AFFIXES (optionnel)
+            // ================================
+            if (affixes.length > 0) {
+                mob.affixes = [...affixes];
             }
+
+            // ================================
+            // 6. PUSH RESULTAT
+            // ================================
+            result.push(mob);
         }
     }
 

@@ -1,9 +1,10 @@
 ﻿// ui/hud/hudSystem.js
-// HUD HTML + Canvas (texte) — propre, modulaire, cohérent avec ton style actuel
 
 let hudData = {
     hp: 1,
     maxHp: 1,
+    shield: 0,
+    maxShield: 1,
     xp: 0,
     xpMax: 1,
     objective: 0,
@@ -13,90 +14,126 @@ let hudData = {
 };
 
 // ================================
-// PUBLIC API
+// API
 // ================================
-export function updateHUD(data) {
+export function HUD_init(data = {}) {
     hudData = { ...hudData, ...data };
     updateHTMLBars();
 }
 
-export function drawHUD(ctx, canvas) {
+export function HUD_update(data = {}) {
+    hudData = { ...hudData, ...data };
+    updateHTMLBars();
+}
+
+export function HUD_draw(ctx, canvas) {
+    if (!ctx || !canvas) return;
+
     drawObjectiveText(ctx, canvas);
     drawTimer(ctx, canvas);
     drawBossIndicator(ctx, canvas);
 }
 
 // ================================
-// HTML BARS (vie, xp, objectif)
+// BAR SYSTEM SAFE
 // ================================
-function updateHTMLBars() {
-    // --- Barre de vie ---
-    const hpPct = hudData.hp / hudData.maxHp;
-    const hpBar = document.getElementById("healthbar");
-    if (hpBar) {
-        hpBar.style.width = (hpPct * 100) + "%";
-        hpBar.style.background = hpPct > 0.6 ? "#00ff55" : hpPct > 0.3 ? "#ffaa00" : "#ff4444";
-    }
+function clamp01(v) {
+    return Math.max(0, Math.min(1, v || 0));
+}
 
-    // --- Barre d'XP ---
-    const xpPct = hudData.xp / hudData.xpMax;
-    const xpBar = document.getElementById("xpbar");
-    if (xpBar) {
-        xpBar.style.width = (xpPct * 100) + "%";
-    }
+function setBar(name, ratio, color) {
+    const el = document.querySelector(`[data-bar="${name}"] .fill`);
+    if (!el) return;
 
-    // --- Barre d'objectif ---
-    const objPct = Math.min(hudData.objective / hudData.objectiveMax, 1);
-    const objBar = document.getElementById("objectivebar");
-    if (objBar) {
-        objBar.style.width = (objPct * 100) + "%";
-        objBar.style.background = hudData.bossSpawned ? "#dd00ff" : "#ff8800";
+    el.style.width = `${clamp01(ratio) * 100}%`;
+
+    if (color) {
+        el.style.background = color;
     }
 }
 
 // ================================
-// TEXTE OBJECTIF (Canvas)
+// HTML BARS
+// ================================
+function updateHTMLBars() {
+
+    // HP
+    setBar(
+        "hp",
+        hudData.hp / hudData.maxHp,
+        hudData.hp / hudData.maxHp > 0.6
+            ? "#00ff55"
+            : hudData.hp / hudData.maxHp > 0.3
+                ? "#ffaa00"
+                : "#ff4444"
+    );
+
+    // SHIELD (safe division)
+    setBar(
+        "shield",
+        hudData.maxShield > 0 ? hudData.shield / hudData.maxShield : 0,
+        "#66ccff"
+    );
+
+    // XP
+    setBar(
+        "xp",
+        hudData.xp / hudData.xpMax,
+        "#ffcc00"
+    );
+}
+
+// ================================
+// OBJECTIVE (CANVAS)
 // ================================
 function drawObjectiveText(ctx, canvas) {
+
+    const obj = Math.min(hudData.objective, hudData.objectiveMax);
+
     const label = hudData.bossSpawned
         ? "⚠ Boss en approche !"
-        : `Objectif : ${Math.min(hudData.objective, hudData.objectiveMax)} / ${hudData.objectiveMax}`;
+        : `Objectif : ${obj} / ${hudData.objectiveMax}`;
 
     ctx.save();
-    ctx.font = "16px 'Cinzel', serif";
+    ctx.font = "16px Cinzel";
     ctx.textAlign = "center";
     ctx.fillStyle = hudData.bossSpawned ? "#dd00ff" : "#ffcc88";
-    ctx.shadowColor = hudData.bossSpawned ? "#dd00ff" : "#000000";
+    ctx.shadowColor = ctx.fillStyle;
     ctx.shadowBlur = 6;
+
     ctx.fillText(label, canvas.width / 2, 48);
     ctx.restore();
 }
 
 // ================================
-// TIMER (Canvas)
+// TIMER
 // ================================
 function drawTimer(ctx, canvas) {
+
     const remaining = Math.max(0, hudData.timer);
+
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
-    const timeStr = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+    const timeStr = `${minutes}:${String(seconds).padStart(2, "0")}`;
 
     const ratio = remaining / (5 * 60 * 1000);
+
     const r = 255;
     const g = Math.floor(255 * ratio);
     const b = Math.floor(255 * ratio);
+
     const color = `rgb(${r},${g},${b})`;
 
     ctx.save();
-    ctx.font = "26px 'Cinzel', serif";
+    ctx.font = "26px Cinzel";
     ctx.textAlign = "center";
     ctx.fillStyle = color;
     ctx.shadowColor = color;
     ctx.shadowBlur = 12;
 
     if (remaining < 60000) {
-        const pulse = 0.7 + 0.3 * Math.sin(performance.now() / 120);
-        ctx.globalAlpha = pulse;
+        ctx.globalAlpha = 0.7 + 0.3 * Math.sin(performance.now() / 120);
     }
 
     ctx.fillText(timeStr, canvas.width / 2, 80);
@@ -104,17 +141,20 @@ function drawTimer(ctx, canvas) {
 }
 
 // ================================
-// BOSS INDICATOR (Canvas)
+// BOSS INDICATOR
 // ================================
 function drawBossIndicator(ctx, canvas) {
+
     if (!hudData.bossSpawned) return;
 
     ctx.save();
-    ctx.font = "14px 'Cinzel', serif";
+    ctx.font = "14px Cinzel";
     ctx.textAlign = "center";
     ctx.fillStyle = "#dd00ff";
     ctx.shadowColor = "#dd00ff";
     ctx.shadowBlur = 10;
+
     ctx.fillText("Gardien détecté...", canvas.width / 2, 110);
+
     ctx.restore();
 }

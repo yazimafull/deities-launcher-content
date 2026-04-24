@@ -1,4 +1,4 @@
-﻿// sanctuary.js — VERSION STABLE ET CORRIGÉE
+﻿// sanctuary.js — VERSION STABLE CLEAN
 
 // ================================
 // CONSTANTES
@@ -34,57 +34,59 @@ const STONES = [
 ];
 
 // ================================
-// VARIABLES GLOBALES
+// STATE
 // ================================
 let countdownInterval = null;
 let choicesLocked = false;
 let selectedStone = null;
 
 // ================================
-// HELPERS (évite les bugs)
+// HELPERS SAFE DOM
 // ================================
+const $ = (id) => document.getElementById(id);
+
 function setText(id, value) {
-    const el = document.getElementById(id);
+    const el = $(id);
     if (el) el.textContent = value;
 }
 
 function setHTML(id, value) {
-    const el = document.getElementById(id);
+    const el = $(id);
     if (el) el.innerHTML = value;
 }
 
-function setPointer(id, value) {
-    const el = document.getElementById(id);
+function setPointer(el, value) {
     if (el) el.style.pointerEvents = value;
 }
 
-function setDisabled(id, value) {
-    const el = document.getElementById(id);
+function setDisabled(el, value) {
     if (el) el.disabled = value;
 }
 
 // ================================
-// INITIALISATION
+// INIT
 // ================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("sanctuary-back-btn")?.addEventListener("click", () => {
-        if (window.goToMenu) window.goToMenu();
+    // BACK MENU
+    $("sanctuary-back-btn")?.addEventListener("click", () => {
+        window.goToMenu?.();
     });
 
-    document.getElementById("zone-pylone")?.addEventListener("click", () => {
-        document.getElementById("pylone-overlay")?.classList.remove("hidden");
+    // PYLONE OPEN
+    $("zone-pylone")?.addEventListener("click", () => {
+        $("pylone-overlay")?.classList.remove("hidden");
     });
 
-    document.getElementById("pylone-cancel")?.addEventListener("click", () => {
+    $("pylone-cancel")?.addEventListener("click", () => {
         if (countdownInterval) {
             clearLaunchTimer();
             return;
         }
-        document.getElementById("pylone-overlay")?.classList.add("hidden");
+        $("pylone-overlay")?.classList.add("hidden");
     });
 
-    // BIOME
+    // BIOMES
     document.querySelectorAll(".biome-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             if (choicesLocked) return;
@@ -95,18 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // DROPDOWN
-    const dropdown = document.getElementById("levelDropdown");
-    const toggle = dropdown?.querySelector(".dropdown-toggle");
-    const menu = document.getElementById("levelMenu");
-    const levelLabel = document.getElementById("levelLabel");
+    const dropdown = $("levelDropdown");
+    const menu = $("levelMenu");
+    const levelLabel = $("levelLabel");
 
-    toggle?.addEventListener("click", () => {
+    dropdown?.querySelector(".dropdown-toggle")?.addEventListener("click", () => {
         if (choicesLocked) return;
         menu?.classList.toggle("open");
     });
 
     menu?.addEventListener("click", (e) => {
         if (choicesLocked) return;
+
         const item = e.target.closest(".dropdown-item");
         if (!item || !levelLabel) return;
 
@@ -121,59 +123,61 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // AFFIXE
-    document.getElementById("affixSlot")?.addEventListener("click", () => {
+    // AFFIX
+    $("affixSlot")?.addEventListener("click", () => {
         if (choicesLocked) return;
         selectedStone = selectedStone === STONES[0] ? STONES[1] : STONES[0];
         updateAffixDisplay();
     });
 
-    // PANELS
-    const zones = {
-        "zone-coffre": "coffre",
-        "zone-forge": "forge",
-        "zone-marchand": "marchand",
-        "zone-grimoire": "grimoire"
-    };
-
-    Object.entries(zones).forEach(([id, key]) => {
-        document.getElementById(id)?.addEventListener("click", () => openSanctuaryPanel(key));
+    // ZONES (FIX IMPORTANT)
+    document.querySelectorAll("[data-zone]").forEach(zone => {
+        zone.addEventListener("click", () => {
+            const key = zone.dataset.zone;
+            openSanctuaryPanel(key);
+        });
     });
 
-    document.getElementById("sanctuary-panel-close")?.addEventListener("click", () => {
-        document.getElementById("sanctuary-panel-overlay")?.classList.add("hidden");
+    $("sanctuary-panel-close")?.addEventListener("click", () => {
+        $("sanctuary-panel-overlay")?.classList.add("hidden");
     });
 
-    document.getElementById("pylone-launch")?.addEventListener("click", startLaunchCountdown);
+    $("pylone-launch")?.addEventListener("click", startLaunchCountdown);
 });
 
 // ================================
-// FONCTIONS
+// PANELS
 // ================================
 function openSanctuaryPanel(zone) {
     setText("sanctuary-panel-title", PANEL_TITLES[zone] || zone);
-    document.getElementById("sanctuary-panel-overlay")?.classList.remove("hidden");
+    $("sanctuary-panel-overlay")?.classList.remove("hidden");
 }
 
+// ================================
+// RECAP
+// ================================
 function updateRecap() {
     const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Aucun";
-    const level = document.getElementById("levelLabel")?.textContent?.trim() || "Aucun";
+    const level = $("levelLabel")?.textContent?.trim() || "Aucun";
 
-    setText("recapBiome", "Biome : " + biome);
-    setText("recapLevel", "Niveau : " + level.replace("Niveau ", ""));
+    setText("recapBiome", `Biome : ${biome}`);
+    setText("recapLevel", `Niveau : ${level.replace("Niveau ", "")}`);
 }
 
+// ================================
+// AFFIX DISPLAY
+// ================================
 function updateAffixDisplay() {
-    const affixSlot = document.getElementById("affixSlot");
 
-    if (!affixSlot) return;
+    const slot = $("affixSlot");
+    if (!slot) return;
 
     if (selectedStone) {
-        affixSlot.classList.add("has-affix");
-        affixSlot.textContent = "🜄";
+        slot.classList.add("has-affix");
+        slot.textContent = "🜄";
 
         setText("affixSummary", selectedStone.name);
-        setText("recapAffix", "Affixe : " + selectedStone.name);
+        setText("recapAffix", `Affixe : ${selectedStone.name}`);
 
         setHTML(
             "recapAffixList",
@@ -181,9 +185,10 @@ function updateAffixDisplay() {
                 .map(a => `<div class="${a.type}">• ${a.text}</div>`)
                 .join("")
         );
+
     } else {
-        affixSlot.classList.remove("has-affix");
-        affixSlot.innerHTML = "CLIQUE<br>POUR CHOISIR";
+        slot.classList.remove("has-affix");
+        slot.innerHTML = "CLIQUE<br>POUR CHOISIR";
 
         setText("affixSummary", "Aucune pierre sélectionnée.");
         setText("recapAffix", "Affixe : Aucun");
@@ -191,35 +196,48 @@ function updateAffixDisplay() {
     }
 }
 
+// ================================
+// LOCK / UNLOCK
+// ================================
 function lockChoices() {
     choicesLocked = true;
+
     document.querySelectorAll(".biome-btn").forEach(b => b.style.pointerEvents = "none");
-    setPointer("levelDropdown", "none");
-    setPointer("affixSlot", "none");
-    setDisabled("pylone-launch", true);
+
+    setPointer($("levelDropdown"), "none");
+    setPointer($("affixSlot"), "none");
+    setDisabled($("pylone-launch"), true);
 }
 
 function unlockChoices() {
     choicesLocked = false;
+
     document.querySelectorAll(".biome-btn").forEach(b => b.style.pointerEvents = "auto");
-    setPointer("levelDropdown", "auto");
-    setPointer("affixSlot", "auto");
-    setDisabled("pylone-launch", false);
+
+    setPointer($("levelDropdown"), "auto");
+    setPointer($("affixSlot"), "auto");
+    setDisabled($("pylone-launch"), false);
 }
 
+// ================================
+// COUNTDOWN
+// ================================
 function startLaunchCountdown() {
-    const countdownEl = document.getElementById("pylone-countdown");
-    const launchBtn = document.getElementById("pylone-launch");
 
-    if (!countdownEl || !launchBtn) return;
+    const countdown = $("pylone-countdown");
+    const btn = $("pylone-launch");
+
+    if (!countdown || !btn) return;
 
     let seconds = 5;
-    countdownEl.classList.remove("hidden");
-    launchBtn.disabled = true;
+
+    countdown.classList.remove("hidden");
+    btn.disabled = true;
 
     lockChoices();
 
     countdownInterval = setInterval(() => {
+
         seconds--;
 
         if (seconds <= 0) {
@@ -227,57 +245,68 @@ function startLaunchCountdown() {
             countdownInterval = null;
             launchRun();
         } else {
-            countdownEl.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
+            countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
         }
+
     }, 1000);
 }
 
+// ================================
+// CANCEL
+// ================================
 function clearLaunchTimer() {
+
     if (countdownInterval) {
         clearInterval(countdownInterval);
         countdownInterval = null;
     }
 
-    document.getElementById("pylone-countdown")?.classList.add("hidden");
-    setDisabled("pylone-launch", false);
+    $("pylone-countdown")?.classList.add("hidden");
+
+    setDisabled($("pylone-launch"), false);
 
     unlockChoices();
 }
 
+// ================================
+// LAUNCH RUN
+// ================================
 function launchRun() {
+
     const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Forêt Mourante";
-    const levelText = document.getElementById("levelLabel")?.textContent;
-    const difficulte = levelText ? levelText.replace("Niveau ", "") : "I";
-    const affixName = selectedStone ? selectedStone.name : null;
+    const levelText = $("levelLabel")?.textContent || "";
+    const difficulte = levelText.replace("Niveau ", "") || "I";
+    const affixName = selectedStone?.name || null;
 
-    const config = { biome, difficulte, affix: affixName };
+    const config = {
+        biome,
+        difficulte,
+        affix: affixName
+    };
 
-    document.getElementById("pylone-overlay")?.classList.add("hidden");
-    document.getElementById("sanctuary-screen")?.classList.add("hidden");
+    $("pylone-overlay")?.classList.add("hidden");
 
-    if (window.startRun) {
-        window.startRun(config);
-    } else {
-        console.error("startRun non définie");
-    }
+    // IMPORTANT FIX : data-screen system
+    document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
+
+    window.startRun?.(config);
 }
 
 // ================================
-// GLOBAL
-// ================================
-window.clearLaunchTimer = clearLaunchTimer;
-window.unlockPyloneChoices = unlockChoices;
-
-// ================================
-// SCALE SANCTUAIRE (1920×1080)
+// SCALE
 // ================================
 function scaleSanctuary() {
-    const wrapper = document.getElementById("sanctuary-wrapper");
+
+    const wrapper = $("sanctuary-wrapper");
     if (!wrapper) return;
 
     const baseW = 1920;
     const baseH = 1080;
-    const scale = Math.min(window.innerWidth / baseW, window.innerHeight / baseH);
+
+    const scale = Math.min(
+        window.innerWidth / baseW,
+        window.innerHeight / baseH
+    );
 
     wrapper.style.transform = `scale(${scale})`;
     wrapper.style.left = `${(window.innerWidth - baseW * scale) / 2}px`;
@@ -288,13 +317,20 @@ window.addEventListener("resize", scaleSanctuary);
 window.addEventListener("load", scaleSanctuary);
 
 // ================================
-// DEBUG SANCTUAIRE (G = grille, D = zones)
+// DEBUG
 // ================================
 document.addEventListener("keydown", (e) => {
-    if (e.key === "g" || e.key === "G") {
+    if (e.key === "g") {
         document.body.classList.toggle("sanctuary-show-grid");
     }
-    if (e.key === "d" || e.key === "D") {
+
+    if (e.key === "d") {
         document.body.classList.toggle("sanctuary-debug-zones");
     }
 });
+
+// ================================
+// GLOBAL EXPORTS
+// ================================
+window.clearLaunchTimer = clearLaunchTimer;
+window.unlockPyloneChoices = unlockChoices;

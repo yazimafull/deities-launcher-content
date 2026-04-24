@@ -1,4 +1,4 @@
-// enemyTypes.js
+﻿// enemyTypes.js
 
 export const enemyTypes = {
 
@@ -13,7 +13,14 @@ export const enemyTypes = {
         damageCd:      800,
         progressValue: 1,
         dropHealth:    false,
-        isElite:       false
+
+        isElite: false,
+        isBoss:  false,
+
+        // futur compat RPG (optionnel mais utile)
+        armor:      0,
+        shield:     0,
+        resistance: 0
     },
 
     elite: {
@@ -27,7 +34,13 @@ export const enemyTypes = {
         damageCd:      1000,
         progressValue: 3,
         dropHealth:    true,
-        isElite:       true
+
+        isElite: true,
+        isBoss:  false,
+
+        armor:      5,
+        shield:     20,
+        resistance: 0.1
     },
 
     boss: {
@@ -41,7 +54,12 @@ export const enemyTypes = {
         damageCd:      1200,
         progressValue: 0,
         dropHealth:    true,
-        isElite:       false,
-        isBoss:        true
+
+        isElite: false,
+        isBoss:  true,
+
+        armor:      10,
+        shield:     50,
+        resistance: 0.2
     }
 };

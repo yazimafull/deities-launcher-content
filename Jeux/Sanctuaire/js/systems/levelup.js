@@ -4,27 +4,35 @@ import { GameState, setState } from "../core/state.js";
 import { allUpgrades } from "./upgrades.js";
 import { addUpgradeToPanel } from "./upgradePanel.js";
 
+// ================================
+// UI STATE
+// ================================
 let panel = null;
 let container = null;
+let initialized = false;
 
-// --------------------------------------------------
+// ================================
 // INIT UI
-// --------------------------------------------------
+// ================================
 function initLevelUpUI() {
     panel = document.getElementById("levelup-menu");
     container = document.getElementById("upgrade-choices");
 
     if (!panel || !container) {
         console.warn("[levelup] UI manquante (#levelup-menu / #upgrade-choices)");
+        return;
     }
+
+    initialized = true;
 }
 
 document.addEventListener("DOMContentLoaded", initLevelUpUI);
 
-// --------------------------------------------------
-// OUVERTURE DU MENU
-// --------------------------------------------------
+// ================================
+// OUVERTURE DU MENU LEVEL UP
+// ================================
 export function openLevelUpMenu() {
+    if (!initialized) initLevelUpUI();
     if (!panel || !container) return;
 
     setState(GameState.LEVELUP);
@@ -40,8 +48,12 @@ export function openLevelUpMenu() {
         btn.textContent = up.name;
 
         btn.onclick = () => {
-            up.apply();              // applique l'upgrade
-            addUpgradeToPanel(up);   // l'affiche dans le HUD
+            try {
+                up.apply();              // applique l'upgrade
+                addUpgradeToPanel(up);   // affiche dans HUD
+            } catch (e) {
+                console.error("[levelup] erreur upgrade:", e);
+            }
 
             panel.classList.add("hidden");
             setState(GameState.PLAYING);
@@ -51,9 +63,9 @@ export function openLevelUpMenu() {
     });
 }
 
-// --------------------------------------------------
-// UTILITAIRE
-// --------------------------------------------------
+// ================================
+// UTILITAIRE RANDOM UPGRADES
+// ================================
 function pickRandomUpgrades(n) {
     const pool = [...allUpgrades];
     const result = [];

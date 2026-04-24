@@ -1,32 +1,35 @@
-// utils.js
+﻿// utils.js
 
+// ================================
+// RANDOM
+// ================================
 export function randRange(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-export function randChoice(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+export function randChoice(array) {
+    return array[(Math.random() * array.length) | 0];
 }
 
+// ================================
+// MATH / DISTANCE
+// ================================
 export function dist2(x1, y1, x2, y2) {
-    let dx = x2 - x1;
-    let dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
     return dx * dx + dy * dy;
 }
 
+// ================================
+// COLLISION
+// ================================
 export function circleRectCollision(cx, cy, r, rx, ry, rw, rh) {
-    let testX = cx;
-    let testY = cy;
 
-    if (cx < rx) testX = rx;
-    else if (cx > rx + rw) testX = rx + rw;
+    const closestX = Math.max(rx, Math.min(cx, rx + rw));
+    const closestY = Math.max(ry, Math.min(cy, ry + rh));
 
-    if (cy < ry) testY = ry;
-    else if (cy > ry + rh) testY = ry + rh;
+    const dx = cx - closestX;
+    const dy = cy - closestY;
 
-    let distX = cx - testX;
-    let distY = cy - testY;
-    let distance = distX * distX + distY * distY;
-
-    return distance <= r * r;
+    return (dx * dx + dy * dy) <= r * r;
 }

@@ -1,22 +1,31 @@
 ﻿// js/core/state.js
 
-export const GameState = {
-    MENU: 0,        // écran sélection personnage
-    SANCTUARY: 1,   // Hub Sanctuaire
-    PREPARING: 2,   // Config de la run (pylône)
-    PLAYING: 3,     // Run en cours
-    PAUSED: 4,      // Pause en jeu
-    LEVELUP: 5,     // Choix upgrade en jeu
-    DEAD: 6,        // Mort du joueur
-    REWARDS: 7      // Panel récompenses fin de map
-};
+export const GameState = Object.freeze({
+    MENU: 0,        // sélection personnage
+    SANCTUARY: 1,   // hub
+    PREPARING: 2,   // config run (pylône)
+    PLAYING: 3,     // gameplay
+    PAUSED: 4,      // pause
+    LEVELUP: 5,     // choix upgrades
+    DEAD: 6,        // mort joueur
+    REWARDS: 7      // fin de run / loot
+});
 
+// ================================
+// STATE ENGINE
+// ================================
 let currentState = GameState.MENU;
-
-export function setState(state) {
-    currentState = state;
-}
 
 export function getState() {
     return currentState;
+}
+
+export function setState(state) {
+    if (state === undefined || state === null) return;
+    currentState = state;
+}
+
+// (optionnel mais utile plus tard)
+export function isState(state) {
+    return currentState === state;
 }

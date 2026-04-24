@@ -14,11 +14,10 @@ export const playerStats = {
     maxHp:   100,
     hpRegen: 0,
 
-    // --- BOUCLIERS ---
-    shieldPhysical:    0,
-    maxShieldPhysical: 0,
-    shieldMagic:       0,
-    maxShieldMagic:    0,
+    // --- 🛡️ SHIELD UNIQUE ---
+    shield:      0,
+    maxShield:   0,
+    shieldRegen: 0.5, // points par seconde
 
     // --- DÉFENSE ---
     armor:          0,
@@ -36,7 +35,7 @@ export const playerStats = {
     element:        null,
 
     // --- TIR ---
-    fireRate:    500,   // ms entre chaque tir
+    fireRate:    500,
     lastShot:    0,
     bulletSpeed: 8,
     bulletSize:  8,
@@ -53,15 +52,16 @@ export function tryShoot(player, mobs, spawnBulletFn) {
     const now = performance.now();
     if (now - player.lastShot < player.fireRate) return;
 
-    // Trouver l'ennemi vivant le plus proche
-    let best     = null;
+    let best = null;
     let bestDist = Infinity;
 
     for (let m of mobs) {
         if (m.dead) continue;
+
         const dx = m.x - player.x;
         const dy = m.y - player.y;
-        const d  = dx*dx + dy*dy;
+        const d = dx * dx + dy * dy;
+
         if (d < bestDist) {
             bestDist = d;
             best = m;
@@ -75,20 +75,41 @@ export function tryShoot(player, mobs, spawnBulletFn) {
 }
 
 // ================================
+// REGEN SHIELD
+// ================================
+export function updateShield(dt) {
+    if (playerStats.shield < playerStats.maxShield) {
+        playerStats.shield += playerStats.shieldRegen * (dt / 1000);
+
+        if (playerStats.shield > playerStats.maxShield) {
+            playerStats.shield = playerStats.maxShield;
+        }
+    }
+}
+
+// ================================
 // DESSIN DU JOUEUR
 // ================================
 export function drawPlayerSprite(ctx, player) {
     // Ombre
     ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.beginPath();
-    ctx.ellipse(player.x, player.y + player.size/2 - 4, player.size/2, 6, 0, 0, Math.PI*2);
+    ctx.ellipse(
+        player.x,
+        player.y + player.size / 2 - 4,
+        player.size / 2,
+        6,
+        0,
+        0,
+        Math.PI * 2
+    );
     ctx.fill();
 
     // Corps
     ctx.fillStyle = "#4aa3ff";
     ctx.fillRect(
-        player.x - player.size/2,
-        player.y - player.size/2,
+        player.x - player.size / 2,
+        player.y - player.size / 2,
         player.size,
         player.size
     );

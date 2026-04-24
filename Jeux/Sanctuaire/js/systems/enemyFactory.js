@@ -1,4 +1,4 @@
-// systems/enemyFactory.js
+﻿// systems/enemyFactory.js
 // Version étendue — supporte élite, entourage, affixes, scaling
 
 import { enemyTypes } from "./enemyTypes.js";
@@ -11,24 +11,30 @@ const RANGES = {
 };
 
 export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) {
+
     const base = enemyTypes[type];
     if (!base) {
         console.error("Type d'ennemi inconnu :", type);
         return null;
     }
 
-    const ranges = RANGES[type] || RANGES["normal"];
+    const ranges = RANGES[type] || RANGES.normal;
     const diff   = Number(difficulty) || 1;
 
-    // Scaling difficulté
-    const hp     = Math.floor(base.baseHp     * (1 + (diff - 1) * 0.35));
-    const damage = Math.floor(base.baseDamage * (1 + (diff - 1) * 0.25));
-    const speed  =            base.baseSpeed  * (1 + (diff - 1) * 0.05);
+    // ================================
+    // SCALING
+    // ================================
+    let hp     = Math.floor(base.baseHp     * (1 + (diff - 1) * 0.35));
+    let damage = Math.floor(base.baseDamage * (1 + (diff - 1) * 0.25));
+    let speed  = base.baseSpeed * (1 + (diff - 1) * 0.05);
 
-    // Mob final
+    // ================================
+    // MOB BASE
+    // ================================
     const mob = {
         type,
         biome,
+
         isElite: type === "elite",
         isBoss:  type === "boss",
 
@@ -37,58 +43,65 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) 
         spawnY: y,
 
         hp,
-        maxHp:  hp,
+        maxHp: hp,
         damage,
         speed,
-        size:   base.baseSize,
-        color:  base.color,
+        size: base.baseSize,
+        color: base.color,
 
-        aggroRange:    ranges.aggroRange,
-        leashRange:    ranges.leashRange,
-        damageCd:      ranges.damageCd,
+        aggroRange: ranges.aggroRange,
+        leashRange: ranges.leashRange,
+        damageCd: ranges.damageCd,
 
         progressValue: base.progressValue ?? 1,
-        dropHealth:    base.dropHealth    ?? false,
+        dropHealth: base.dropHealth ?? false,
 
-        state:       "idle",
+        state: "idle",
         lastDmgTime: 0,
-        dead:        false,
-        alpha:       1.0,
+        dead: false,
+        alpha: 1.0,
 
         resistances: {},
-        dots:        [],
+        dots: [],
 
-        // Ajout pour le système procédural
         objectivePoints: bestiaryData?.objectivePoints ?? 1,
-        elite: bestiaryData?.elite ?? false,
-        entourage: 0,
-        entourageType: null
+
+        // IMPORTANT: bestiary override prioritaire
+        elite: bestiaryData?.elite ?? (type === "elite"),
+
+        entourage: bestiaryData?.entourage ?? 0,
+        entourageType: bestiaryData?.entourageType ?? null
     };
 
-    // -----------------------------
-    // BONUS ÉLITE (si elite = true)
-    // -----------------------------
+    // ================================
+    // ELITE BONUS (UNIQUEMENT SI ELITE FINAL)
+    // ================================
     if (mob.elite) {
+
         mob.hp     = Math.floor(mob.hp * 2.0);
         mob.maxHp  = mob.hp;
         mob.damage = Math.floor(mob.damage * 1.5);
-        mob.speed  *= 1.1;
-        mob.size   *= 1.2;
+        mob.speed *= 1.1;
+        mob.size  *= 1.2;
 
-        mob.objectivePoints = Math.floor(mob.objectivePoints * 3);
+        mob.objectivePoints *= 3;
 
-        // entourage automatique
-        mob.entourage = 3;
-        mob.entourageType = mob.type;
+        // fallback entourage si pas défini
+        if (mob.entourage === 0) {
+            mob.entourage = 3;
+        }
+
+        if (!mob.entourageType) {
+            mob.entourageType = mob.type;
+        }
     }
 
-    // -----------------------------
+    // ================================
     // AFFIXES (placeholder)
-    // -----------------------------
+    // ================================
     if (bestiaryData?.affixes) {
-        for (let affix of bestiaryData.affixes) {
-            // Exemple : affix.apply(mob)
-            // Tu ajouteras ton système d'affixes ici
+        for (const affix of bestiaryData.affixes) {
+            // affix.apply?.(mob)
         }
     }
 

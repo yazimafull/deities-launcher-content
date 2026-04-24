@@ -1,18 +1,34 @@
-// input.js
+﻿ // input.js
 
-export const keys = {};
+export const keys = Object.create(null);
 
-// Enregistre les touches enfoncées
-window.addEventListener("keydown", e => {
+// ================================
+// INPUT STATE
+// ================================
+window.addEventListener("keydown", onKeyDown);
+window.addEventListener("keyup", onKeyUp);
+
+// ================================
+// HANDLERS
+// ================================
+function onKeyDown(e) {
     keys[e.key.toLowerCase()] = true;
-});
+}
 
-// Enregistre les touches relâchées
-window.addEventListener("keyup", e => {
+function onKeyUp(e) {
     keys[e.key.toLowerCase()] = false;
-});
+}
 
-// Fonction utilitaire pour vérifier si une touche est enfoncée
+// ================================
+// API
+// ================================
 export function isDown(key) {
     return keys[key.toLowerCase()] === true;
+}
+
+// option utile pour debug / reset run
+export function resetInput() {
+    for (const k in keys) {
+        keys[k] = false;
+    }
 }

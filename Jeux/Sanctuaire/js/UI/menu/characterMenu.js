@@ -1,147 +1,233 @@
-// characterMenu.js
+ï»¿// ui/menu/characterMenu.js
 
 export let selectedClass = null;
 export let selectedCharacterName = null;
 
+// ================================
+// STORAGE
+// ================================
 export function loadCharacters() {
-    return JSON.parse(localStorage.getItem('deitiesPersonnages') || '[]');
+    return JSON.parse(localStorage.getItem("deitiesPersonnages") || "[]");
 }
 
 export function saveCharacters(characters) {
-    localStorage.setItem('deitiesPersonnages', JSON.stringify(characters));
+    localStorage.setItem("deitiesPersonnages", JSON.stringify(characters));
 }
 
+// ================================
+// INIT
+// ================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    const createBtn        = document.getElementById("create-character-btn");
-    const createOverlay    = document.getElementById("create-overlay");
-    const confirmBtn       = document.getElementById("confirm-create-btn");
-    const cancelBtn        = document.getElementById("cancel-create-btn");
-    const playBtn          = document.getElementById("play-character-btn");
-    const deleteBtn        = document.getElementById("delete-character-btn");
-    const deleteOverlay    = document.getElementById("delete-overlay");
-    const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
-    const cancelDeleteBtn  = document.getElementById("cancel-delete-btn");
-    const deleteNameLabel  = document.getElementById("delete-character-name");
-    const optionsBtn       = document.getElementById("options-btn");
-    const optionsPanel     = document.getElementById("options-panel");
-    const closeOptionsBtn  = document.getElementById("close-options-btn");
+    const $ = (id) => document.getElementById(id);
 
-    // Charger les personnages existants
-    loadCharacters().forEach(c => addCharacterToList(c));
+    const createBtn        = $("create-character-btn");
+    const createOverlay    = $("create-overlay");
+
+    const confirmBtn       = $("confirm-create-btn");
+    const cancelBtn        = $("cancel-create-btn");
+
+    const playBtn          = $("play-character-btn");
+    const deleteBtn        = $("delete-character-btn");
+
+    const deleteOverlay    = $("delete-overlay");
+    const confirmDeleteBtn = $("confirm-delete-btn");
+    const cancelDeleteBtn  = $("cancel-delete-btn");
+    const deleteNameLabel  = $("delete-character-name");
+
+    const optionsBtn       = $("options-btn");
+    const optionsPanel     = $("options-panel");
+    const closeOptionsBtn  = $("close-options-btn");
+
+    const list             = $("character-list");
+
+    if (!list) return;
 
     // ================================
-    // POPUP CRÉATION
+    // LOAD CHARACTERS
     // ================================
-    createBtn.addEventListener("click", () => {
+    loadCharacters().forEach(addCharacterToList);
+
+    // ================================
+    // CREATE POPUP
+    // ================================
+    createBtn?.addEventListener("click", () => {
         resetCreatePanel();
-        createOverlay.classList.remove("hidden");
+        createOverlay?.classList.remove("hidden");
     });
 
-    cancelBtn.addEventListener("click", () => {
-        createOverlay.classList.add("hidden");
+    cancelBtn?.addEventListener("click", () => {
+        createOverlay?.classList.add("hidden");
     });
 
-    createOverlay.addEventListener("click", (e) => {
-        if (e.target === createOverlay) createOverlay.classList.add("hidden");
+    createOverlay?.addEventListener("click", (e) => {
+        if (e.target === createOverlay) {
+            createOverlay.classList.add("hidden");
+        }
     });
 
-    // Sélection classe
+    // ================================
+    // CLASS SELECT
+    // ================================
     document.querySelectorAll(".class-card").forEach(card => {
+
         card.addEventListener("click", () => {
-            document.querySelectorAll(".class-card").forEach(c => c.classList.remove("selected"));
+
+            document.querySelectorAll(".class-card")
+                .forEach(c => c.classList.remove("selected"));
+
             card.classList.add("selected");
             selectedClass = card.dataset.class;
         });
     });
 
-    // Confirmer création
-    confirmBtn.addEventListener("click", () => {
-        const nameInput = document.getElementById("character-name-input");
-        const name = nameInput.value.trim();
+    // ================================
+    // CREATE CONFIRM
+    // ================================
+    confirmBtn?.addEventListener("click", () => {
 
-        if (!name) { alert("Veuillez entrer un pseudo !"); return; }
-        if (!selectedClass) { alert("Veuillez choisir une classe !"); return; }
+        const input = $("character-name-input");
+        const name = input?.value.trim();
+
+        if (!name) return alert("Veuillez entrer un pseudo !");
+        if (!selectedClass) return alert("Veuillez choisir une classe !");
 
         const characters = loadCharacters();
-        if (characters.find(c => c.name.toLowerCase() === name.toLowerCase())) {
-            alert("Un personnage avec ce nom existe déjà !");
-            return;
+
+        if (characters.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+            return alert("Ce nom existe dÃ©jÃ  !");
         }
 
-        const newCharacter = { name, avatarClass: selectedClass };
-        characters.push(newCharacter);
+        const newChar = {
+            name,
+            avatarClass: selectedClass
+        };
+
+        characters.push(newChar);
         saveCharacters(characters);
 
-        addCharacterToList(newCharacter);
-        selectCharacter(newCharacter.name);
+        addCharacterToList(newChar);
+        selectCharacter(newChar.name);
 
-        playBtn.disabled = false;
-        createOverlay.classList.add("hidden");
+        if (playBtn) playBtn.disabled = false;
+        createOverlay?.classList.add("hidden");
     });
 
     // ================================
-    // POPUP SUPPRESSION
+    // DELETE POPUP
     // ================================
-    deleteBtn.addEventListener("click", () => {
+    deleteBtn?.addEventListener("click", () => {
+
         if (!selectedCharacterName) return;
-        deleteNameLabel.textContent = selectedCharacterName;
-        deleteOverlay.classList.remove("hidden");
+
+        if (deleteNameLabel) {
+            deleteNameLabel.textContent = selectedCharacterName;
+        }
+
+        deleteOverlay?.classList.remove("hidden");
     });
 
-    cancelDeleteBtn.addEventListener("click", () => {
-        deleteOverlay.classList.add("hidden");
+    cancelDeleteBtn?.addEventListener("click", () => {
+        deleteOverlay?.classList.add("hidden");
     });
 
-    deleteOverlay.addEventListener("click", (e) => {
-        if (e.target === deleteOverlay) deleteOverlay.classList.add("hidden");
+    deleteOverlay?.addEventListener("click", (e) => {
+        if (e.target === deleteOverlay) {
+            deleteOverlay.classList.add("hidden");
+        }
     });
 
-    confirmDeleteBtn.addEventListener("click", () => {
+    confirmDeleteBtn?.addEventListener("click", () => {
+
         let characters = loadCharacters();
-        characters = characters.filter(c => c.name !== selectedCharacterName);
+
+        characters = characters.filter(
+            c => c.name !== selectedCharacterName
+        );
+
         saveCharacters(characters);
 
-        const item = document.querySelector(`.character-item[data-name="${selectedCharacterName}"]`);
-        if (item) item.remove();
+        document
+            .querySelector(`.character-item[data-name="${selectedCharacterName}"]`)
+            ?.remove();
 
         selectedCharacterName = null;
-        playBtn.disabled = true;
-        deleteBtn.classList.add("hidden");
-        deleteOverlay.classList.add("hidden");
+
+        if (playBtn) playBtn.disabled = true;
+        deleteBtn?.classList.add("hidden");
+
+        deleteOverlay?.classList.add("hidden");
     });
 
     // ================================
     // OPTIONS
     // ================================
-    optionsBtn.addEventListener("click", () => optionsPanel.classList.remove("hidden"));
-    closeOptionsBtn.addEventListener("click", () => optionsPanel.classList.add("hidden"));
+    optionsBtn?.addEventListener("click", () => {
+        optionsPanel?.classList.remove("hidden");
+    });
+
+    closeOptionsBtn?.addEventListener("click", () => {
+        optionsPanel?.classList.add("hidden");
+    });
 });
 
+// ================================
+// UI HELPERS
+// ================================
 export function addCharacterToList(character) {
+
     const list = document.getElementById("character-list");
+    if (!list) return;
+
     const item = document.createElement("div");
-    item.classList.add("character-item");
+
+    item.className = "character-item";
     item.dataset.name = character.name;
+
     item.innerHTML = `
         <span>${character.name}</span>
         <small>${character.avatarClass}</small>
     `;
-    item.addEventListener("click", () => selectCharacter(character.name));
+
+    item.addEventListener("click", () => {
+        selectCharacter(character.name);
+    });
+
     list.appendChild(item);
 }
 
+// ================================
+// SELECT
+// ================================
 export function selectCharacter(name) {
+
     selectedCharacterName = name;
-    document.querySelectorAll(".character-item").forEach(i => i.classList.remove("selected"));
-    const item = document.querySelector(`.character-item[data-name="${name}"]`);
-    if (item) item.classList.add("selected");
-    document.getElementById("play-character-btn").disabled = false;
-    document.getElementById("delete-character-btn").classList.remove("hidden");
+
+    document.querySelectorAll(".character-item")
+        .forEach(i => i.classList.remove("selected"));
+
+    document
+        .querySelector(`.character-item[data-name="${name}"]`)
+        ?.classList.add("selected");
+
+    const playBtn = document.getElementById("play-character-btn");
+    const deleteBtn = document.getElementById("delete-character-btn");
+
+    if (playBtn) playBtn.disabled = false;
+    if (deleteBtn) deleteBtn.classList.remove("hidden");
 }
 
+// ================================
+// RESET
+// ================================
 export function resetCreatePanel() {
-    document.getElementById("character-name-input").value = "";
+
+    const input = document.getElementById("character-name-input");
+
+    if (input) input.value = "";
+
     selectedClass = null;
-    document.querySelectorAll(".class-card").forEach(c => c.classList.remove("selected"));
+
+    document.querySelectorAll(".class-card")
+        .forEach(c => c.classList.remove("selected"));
 }
