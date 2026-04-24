@@ -1,4 +1,4 @@
-/* =============================== */
+﻿/* =============================== */
 /*           GAMEPLAY              */
 /* =============================== */
 
@@ -18,13 +18,50 @@
 /*       PANEL UPGRADES            */
 /* =============================== */
 
-/* (réutilise .side-panel de hud.css pour la structure,
-    les règles spécifiques upgrades vont ici) */
+.side-panel {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: rgba(10,10,25,0.92);
+    border: 1px solid #4a6fa5;
+    border-radius: 6px;
+    padding: 16px;
+    min-width: 200px;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    z-index: 500;
+}
 
 #upgrade-list {
     list-style: none;
     padding: 0;
     margin: 0;
+}
+
+/* =============================== */
+/*         ÉCRAN DE MORT           */
+/* =============================== */
+
+.death-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 8000;
+    font-family: 'Cinzel', serif;
+    color: #e2d3b5;
+}
+
+.death-panel h1 {
+    font-size: 3em;
+    color: #ff4444;
+    text-shadow: 0 0 20px #ff0000;
+    margin-bottom: 40px;
+    letter-spacing: 4px;
 }
 
 /* =============================== */

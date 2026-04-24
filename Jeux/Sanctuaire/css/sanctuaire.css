@@ -2,7 +2,7 @@
 /*           SANCTUAIRE            */
 /* =============================== */
 
-#sanctuary-screen {
+[data-screen="sanctuary"] {
     position: fixed;
     inset: 0;
     overflow: hidden;
@@ -13,7 +13,7 @@
 /*     BASE RESOLUTION WRAPPER     */
 /* =============================== */
 
-#sanctuary-wrapper {
+.sanctuary-wrapper {
     position: absolute;
     width: 1920px;
     height: 1080px;
@@ -24,7 +24,7 @@
 /*            BACKGROUND           */
 /* =============================== */
 
-#sanctuary-bg {
+.sanctuary-wrapper img {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -37,7 +37,7 @@
 /*      BARRE NOM PERSONNAGE       */
 /* =============================== */
 
-.sanctuary-character-bar {
+.character-bar {
     position: absolute;
     top: 16px;
     left: 50%;
@@ -57,7 +57,7 @@
 /*       ZONES CLIQUABLES          */
 /* =============================== */
 
-.sanctuary-zone {
+.zone {
     position: absolute;
     display: flex;
     align-items: center;
@@ -65,48 +65,51 @@
     cursor: pointer;
     transition: 0.3s;
     z-index: 10;
-}
-
-.zone-label {
     font-family: 'Cinzel', serif;
     font-size: 18px;
     color: #e2d3b5;
     text-shadow: 0 0 8px #000, 0 0 16px #000;
     letter-spacing: 1px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    text-align: center;
+    border: 2px solid rgba(212,175,55,0.6);
+    background: rgba(212,175,55,0.15);
 }
 
-.sanctuary-zone:hover .zone-label {
-    opacity: 1;
+/* Le texte est masqué par défaut, visible au survol */
+.zone {
+    color: transparent;
+    text-shadow: none;
+}
+
+.zone:hover {
+    color: #e2d3b5;
+    text-shadow: 0 0 8px #000, 0 0 16px #000;
 }
 
 /* =============================== */
 /*        FORMES DES ZONES         */
 /* =============================== */
 
-.zone-oval,
-.zone-rect {
-    border: 2px solid rgba(212,175,55,0.6);
-    background: rgba(212,175,55,0.15);
-}
-
-.zone-oval {
+[data-zone="pylone"] {
     border-radius: 50%;
 }
 
-.zone-oval:hover {
+[data-zone="pylone"]:hover {
     border-color: rgba(212,175,55,0.6);
     background: rgba(212,175,55,0.08);
     box-shadow: 0 0 30px rgba(212,175,55,0.3);
 }
 
-.zone-rect {
+[data-zone="marchand"],
+[data-zone="coffre"],
+[data-zone="forge"],
+[data-zone="grimoire"] {
     border-radius: 4px;
 }
 
-.zone-rect:hover {
+[data-zone="marchand"]:hover,
+[data-zone="coffre"]:hover,
+[data-zone="forge"]:hover,
+[data-zone="grimoire"]:hover {
     border-color: rgba(212,175,55,0.6);
     background: rgba(212,175,55,0.08);
     box-shadow: 0 0 20px rgba(212,175,55,0.3);
@@ -117,35 +120,35 @@
 /*   (base 1920×1080)              */
 /* =============================== */
 
-.zone-pylone {
+[data-zone="pylone"] {
     left: 710px;
     top: 110px;
     width: 500px;
     height: 850px;
 }
 
-.zone-marchand {
+[data-zone="marchand"] {
     left: 1280px;
     top: 350px;
     width: 300px;
     height: 450px;
 }
 
-.zone-coffre {
+[data-zone="coffre"] {
     left: 40px;
     top: 650px;
     width: 380px;
     height: 220px;
 }
 
-.zone-forge {
+[data-zone="forge"] {
     left: 440px;
     top: 650px;
     width: 260px;
     height: 220px;
 }
 
-.zone-grimoire {
+[data-zone="grimoire"] {
     left: 1620px;
     top: 650px;
     width: 260px;
@@ -156,7 +159,7 @@
 /*        BOUTON RETOUR            */
 /* =============================== */
 
-.sanctuary-back-btn {
+.sanctuary-wrapper [data-action="back-menu"] {
     position: absolute;
     bottom: 40px;
     left: 50%;
@@ -172,9 +175,11 @@
     z-index: 20;
     letter-spacing: 1px;
     font-family: 'Cinzel', serif;
+    display: block;
+    margin: 0;
 }
 
-.sanctuary-back-btn:hover {
+.sanctuary-wrapper [data-action="back-menu"]:hover {
     background: rgba(201,168,106,0.2);
     box-shadow: 0 0 14px rgba(201,168,106,0.5);
 }
@@ -183,7 +188,7 @@
 /*          GRILLE OVERLAY         */
 /* =============================== */
 
-#sanctuary-grid-overlay {
+.grid-overlay {
     position: fixed;
     inset: 0;
     pointer-events: none;
@@ -196,7 +201,7 @@
     background-size: 100px 100px;
 }
 
-.sanctuary-show-grid #sanctuary-grid-overlay {
+.sanctuary-show-grid .grid-overlay {
     opacity: 1;
 }
 
@@ -204,9 +209,10 @@
 /*          DEBUG ZONES            */
 /* =============================== */
 
-.sanctuary-debug-zones .sanctuary-zone {
+.sanctuary-debug-zones .zone {
     border-color: rgba(255,0,0,0.9) !important;
     background: rgba(255,0,0,0.25) !important;
     box-shadow: none !important;
-    opacity: 1 !important;
+    color: #fff !important;
+    text-shadow: none !important;
 }

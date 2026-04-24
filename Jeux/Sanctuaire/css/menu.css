@@ -2,9 +2,7 @@
 /*      MENU SÉLECTION PERSO       */
 /* =============================== */
 
-.character-screen {
-    position: absolute;
-    inset: 0;
+[data-screen="character-select"] {
     background-image: url("../main-menu-background.jpg");
     background-size: cover;
     background-position: center;
@@ -12,15 +10,13 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: stretch;
-    z-index: 2000;
 }
 
 /* =============================== */
-/*          PANNEAU GAUCHE         */
+/*          PANNEAUX               */
 /* =============================== */
 
-.left-panel,
-.right-panel {
+.panel {
     box-sizing: border-box;
     min-width: 0;
 }
@@ -47,7 +43,8 @@
     gap: 20px;
 }
 
-.left-btn {
+/* Boutons du menu gauche */
+.left-panel .btn {
     width: 180px;
     padding: 12px;
     font-size: 18px;
@@ -59,9 +56,11 @@
     cursor: pointer;
     border-radius: 3px;
     transition: 0.2s;
+    display: block;
+    margin: 0;
 }
 
-.left-btn:hover {
+.left-panel .btn:hover {
     background: rgba(201,168,106,0.2);
     box-shadow: 0 0 12px rgba(201,168,106,0.5);
 }
@@ -80,10 +79,6 @@
     padding-bottom: 60px;
 }
 
-#selected-character-display {
-    /* zone d'affichage personnage sélectionné */
-}
-
 .play-btn {
     width: 220px;
     padding: 16px;
@@ -97,6 +92,8 @@
     border-radius: 3px;
     transition: 0.2s;
     letter-spacing: 2px;
+    display: block;
+    margin: 0;
 }
 
 .play-btn:hover:not(:disabled) {
@@ -172,7 +169,7 @@
 /*     BOUTONS CRÉER / SUPPRIMER   */
 /* =============================== */
 
-.create-btn {
+.right-panel .btn {
     width: 100%;
     max-width: 180px;
     padding: 12px;
@@ -186,27 +183,26 @@
     border-radius: 3px;
     transition: 0.2s;
     text-align: center;
+    display: block;
+    margin: 0;
 }
 
-.create-btn:hover {
+.right-panel .btn:hover {
     background: rgba(201,168,106,0.2);
     box-shadow: 0 0 12px rgba(201,168,106,0.4);
 }
 
-.delete-btn {
-    width: 100%;
-    max-width: 180px;
+/* Bouton supprimer */
+.right-panel [data-action="delete-character"] {
     margin-top: 12px;
     padding: 10px;
-    font-family: 'Cinzel', serif;
-    text-transform: uppercase;
     font-size: 14px;
     background: rgba(80,0,0,0.5);
     border: 2px solid #b00000;
     color: #ffaaaa;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: 0.2s;
 }
 
-.delete-btn:hover { background: rgba(120,0,0,0.7); }
+.right-panel [data-action="delete-character"]:hover {
+    background: rgba(120,0,0,0.7);
+    box-shadow: none;
+}
