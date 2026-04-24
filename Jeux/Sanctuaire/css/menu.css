@@ -5,7 +5,7 @@
 .character-screen {
     position: absolute;
     inset: 0;
-    background-image: url("main-menu-background.jpg");
+    background-image: url("../main-menu-background.jpg");
     background-size: cover;
     background-position: center;
     display: flex;
