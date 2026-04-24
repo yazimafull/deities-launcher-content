@@ -1,33 +1,33 @@
 {
-    "version": "1777068982955",
+    "version": "1777069944294",
     "files": [
         {
             "path": "css/gameplay.css",
-            "sha256": "fc7c5312c695bc1992e794816988ef7fd27fdb1caa00c2c05d21b2bcf6a82d60"
+            "sha256": "b58a039a29e16f0fce7454caf1169595b700c82bf91a315d5cd0a77ff296b286"
         },
         {
             "path": "css/global.css",
-            "sha256": "3acf798917aaad7c231cd70d2f38b5bd8e328a656f1ab6b009e285b2053d831e"
+            "sha256": "8bf18f9cea5a3f7a1f6c5a82037b777d160c49019a015481452c68b0e5a07ffb"
         },
         {
             "path": "css/hud.css",
-            "sha256": "ba59e8d23a4b89ed25b96797babf335c829009e86f8573f579b761c908ccb34c"
+            "sha256": "e3772708430c262f0e8f6180557e0cbde0497340fe4c0a269cbeec6b3bb4b07f"
         },
         {
             "path": "css/menu.css",
-            "sha256": "dcfbe6e84b40578bd8e577501076c967163d42186a6201d783d368f225319c06"
+            "sha256": "37a26e9faa49d9be37dc1256042f0d177e78f087ef45e25ed4349f130e50de78"
         },
         {
             "path": "css/pylone.css",
-            "sha256": "e98b1ab865b58235fe9d08bdc3836243df21a98ef5724d0dd445de7faf1dbaac"
+            "sha256": "0bff2b013634c1ba64da636c333d05f3559f76ed131d1e3852fdcaf28b5b33d7"
         },
         {
             "path": "css/sanctuaire.css",
-            "sha256": "7412224fb1268840b8b07ea71d0f96a8ec2e1a3bbd4fb31623982dc3a3f3d2f1"
+            "sha256": "7e179a75d55a8ec34371442354eb0814f6cc9f864ee24de0df293a3e85043e77"
         },
         {
             "path": "css/system.css",
-            "sha256": "8057660955798d099d0502ea0dee7f53d9728887fd979b97664ad1f8fe49307e"
+            "sha256": "ce222da3c38a87363991be0b7adec162e3147e8d178ca313dcbcedd2fc496c08"
         },
         {
             "path": "game.json",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "03566e5838e69600baf8f16394162ccb43c39254a448e48fc7516f3cbfb516ce"
+            "sha256": "449d39b080ccf08cf12c6ea4887fe0bfffab0b98dfbb4d17126bcee751e26f40"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
