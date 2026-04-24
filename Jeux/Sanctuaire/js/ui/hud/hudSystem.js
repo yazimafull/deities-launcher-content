@@ -3,42 +3,68 @@
 let hudData = {
     hp: 1,
     maxHp: 1,
+
     shield: 0,
     maxShield: 1,
+
     xp: 0,
     xpMax: 1,
+
     objective: 0,
     objectiveMax: 1,
+
     timer: 0,
-    bossSpawned: false
+    bossSpawned: false,
+
+    dungeon: null
 };
 
 // ================================
-// API
+// CORE API (OBJET HUD)
 // ================================
-export function HUD_init(data = {}) {
-    hudData = { ...hudData, ...data };
-    updateHTMLBars();
-}
+export const HUD = {
 
-export function HUD_update(data = {}) {
-    hudData = { ...hudData, ...data };
-    updateHTMLBars();
-}
+    init(data = {}) {
+        hudData = { ...hudData, ...data };
+        updateHTMLBars();
+    },
 
-export function HUD_draw(ctx, canvas) {
-    if (!ctx || !canvas) return;
+    update(data = {}) {
+        hudData = { ...hudData, ...data };
+        updateHTMLBars();
+    },
 
-    drawObjectiveText(ctx, canvas);
-    drawTimer(ctx, canvas);
-    drawBossIndicator(ctx, canvas);
-}
+    draw(ctx, canvas) {
+        if (!ctx || !canvas) return;
+
+        drawObjectiveText(ctx, canvas);
+        drawTimer(ctx, canvas);
+        drawBossIndicator(ctx, canvas);
+    },
+
+    toggleEditMode() {
+        document.body.classList.toggle("hud-edit-mode");
+    },
+
+    show() {
+        document.getElementById("hud-root")?.classList.remove("hidden");
+    },
+
+    hide() {
+        document.getElementById("hud-root")?.classList.add("hidden");
+    }
+};
 
 // ================================
-// BAR SYSTEM SAFE
+// SAFE UTILS
 // ================================
 function clamp01(v) {
     return Math.max(0, Math.min(1, v || 0));
+}
+
+function safeRatio(v, max) {
+    if (!max || max <= 0) return 0;
+    return clamp01(v / max);
 }
 
 function setBar(name, ratio, color) {
@@ -46,45 +72,31 @@ function setBar(name, ratio, color) {
     if (!el) return;
 
     el.style.width = `${clamp01(ratio) * 100}%`;
-
-    if (color) {
-        el.style.background = color;
-    }
+    if (color) el.style.background = color;
 }
 
 // ================================
-// HTML BARS
+// HUD BARS
 // ================================
 function updateHTMLBars() {
 
-    // HP
+    const hpRatio = safeRatio(hudData.hp, hudData.maxHp);
+
     setBar(
         "hp",
-        hudData.hp / hudData.maxHp,
-        hudData.hp / hudData.maxHp > 0.6
-            ? "#00ff55"
-            : hudData.hp / hudData.maxHp > 0.3
-                ? "#ffaa00"
-                : "#ff4444"
+        hpRatio,
+        hpRatio > 0.6 ? "#00ff55"
+        : hpRatio > 0.3 ? "#ffaa00"
+        : "#ff4444"
     );
 
-    // SHIELD (safe division)
-    setBar(
-        "shield",
-        hudData.maxShield > 0 ? hudData.shield / hudData.maxShield : 0,
-        "#66ccff"
-    );
+    setBar("shield", safeRatio(hudData.shield, hudData.maxShield), "#66ccff");
 
-    // XP
-    setBar(
-        "xp",
-        hudData.xp / hudData.xpMax,
-        "#ffcc00"
-    );
+    setBar("xp", safeRatio(hudData.xp, hudData.xpMax), "#ffcc00");
 }
 
 // ================================
-// OBJECTIVE (CANVAS)
+// OBJECTIVE
 // ================================
 function drawObjectiveText(ctx, canvas) {
 
@@ -97,6 +109,7 @@ function drawObjectiveText(ctx, canvas) {
     ctx.save();
     ctx.font = "16px Cinzel";
     ctx.textAlign = "center";
+
     ctx.fillStyle = hudData.bossSpawned ? "#dd00ff" : "#ffcc88";
     ctx.shadowColor = ctx.fillStyle;
     ctx.shadowBlur = 6;
@@ -119,11 +132,7 @@ function drawTimer(ctx, canvas) {
 
     const ratio = remaining / (5 * 60 * 1000);
 
-    const r = 255;
-    const g = Math.floor(255 * ratio);
-    const b = Math.floor(255 * ratio);
-
-    const color = `rgb(${r},${g},${b})`;
+    const color = `rgb(255, ${Math.floor(255 * ratio)}, ${Math.floor(255 * ratio)})`;
 
     ctx.save();
     ctx.font = "26px Cinzel";
@@ -141,7 +150,7 @@ function drawTimer(ctx, canvas) {
 }
 
 // ================================
-// BOSS INDICATOR
+// BOSS
 // ================================
 function drawBossIndicator(ctx, canvas) {
 
@@ -150,6 +159,7 @@ function drawBossIndicator(ctx, canvas) {
     ctx.save();
     ctx.font = "14px Cinzel";
     ctx.textAlign = "center";
+
     ctx.fillStyle = "#dd00ff";
     ctx.shadowColor = "#dd00ff";
     ctx.shadowBlur = 10;
