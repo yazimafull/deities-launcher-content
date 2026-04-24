@@ -89,17 +89,69 @@
          ÉLÉMENTS HUD
     ========================================= -->
 
-    <div id="healthbar-container">
-        <div id="shield-physical-bar"></div>
-        <div id="shield-magic-bar"></div>
-        <div id="healthbar"></div>
+     <div id="hud-root">
+        <div class="hud-block" id="hud-player" data-hud-id="hud-player">
+            <div class="hud-player-bars">
+                <div class="hud-bar hud-bar-hp">
+                    <div class="hud-bar-track">
+                        <div class="hud-bar-fill" id="hud-hp-fill"></div>
+                    </div>
+                    <span id="hud-hp-text"></span>
+                </div>
+
+                <div class="hud-bar hud-bar-shield">
+                    <div class="hud-bar-track">
+                        <div class="hud-bar-fill" id="hud-shield-fill"></div>
+                    </div>
+                    <span id="hud-shield-text"></span>
+                </div>
+
+                <div class="hud-bar hud-bar-xp">
+                    <div class="hud-bar-track">
+                        <div class="hud-bar-fill" id="hud-xp-fill"></div>
+                    </div>
+                    <span id="hud-xp-text"></span>
+                </div>
+            </div>
+
+            <div class="hud-edit-controls">
+                <button class="hud-scale-minus">−</button>
+                <button class="hud-scale-plus">+</button>
+            </div>
+        </div>
+
+        <div class="hud-block" id="hud-dungeon" data-hud-id="hud-dungeon">
+            <div class="hud-dungeon-header">
+                <span id="hud-dungeon-level"></span>
+                <span id="hud-dungeon-timer"></span>
+                <span id="hud-dungeon-bonus"></span>
+            </div>
+            <div id="hud-dungeon-affixes"></div>
+
+            <div class="hud-edit-controls">
+                <button class="hud-scale-minus">−</button>
+                <button class="hud-scale-plus">+</button>
+            </div>
+        </div>
+
+        <div class="hud-block" id="hud-enemy" data-hud-id="hud-enemy">
+            <div class="hud-enemy-bar">
+                <div class="hud-enemy-bar-track">
+                    <div class="hud-enemy-bar-fill" id="hud-enemy-fill"></div>
+                    <div class="hud-enemy-bar-markers" id="hud-enemy-markers"></div>
+                </div>
+                <span id="hud-enemy-percent"></span>
+            </div>
+
+            <div class="hud-edit-controls">
+                <button class="hud-scale-minus">−</button>
+                <button class="hud-scale-plus">+</button>
+            </div>
+        </div>
+
+        <div id="hud-edit-grid"></div>
     </div>
 
-    <div id="xpbar-container" class="hidden">
-        <div id="xpbar"></div>
-    </div>
-
-    <canvas id="game-canvas" class="hidden"></canvas>
 
     <!-- ========================================
          ÉLÉMENTS GAMEPLAY
@@ -338,6 +390,27 @@
         document.getElementById("quit-btn")?.addEventListener("click", () => {
             window.electronAPI?.quitGame?.();
         });
+    </script>
+
+    <!-- === HUD SYSTEM === -->
+
+    <script type="module">
+    import { HUD } from "./ui/hud/hudSystem.js";
+
+    HUD.init({
+        dungeon: {
+            level: 1,
+            timeLimitMs: 5 * 60 * 1000,
+            enemyForcesMax: 100,
+            affixes: []
+        }
+    });
+
+    window.addEventListener("keydown", e => {
+        if (e.key.toLowerCase() === "h") {
+            HUD.toggleEditMode();
+        }
+    });
     </script>
 
 </body>

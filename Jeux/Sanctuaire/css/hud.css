@@ -1,109 +1,195 @@
-/* =============================== */
-/*         ÉLÉMENTS DE JEU         */
-/* =============================== */
-
-/* =============================== */
-/*          SIDE PANEL             */
-/* =============================== */
-
-.side-panel {
-    position: absolute;
-    right: 0; top: 0;
-    width: 250px; height: 100%;
-    background: rgba(0,0,0,0.6);
-    padding: 15px;
-    border-left: 2px solid #c9a86a;
-    z-index: 300;
+﻿/* Racine HUD */
+#hud-root {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9000;
+    font-family: system-ui, sans-serif;
 }
 
-.side-panel ul { list-style: none; padding: 0; }
-
-/* =============================== */
-/*         BARRE DE VIE            */
-/* =============================== */
-
-#healthbar-container {
+/* Blocs HUD */
+.hud-block {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 250px;
-    height: 20px;
-    background: #333;
-    border: 2px solid #c9a86a;
-    z-index: 200;
+    background: rgba(10, 10, 18, 0.9);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #f5f5f5;
+    min-width: 220px;
+    pointer-events: auto;
+    transform-origin: top left;
+    --hud-scale: 1;
+    transform: scale(var(--hud-scale));
+}
+
+/* Positions par défaut */
+#hud-player {
+    left: 20px;
+    bottom: 40px;
+}
+#hud-dungeon {
+    right: 40px;
+    top: 25%;
+}
+#hud-enemy {
+    right: 40px;
+    top: 25% + 80px;
+}
+
+/* Titre bloc */
+.hud-block-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+/* Barres génériques */
+.hud-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+.hud-bar-label {
+    width: 40px;
+    text-align: right;
+    color: #ccc;
+}
+.hud-bar-track {
+    flex: 1;
+    height: 10px;
+    background: #222;
+    border-radius: 999px;
     overflow: hidden;
 }
-
-/* Bouclier physique (bleu clair) */
-#shield-physical-bar {
-    position: absolute;
-    top: 0; left: 0;
+.hud-bar-fill {
     height: 100%;
     width: 0%;
-    background: #4da6ff;
-    opacity: 0.65;
-    transition: width 0.1s;
+    transition: width 0.15s linear;
+}
+.hud-bar-value {
+    width: 70px;
+    text-align: left;
+    font-size: 11px;
+    color: #ddd;
 }
 
-/* Bouclier magique (violet) */
-#shield-magic-bar {
-    position: absolute;
-    top: 0; left: 0;
+/* Couleurs barres */
+.hud-bar-hp .hud-bar-fill {
+    background: linear-gradient(90deg, #ff4b4b, #ff9a76);
+}
+.hud-bar-shield .hud-bar-fill {
+    background: linear-gradient(90deg, #4bb5ff, #7f7bff);
+}
+.hud-bar-xp .hud-bar-fill {
+    background: linear-gradient(90deg, #7bff7f, #b4ffea);
+}
+
+/* Panneau donjon */
+.hud-dungeon-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+#hud-dungeon-level {
+    color: #ffd76b;
+}
+#hud-dungeon-timer {
+    color: #ffffff;
+}
+#hud-dungeon-bonus {
+    color: #9b7bff;
+}
+.hud-dungeon-affixes {
+    font-size: 11px;
+    color: #ccc;
+}
+
+/* Enemy forces */
+.hud-enemy-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+.hud-enemy-bar-track {
+    position: relative;
+    flex: 1;
+    height: 10px;
+    background: #222;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.hud-enemy-bar-fill {
     height: 100%;
     width: 0%;
-    background: #c266ff;
-    opacity: 0.65;
-    transition: width 0.1s;
+    background: linear-gradient(90deg, #ffb347, #ff5e62);
+    transition: width 0.15s linear;
 }
-
-/* Vie */
-#healthbar {
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%;
-    width: 100%;
-    background: #00ff55;
-    transition: width 0.1s;
-}
-
-/* =============================== */
-/*           BARRE XP              */
-/* =============================== */
-
-#xpbar-container {
-    position: absolute;
-    bottom: 10px; left: 50%;
-    transform: translateX(-50%);
-    width: 60%; height: 15px;
-    background: #333;
-    border: 2px solid #c9a86a;
-    z-index: 200;
-}
-
-#xpbar {
-    height: 100%;
-    width: 0%;
-    background: #4aa3ff;
-    transition: width 0.2s;
-}
-
-/* =============================== */
-/*         ÉCRAN DE MORT           */
-/* =============================== */
-
-.death-panel {
+.hud-enemy-bar-markers {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.88);
-    color: #e2d3b5;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 36px;
-    gap: 24px;
-    z-index: 9999;
-    font-family: 'Cinzel', serif;
+    pointer-events: none;
+}
+.hud-enemy-bar-markers .marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #ffffffaa;
+}
+.hud-enemy-percent {
+    width: 60px;
+    text-align: right;
+    font-size: 11px;
+    color: #ddd;
 }
 
-.death-panel.show { display: flex; }
+/* Mode édition */
+#hud-root.hud-edit-mode .hud-block {
+    outline: 1px dashed #66c2ff;
+    cursor: move;
+}
+#hud-root.hud-edit-mode .hud-block-title {
+    color: #66c2ff;
+}
+.hud-edit-controls {
+    position: absolute;
+    top: -18px;
+    right: 0;
+    display: none;
+    gap: 2px;
+}
+.hud-edit-controls button {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    border: 1px solid #555;
+    background: #111;
+    color: #eee;
+    cursor: pointer;
+    padding: 0;
+}
+#hud-root.hud-edit-mode .hud-edit-controls {
+    display: flex;
+}
+
+/* Grille */
+#hud-edit-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+    background-image:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+#hud-root.hud-edit-mode #hud-edit-grid {
+    display: block;
+}
