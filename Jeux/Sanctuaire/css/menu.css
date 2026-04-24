@@ -1,0 +1,207 @@
+﻿/* =============================== */
+/*      MENU SÉLECTION PERSO       */
+/* =============================== */
+
+.character-screen {
+    position: absolute;
+    inset: 0;
+    background-image: url("main-menu-background.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    z-index: 2000;
+}
+
+/* =============================== */
+/*          PANNEAU GAUCHE         */
+/* =============================== */
+
+.left-panel,
+.right-panel {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.left-panel {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    background: rgba(0,0,0,0.35);
+}
+
+.game-logo {
+    width: 80%;
+    margin-bottom: 40px;
+    border-radius: 12px;
+}
+
+.left-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-btn {
+    width: 180px;
+    padding: 12px;
+    font-size: 18px;
+    background: rgba(0,0,0,0.55);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+}
+
+.left-btn:hover {
+    background: rgba(201,168,106,0.2);
+    box-shadow: 0 0 12px rgba(201,168,106,0.5);
+}
+
+/* =============================== */
+/*          ZONE CENTRALE          */
+/* =============================== */
+
+.center-panel {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 60px;
+}
+
+#selected-character-display {
+    /* zone d'affichage personnage sélectionné */
+}
+
+.play-btn {
+    width: 220px;
+    padding: 16px;
+    font-size: 22px;
+    background: rgba(0,0,0,0.7);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+    letter-spacing: 2px;
+}
+
+.play-btn:hover:not(:disabled) {
+    background: rgba(201,168,106,0.25);
+    box-shadow: 0 0 20px rgba(201,168,106,0.6);
+}
+
+.play-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* =============================== */
+/*          PANNEAU DROIT          */
+/* =============================== */
+
+.right-panel {
+    width: 20%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.panel-title {
+    color: #e2d3b5;
+    margin-bottom: 20px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(201,168,106,0.5);
+}
+
+/* =============================== */
+/*        LISTE PERSONNAGES        */
+/* =============================== */
+
+.character-list {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+}
+
+.character-list::-webkit-scrollbar { display: none; }
+
+.character-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(201,168,106,0.3);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: 0.2s;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+}
+
+.character-item:hover { background: rgba(201,168,106,0.1); }
+
+.character-item.selected {
+    background: rgba(20,15,5,0.8);
+    box-shadow: inset 0 0 12px rgba(201,168,106,0.35);
+}
+
+.character-item span { font-size: 15px; }
+.character-item small { font-size: 12px; color: #c9a86a; opacity: 0.85; }
+
+/* =============================== */
+/*     BOUTONS CRÉER / SUPPRIMER   */
+/* =============================== */
+
+.create-btn {
+    width: 100%;
+    max-width: 180px;
+    padding: 12px;
+    font-size: 15px;
+    background: rgba(0,0,0,0.55);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.create-btn:hover {
+    background: rgba(201,168,106,0.2);
+    box-shadow: 0 0 12px rgba(201,168,106,0.4);
+}
+
+.delete-btn {
+    width: 100%;
+    max-width: 180px;
+    margin-top: 12px;
+    padding: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    background: rgba(80,0,0,0.5);
+    border: 2px solid #b00000;
+    color: #ffaaaa;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+}
+
+.delete-btn:hover { background: rgba(120,0,0,0.7); }

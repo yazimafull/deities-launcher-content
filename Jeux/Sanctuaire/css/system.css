@@ -1,0 +1,366 @@
+/* =============================== */
+/*         BOUTON GÉNÉRIQUE        */
+/* =============================== */
+
+.btn {
+    display: block;
+    margin: 10px auto;
+    padding: 12px 25px;
+    background: #222;
+    border: 2px solid white;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Cinzel', serif;
+}
+
+.btn:hover { background: #444; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* =============================== */
+/*       BASE OVERLAY SYSTÈME      */
+/* =============================== */
+
+.create-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.70);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-container {
+    max-width: 800px;
+    width: 90%;
+    background: rgba(20,20,40,0.92);
+    padding: 30px;
+    border: 2px solid #4a6fa5;
+    box-shadow: 0 0 30px rgba(74,111,165,0.8);
+    border-radius: 5px;
+    position: relative;
+}
+
+.create-container h1 {
+    text-align: center;
+    color: #d4af37;
+    font-size: 2em;
+    margin-bottom: 24px;
+    text-shadow: 0 0 10px #4a6fa5;
+    border-bottom: 1px solid #4a6fa5;
+    padding-bottom: 12px;
+}
+
+/* =============================== */
+/*    POPUP CRÉATION PERSONNAGE    */
+/* =============================== */
+
+.pseudo-input {
+    width: 80%;
+    max-width: 500px;
+    margin: 0 auto 20px;
+}
+
+.pseudo-input input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #4a6fa5;
+    border-radius: 3px;
+    background: rgba(10,10,30,0.7);
+    color: #d4af37;
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.pseudo-input input::placeholder { color: #8a9bb8; }
+
+.classes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.class-card {
+    border: 1px solid #4a6fa5;
+    border-radius: 3px;
+    padding: 15px;
+    background: rgba(10,10,30,0.7);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.class-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(74,111,165,0.3), transparent);
+    transition: 0.5s;
+}
+
+.class-card:hover::before { left: 100%; }
+
+.class-card.selected {
+    background: rgba(20,20,50,0.9);
+    border-color: #d4af37;
+    box-shadow: 0 0 15px #d4af37;
+}
+
+.class-card h3 {
+    margin-top: 0;
+    color: #d4af37;
+    font-size: 1.4em;
+}
+
+.class-card p {
+    margin-bottom: 0;
+    color: #b8c5e8;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* =============================== */
+/*      BOUTONS CONFIRM / RETOUR   */
+/* =============================== */
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 500px;
+    margin: 20px auto 0;
+    gap: 16px;
+}
+
+.generate-btn {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(to bottom, #4a6fa5, #2e4a7d);
+    color: #d4af37;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1em;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.generate-btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
+    transition: 0.5s;
+}
+
+.generate-btn:hover { box-shadow: 0 0 20px #d4af37; }
+.generate-btn:hover::before { left: 100%; }
+
+.back-btn {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(to bottom, #7d4a4a, #5d2e2e);
+    color: #d4af37;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1em;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.back-btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
+    transition: 0.5s;
+}
+
+.back-btn:hover { box-shadow: 0 0 20px #7d4a4a; }
+.back-btn:hover::before { left: 100%; }
+
+/* =============================== */
+/*     POPUP SUPPRESSION PERSO     */
+/* =============================== */
+
+.delete-container {
+    max-width: 500px;
+    text-align: center;
+}
+
+.delete-container h1 {
+    color: #d4af37;
+    font-size: 1.8em;
+    border-bottom-color: #b00000;
+    text-shadow: 0 0 10px #b00000;
+}
+
+.delete-warning {
+    font-family: 'Cinzel', serif;
+    color: #e2d3b5;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 20px 0 28px;
+}
+
+.delete-warning span {
+    color: #ff6666;
+    font-weight: 700;
+}
+
+.delete-warning strong {
+    color: #d4af37;
+}
+
+.delete-container .button-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.delete-container .generate-btn {
+    background: linear-gradient(to bottom, #7d1a1a, #5d0000);
+    border: 1px solid #b00000;
+}
+
+.delete-container .generate-btn:hover {
+    box-shadow: 0 0 20px #b00000;
+}
+
+/* =============================== */
+/*         PANEL OPTIONS           */
+/* =============================== */
+
+.options-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+}
+
+.options-window {
+    background: rgba(10,10,25,0.95);
+    border: 2px solid #c9a86a;
+    padding: 40px;
+    border-radius: 5px;
+    color: #e2d3b5;
+    text-align: center;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: 'Cinzel', serif;
+}
+
+/* =============================== */
+/*           MENU PAUSE            */
+/* =============================== */
+
+.pause-container {
+    max-width: 420px;
+    text-align: center;
+}
+
+.pause-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.pause-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    background: rgba(10,10,30,0.8);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: 0.25s;
+    position: relative;
+    overflow: hidden;
+}
+
+.pause-btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,106,0.15), transparent);
+    transition: 0.5s;
+}
+
+.pause-btn:hover {
+    background: rgba(201,168,106,0.15);
+    box-shadow: 0 0 16px rgba(201,168,106,0.5);
+}
+
+.pause-btn:hover::before { left: 100%; }
+
+.pause-btn-danger {
+    border-color: #b05a00;
+    color: #ffcf8a;
+}
+
+.pause-btn-danger:hover {
+    background: rgba(176,90,0,0.2);
+    box-shadow: 0 0 16px rgba(176,90,0,0.5);
+}
+
+.pause-confirm-yes {
+    background: linear-gradient(to bottom, #7d1a1a, #5d0000);
+    border: 1px solid #b00000;
+}
+
+.pause-confirm-yes:hover { box-shadow: 0 0 20px #b00000; }
+
+/* =============================== */
+/*         OPTIONS EN JEU          */
+/* =============================== */
+
+.options-section {
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.options-slider {
+    width: 100%;
+    margin-top: 10px;
+    accent-color: #d4af37;
+    cursor: pointer;
+}
+
+/* =============================== */
+/*        PANEL "À VENIR"          */
+/* =============================== */
+
+.sanctuary-coming-soon {
+    max-width: 420px;
+    text-align: center;
+}
+
+.coming-soon-text {
+    font-family: 'Cinzel', serif;
+    color: #b8a88a;
+    font-size: 15px;
+    margin: 20px 0 28px;
+    line-height: 1.8;
+}

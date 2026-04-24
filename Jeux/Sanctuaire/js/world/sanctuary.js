@@ -267,3 +267,34 @@ function launchRun() {
 // ================================
 window.clearLaunchTimer = clearLaunchTimer;
 window.unlockPyloneChoices = unlockChoices;
+
+// ================================
+// SCALE SANCTUAIRE (1920×1080)
+// ================================
+function scaleSanctuary() {
+    const wrapper = document.getElementById("sanctuary-wrapper");
+    if (!wrapper) return;
+
+    const baseW = 1920;
+    const baseH = 1080;
+    const scale = Math.min(window.innerWidth / baseW, window.innerHeight / baseH);
+
+    wrapper.style.transform = `scale(${scale})`;
+    wrapper.style.left = `${(window.innerWidth - baseW * scale) / 2}px`;
+    wrapper.style.top = `${(window.innerHeight - baseH * scale) / 2}px`;
+}
+
+window.addEventListener("resize", scaleSanctuary);
+window.addEventListener("load", scaleSanctuary);
+
+// ================================
+// DEBUG SANCTUAIRE (G = grille, D = zones)
+// ================================
+document.addEventListener("keydown", (e) => {
+    if (e.key === "g" || e.key === "G") {
+        document.body.classList.toggle("sanctuary-show-grid");
+    }
+    if (e.key === "d" || e.key === "D") {
+        document.body.classList.toggle("sanctuary-debug-zones");
+    }
+});

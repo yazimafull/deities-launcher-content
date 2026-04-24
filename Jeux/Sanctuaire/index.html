@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Deities: Sanctuaire</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">    
-    <link rel="stylesheet" href="sanctuary.css">
+
+    <!-- === CHARGEMENT CSS MODULAIRE === -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/system.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/gameplay.css">
+    <link rel="stylesheet" href="css/pylone.css">
+    <link rel="stylesheet" href="css/sanctuaire.css">
 </head>
 <body>
 
@@ -41,38 +48,61 @@
     ========================================= -->
     <div id="sanctuary-screen" class="hidden">
 
-        <div class="sanctuary-bg"></div>
+        <div id="sanctuary-wrapper">
 
-        <div class="sanctuary-character-bar">
-            <span id="sanctuary-character-name"></span>
+            <img id="sanctuary-bg" src="sanctuary-background.jpg" alt="">
+
+            <div class="sanctuary-character-bar">
+                <span id="sanctuary-character-name"></span>
+            </div>
+
+            <div class="sanctuary-zone zone-oval zone-pylone" id="zone-pylone">
+                <span class="zone-label">Pylône Sacré</span>
+            </div>
+
+            <div class="sanctuary-zone zone-rect zone-marchand" id="zone-marchand">
+                <span class="zone-label">Marchand</span>
+            </div>
+
+            <div class="sanctuary-zone zone-rect zone-coffre" id="zone-coffre">
+                <span class="zone-label">Coffre</span>
+            </div>
+
+            <div class="sanctuary-zone zone-rect zone-forge" id="zone-forge">
+                <span class="zone-label">Forge</span>
+            </div>
+
+            <div class="sanctuary-zone zone-rect zone-grimoire" id="zone-grimoire">
+                <span class="zone-label">Grimoire</span>
+            </div>
+
+            <button class="sanctuary-back-btn" id="sanctuary-back-btn">↩ Menu principal</button>
+
         </div>
 
-        <div class="sanctuary-zone zone-oval zone-pylone" id="zone-pylone">
-            <span class="zone-label">Pylône Sacré</span>
-        </div>
-
-        <div class="sanctuary-zone zone-oval zone-marchand" id="zone-marchand">
-            <span class="zone-label">Marchand</span>
-        </div>
-
-        <div class="sanctuary-zone zone-rect zone-coffre" id="zone-coffre">
-            <span class="zone-label">Coffre</span>
-        </div>
-
-        <div class="sanctuary-zone zone-rect zone-forge" id="zone-forge">
-            <span class="zone-label">Forge</span>
-        </div>
-
-        <div class="sanctuary-zone zone-rect zone-grimoire" id="zone-grimoire">
-            <span class="zone-label">Grimoire</span>
-        </div>
-
-        <button class="sanctuary-back-btn" id="sanctuary-back-btn">↩ Menu principal</button>
+        <!-- Overlay grille debug (G) -->
+        <div id="sanctuary-grid-overlay"></div>
 
     </div>
 
     <!-- ========================================
-         ÉLÉMENTS DE JEU
+         ÉLÉMENTS HUD
+    ========================================= -->
+
+    <div id="healthbar-container">
+        <div id="shield-physical-bar"></div>
+        <div id="shield-magic-bar"></div>
+        <div id="healthbar"></div>
+    </div>
+
+    <div id="xpbar-container" class="hidden">
+        <div id="xpbar"></div>
+    </div>
+
+    <canvas id="game-canvas" class="hidden"></canvas>
+
+    <!-- ========================================
+         ÉLÉMENTS GAMEPLAY
     ========================================= -->
 
     <div id="levelup-menu" class="menu hidden">
@@ -84,19 +114,6 @@
         <h3>Upgrades</h3>
         <ul id="upgrade-list"></ul>
     </div>
-
-    <div id="healthbar-container">
-        <div id="shield-physical-bar"></div>
-        <div id="shield-magic-bar"></div>
-        <div id="healthbar"></div>
-    </div>
-
-
-    <div id="xpbar-container" class="hidden">
-        <div id="xpbar"></div>
-    </div>
-
-    <canvas id="game-canvas" class="hidden"></canvas>
 
     <div id="death-screen" class="death-panel hidden">
         <h1>Vous êtes mort</h1>
@@ -146,7 +163,10 @@
     <div id="delete-overlay" class="create-overlay hidden">
         <div class="create-container delete-container">
             <h1>Supprimer ce destin ?</h1>
-            <p class="delete-warning">Cette action est <span>irréversible</span>.<br>Le destin de <strong id="delete-character-name"></strong> sera effacé à jamais.</p>
+            <p class="delete-warning">
+                Cette action est <span>irréversible</span>.<br>
+                Le destin de <strong id="delete-character-name"></strong> sera effacé à jamais.
+            </p>
             <div class="button-container">
                 <button class="generate-btn" id="confirm-delete-btn">Supprimer</button>
                 <button class="back-btn" id="cancel-delete-btn">Annuler</button>
@@ -168,91 +188,85 @@
     </div>
 
     <!-- ========================================
-         POPUP PYLÔNE — CONFIG RUN (NOUVEAU PROTOTYPE)
+         POPUP PYLÔNE — CONFIG RUN
     ========================================= -->
     <div id="pylone-overlay" class="create-overlay hidden">
         <div class="pylone-ui">
             <div class="popup">
 
-            <!-- GAUCHE -->
-            <div class="popup-left">
-
+                <!-- TITRE -->
                 <div class="popup-title">CONFIGURER LA RUN</div>
 
-                <!-- BIOME -->
-                <div class="section">
-                    <div class="section-label">Biome</div>
-                    <div class="biome-row">
-                        <div class="biome-btn active">FORÊT MOURANTE</div>
-                        <div class="biome-btn">RUINES OUBLIÉES</div>
-                        <div class="biome-btn">ABYSSES</div>
-                    </div>
-                </div>
+                <!-- GAUCHE -->
+                <div class="popup-left">
 
-                <!-- NIVEAU -->
-                <div class="section">
-                    <div class="section-label">Niveau</div>
-                    <div class="dropdown" id="levelDropdown">
-                        <div class="dropdown-toggle">
-                            <span id="levelLabel">Niveau I</span>
-                            <span class="caret">▼</span>
-                        </div>
-                        <div class="dropdown-menu" id="levelMenu">
-                            <div class="dropdown-item" data-level="1">Niveau I</div>
-                            <div class="dropdown-item" data-level="2">Niveau II</div>
-                            <div class="dropdown-item" data-level="3">Niveau III</div>
-                            <div class="dropdown-item" data-level="4">Niveau IV</div>
-                            <div class="dropdown-item" data-level="5">Niveau V</div>
+                    <!-- BIOME -->
+                    <div class="section">
+                        <div class="section-label">Biome</div>
+                        <div class="biome-row">
+                            <div class="biome-btn active">FORÊT MOURANTE</div>
+                            <div class="biome-btn">RUINES OUBLIÉES</div>
+                            <div class="biome-btn">ABYSSES</div>
                         </div>
                     </div>
-                </div>
 
-                <!-- AFFIXE -->
-                <div class="section">
-                    <div class="section-label">Pierre d'affixe</div>
-                    <div class="affix-row">
-                        <div class="affix-slot" id="affixSlot">
-                            CLIQUE<br>POUR CHOISIR
-                        </div>
-                        <div class="affix-summary" id="affixSummary">
-                            Aucune pierre sélectionnée.
+                    <!-- NIVEAU -->
+                    <div class="section">
+                        <div class="section-label">Niveau</div>
+                        <div class="dropdown" id="levelDropdown">
+                            <div class="dropdown-toggle">
+                                <span id="levelLabel">Niveau I</span>
+                                <span class="caret">▼</span>
+                            </div>
+                            <div class="dropdown-menu" id="levelMenu">
+                                <div class="dropdown-item" data-level="1">Niveau I</div>
+                                <div class="dropdown-item" data-level="2">Niveau II</div>
+                                <div class="dropdown-item" data-level="3">Niveau III</div>
+                                <div class="dropdown-item" data-level="4">Niveau IV</div>
+                                <div class="dropdown-item" data-level="5">Niveau V</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- AFFIXE -->
+                    <div class="section">
+                        <div class="section-label">Pierre d'affixe</div>
+                        <div class="affix-row">
+                            <div class="affix-slot" id="affixSlot">
+                                CLIQUE<br>POUR CHOISIR
+                            </div>
+                            <div class="affix-summary" id="affixSummary">
+                                Aucune pierre sélectionnée.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COUNTDOWN -->
+                    <p id="pylone-countdown" class="pylone-countdown hidden"></p>
+
                 </div>
 
-                <!-- TIMER -->
-                <p id="pylone-countdown" class="pylone-countdown hidden"></p>
-
-            </div>
-
-            <!-- DROITE : RÉCAP -->
-            <div class="popup-right">
-                <div class="popup-title" style="visibility:hidden;">CONFIGURER LA RUN</div>
-
-                <div class="section">
-
+                <!-- DROITE : RÉCAP -->
+                <div class="popup-right">
                     <div class="recap-title">Récapitulatif</div>
-
                     <div class="recap-line" id="recapBiome">Biome : Forêt Mourante</div>
                     <div class="recap-line" id="recapLevel">Niveau : I</div>
                     <div class="recap-line" id="recapAffix">Affixe : Aucun</div>
-
                     <div class="recap-affix-list" id="recapAffixList"></div>
                 </div>
-            </div>
 
-            <!-- FOOTER -->
-            <div class="popup-footer">
-                <button class="btn" id="pylone-cancel">Annuler</button>
-                <button class="btn btn-primary" id="pylone-launch">Lancer la run</button>
-            </div>
+                <!-- FOOTER -->
+                <div class="popup-footer">
+                    <button class="btn" id="pylone-cancel">Annuler</button>
+                    <button class="btn btn-primary" id="pylone-launch">Lancer la run</button>
+                </div>
 
+            </div>
         </div>
     </div>
 
-
     <!-- ========================================
-         POPUP PANELS "À VENIR" (coffre, forge...)
+         POPUP PANELS "À VENIR"
     ========================================= -->
     <div id="sanctuary-panel-overlay" class="create-overlay hidden">
         <div class="create-container sanctuary-coming-soon">
@@ -265,7 +279,7 @@
     </div>
 
     <!-- ========================================
-         MENU PAUSE EN JEU (Echap)
+         MENU PAUSE (Échap)
     ========================================= -->
     <div id="pause-overlay" class="create-overlay hidden">
         <div class="create-container pause-container">

@@ -1,0 +1,283 @@
+/* =============================== */
+/*             PYLÔNE              */
+/* =============================== */
+
+/* =============================== */
+/*      OVERLAY (hérite system)    */
+/* =============================== */
+/* L'overlay utilise .create-overlay de system.css.
+   Seul le contenu interne est défini ici.          */
+
+/* =============================== */
+/*         FENÊTRE PYLÔNE          */
+/* =============================== */
+
+.pylone-ui .popup {
+    width: 950px;
+    padding: 30px;
+    background: rgba(20,20,40,0.95);
+    border: 2px solid #4a6fa5;
+    box-shadow: 0 0 25px rgba(74,111,165,0.7);
+    color: #e2d3b5;
+    border-radius: 10px;
+}
+
+/* =============================== */
+/*            TITRE                */
+/* =============================== */
+
+.popup-title {
+    font-size: 26px;
+    margin-bottom: 25px;
+    text-align: left;
+    letter-spacing: 2px;
+    color: #d4af37;
+}
+
+/* =============================== */
+/*    LAYOUT PRINCIPAL (2 COL)     */
+/* =============================== */
+
+.popup-left {
+    /* colonne gauche : sections config */
+}
+
+.popup-right {
+    /* colonne droite : récap */
+}
+
+/* grille 2fr 1fr entre left et right,
+   gérée dans le HTML via .pylone-ui > .popup */
+.pylone-ui .popup {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
+}
+
+/* Le titre occupe toute la largeur */
+.popup-title:first-child {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+}
+
+/* Le footer occupe toute la largeur */
+.popup-footer {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* =============================== */
+/*           SECTIONS              */
+/* =============================== */
+
+.section {
+    border: 1px solid #4a6fa5;
+    padding: 15px;
+    background: rgba(10,10,30,0.6);
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.section-label {
+    font-size: 14px;
+    color: #d4af37;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+/* =============================== */
+/*        RANGÉE DE CHOIX          */
+/* =============================== */
+
+.biome-row,
+.affix-row {
+    display: flex;
+    gap: 10px;
+}
+
+.biome-btn {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #4a6fa5;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 4px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #e2d3b5;
+    background: rgba(10,10,30,0.6);
+}
+
+.biome-btn:hover,
+.biome-btn.active {
+    border-color: #d4af37;
+    box-shadow: 0 0 10px rgba(212,175,55,0.6);
+    color: #d4af37;
+}
+
+/* =============================== */
+/*           DROPDOWN              */
+/* =============================== */
+
+.dropdown {
+    position: relative;
+    user-select: none;
+}
+
+.dropdown-toggle {
+    padding: 10px;
+    border: 1px solid #4a6fa5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    color: #e2d3b5;
+    background: rgba(10,10,30,0.6);
+    transition: 0.2s;
+}
+
+.dropdown-toggle:hover {
+    border-color: #d4af37;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: rgba(20,20,40,0.98);
+    border: 1px solid #4a6fa5;
+    border-radius: 4px;
+    z-index: 100;
+    display: none;
+}
+
+.dropdown.open .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    color: #e2d3b5;
+    transition: 0.15s;
+}
+
+.dropdown-item:hover {
+    background: rgba(212,175,55,0.15);
+    color: #d4af37;
+}
+
+.caret {
+    font-size: 11px;
+    color: #d4af37;
+}
+
+/* =============================== */
+/*           SLOT AFFIXE           */
+/* =============================== */
+
+.affix-slot {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    text-align: center;
+    color: #d4af37;
+    background: rgba(10,10,30,0.6);
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.affix-slot:hover {
+    box-shadow: 0 0 12px rgba(212,175,55,0.5);
+}
+
+.affix-summary {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #b8a88a;
+}
+
+/* =============================== */
+/*          RÉCAPITULATIF          */
+/* =============================== */
+
+.popup-right {
+    border: 1px solid #4a6fa5;
+    padding: 15px;
+    background: rgba(10,10,30,0.6);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+}
+
+.recap-title {
+    color: #d4af37;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-family: 'Cinzel', serif;
+}
+
+.recap-line {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #e2d3b5;
+    margin-bottom: 6px;
+}
+
+.recap-affix-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+}
+
+/* =============================== */
+/*         BONUS / MALUS           */
+/* =============================== */
+
+.bonus { color: #6ee26e; }
+.malus { color: #ff6b6b; }
+
+/* =============================== */
+/*           COUNTDOWN             */
+/* =============================== */
+
+.pylone-countdown {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: #d4af37;
+    margin: 16px 0 0;
+    text-shadow: 0 0 10px #d4af37;
+    letter-spacing: 2px;
+}
+
+/* =============================== */
+/*    LABEL GÉNÉRIQUE (options)    */
+/* =============================== */
+
+.pylone-label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    color: #d4af37;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}

@@ -1,0 +1,212 @@
+/* =============================== */
+/*           SANCTUAIRE            */
+/* =============================== */
+
+#sanctuary-screen {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+/* =============================== */
+/*     BASE RESOLUTION WRAPPER     */
+/* =============================== */
+
+#sanctuary-wrapper {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+}
+
+/* =============================== */
+/*            BACKGROUND           */
+/* =============================== */
+
+#sanctuary-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 1;
+}
+
+/* =============================== */
+/*      BARRE NOM PERSONNAGE       */
+/* =============================== */
+
+.sanctuary-character-bar {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.55);
+    border: 1px solid #c9a86a;
+    padding: 6px 20px;
+    border-radius: 3px;
+    color: #d4af37;
+    font-size: 20px;
+    letter-spacing: 2px;
+    z-index: 20;
+    font-family: 'Cinzel', serif;
+}
+
+/* =============================== */
+/*       ZONES CLIQUABLES          */
+/* =============================== */
+
+.sanctuary-zone {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 10;
+}
+
+.zone-label {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: #e2d3b5;
+    text-shadow: 0 0 8px #000, 0 0 16px #000;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+}
+
+.sanctuary-zone:hover .zone-label {
+    opacity: 1;
+}
+
+/* =============================== */
+/*        FORMES DES ZONES         */
+/* =============================== */
+
+.zone-oval,
+.zone-rect {
+    border: 2px solid rgba(212,175,55,0.6);
+    background: rgba(212,175,55,0.15);
+}
+
+.zone-oval {
+    border-radius: 50%;
+}
+
+.zone-oval:hover {
+    border-color: rgba(212,175,55,0.6);
+    background: rgba(212,175,55,0.08);
+    box-shadow: 0 0 30px rgba(212,175,55,0.3);
+}
+
+.zone-rect {
+    border-radius: 4px;
+}
+
+.zone-rect:hover {
+    border-color: rgba(212,175,55,0.6);
+    background: rgba(212,175,55,0.08);
+    box-shadow: 0 0 20px rgba(212,175,55,0.3);
+}
+
+/* =============================== */
+/*     POSITIONS EN PIXELS         */
+/*   (base 1920×1080)              */
+/* =============================== */
+
+.zone-pylone {
+    left: 710px;
+    top: 110px;
+    width: 500px;
+    height: 850px;
+}
+
+.zone-marchand {
+    left: 1280px;
+    top: 350px;
+    width: 300px;
+    height: 450px;
+}
+
+.zone-coffre {
+    left: 40px;
+    top: 650px;
+    width: 380px;
+    height: 220px;
+}
+
+.zone-forge {
+    left: 440px;
+    top: 650px;
+    width: 260px;
+    height: 220px;
+}
+
+.zone-grimoire {
+    left: 1620px;
+    top: 650px;
+    width: 260px;
+    height: 220px;
+}
+
+/* =============================== */
+/*        BOUTON RETOUR            */
+/* =============================== */
+
+.sanctuary-back-btn {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 32px;
+    font-size: 18px;
+    background: rgba(0,0,0,0.65);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+    z-index: 20;
+    letter-spacing: 1px;
+    font-family: 'Cinzel', serif;
+}
+
+.sanctuary-back-btn:hover {
+    background: rgba(201,168,106,0.2);
+    box-shadow: 0 0 14px rgba(201,168,106,0.5);
+}
+
+/* =============================== */
+/*          GRILLE OVERLAY         */
+/* =============================== */
+
+#sanctuary-grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background-image:
+        linear-gradient(to right, rgba(255,255,255,0.35) 2px, transparent 2px),
+        linear-gradient(to bottom, rgba(255,255,255,0.35) 2px, transparent 2px);
+    background-size: 100px 100px;
+}
+
+.sanctuary-show-grid #sanctuary-grid-overlay {
+    opacity: 1;
+}
+
+/* =============================== */
+/*          DEBUG ZONES            */
+/* =============================== */
+
+.sanctuary-debug-zones .sanctuary-zone {
+    border-color: rgba(255,0,0,0.9) !important;
+    background: rgba(255,0,0,0.25) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}

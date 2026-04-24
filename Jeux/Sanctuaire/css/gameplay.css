@@ -1,0 +1,93 @@
+/* =============================== */
+/*           GAMEPLAY              */
+/* =============================== */
+
+/* =============================== */
+/*        MENU LEVEL UP            */
+/* =============================== */
+
+.menu {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 100;
+}
+
+/* =============================== */
+/*       PANEL UPGRADES            */
+/* =============================== */
+
+/* (réutilise .side-panel de hud.css pour la structure,
+    les règles spécifiques upgrades vont ici) */
+
+#upgrade-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* =============================== */
+/*     BASE POPUP GAMEPLAY         */
+/* =============================== */
+
+.gameplay-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6000;
+}
+
+.gameplay-popup {
+    background: rgba(25,25,25,0.95);
+    border: 2px solid #c9a86a;
+    padding: 30px;
+    border-radius: 8px;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    box-shadow: 0 0 25px rgba(201,168,106,0.4);
+}
+
+.gameplay-title {
+    font-size: 26px;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    color: #d4af37;
+}
+
+.gameplay-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* =============================== */
+/*      BOUTONS GAMEPLAY           */
+/* =============================== */
+
+.gameplay-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+}
+
+.gameplay-btn-primary {
+    background: linear-gradient(to bottom, #4a6fa5, #2e4a7d);
+    color: #d4af37;
+}
+
+.gameplay-btn-secondary {
+    background: rgba(80,80,80,0.6);
+    color: #ddd;
+}
+
+.gameplay-btn-danger {
+    background: linear-gradient(to bottom, #7d1a1a, #5d0000);
+    color: #ffaaaa;
+}
