@@ -1,17 +1,37 @@
 {
-    "version": "1776881384639",
+    "version": "1777019192035",
     "files": [
         {
-            "path": "background.jpg",
-            "sha256": "5c9e5c030e889752a87e4a03a75e48205f639eadc30c1d494d6a79406f504dce"
+            "path": "css/gameplay.css",
+            "sha256": "fc7c5312c695bc1992e794816988ef7fd27fdb1caa00c2c05d21b2bcf6a82d60"
+        },
+        {
+            "path": "css/global.css",
+            "sha256": "b644d9554513dcf922abca3c594661abf5a91cd9247570eb4b0c446d5354b1e1"
+        },
+        {
+            "path": "css/hud.css",
+            "sha256": "574c42be07663bfb086e2b9fc2b34ec7e8e7a158fb5f07d361a7f235b2e9a3a1"
+        },
+        {
+            "path": "css/menu.css",
+            "sha256": "bdb294a5e629f1fb02640b5a1a9c62a72b479518bd6b91864fefb0b1692a151b"
+        },
+        {
+            "path": "css/pylone.css",
+            "sha256": "e98b1ab865b58235fe9d08bdc3836243df21a98ef5724d0dd445de7faf1dbaac"
+        },
+        {
+            "path": "css/sanctuaire.css",
+            "sha256": "df31d38589e744ea3b5f407b84409b20c033c48dd8bd9856b863b95bb81963b9"
+        },
+        {
+            "path": "css/system.css",
+            "sha256": "8057660955798d099d0502ea0dee7f53d9728887fd979b97664ad1f8fe49307e"
         },
         {
             "path": "game.json",
             "sha256": "b57c31c57b1998ac208bb483fab991cf65f50378fd18a1160b1ccc2eb6015fed"
-        },
-        {
-            "path": "gameplay.css",
-            "sha256": "9ae0139ff9fefe83655b8a85872086a31c344fec3aed055634355216bc00a27e"
         },
         {
             "path": "icon.png",
@@ -19,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "cfe1249ea66738301fb6231596c5aa0ff77bcd270f8363e1e775037c771933b8"
+            "sha256": "ec6c3eaf13fe1180a4b4763cbe10e9b99c013e5be6f73512627600edc04377d0"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
@@ -135,15 +155,15 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "43e5dc8b8c87294b6a62bd5b0bb21092057a921fd3c9760a3bec262e0039b113"
+            "sha256": "b8c02f4db93aeff2f1f6bc8bf0f925ce050e8097f64a94691239802113bc0b90"
         },
         {
-            "path": "sanctuary.jpg",
+            "path": "main-menu-background.jpg",
+            "sha256": "5c9e5c030e889752a87e4a03a75e48205f639eadc30c1d494d6a79406f504dce"
+        },
+        {
+            "path": "sanctuary-background.jpg",
             "sha256": "c0727235d81c4396f7e8fcbb3cf0644380b4215e1a0eb384ed56b691f86366f0"
-        },
-        {
-            "path": "system.css",
-            "sha256": "855c4fa9a5bf791801fb079daeea0ced168bd7a8aeea5fb61e7a0d6e1eafc6d1"
         }
     ]
 }
