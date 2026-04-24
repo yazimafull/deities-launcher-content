@@ -1,5 +1,5 @@
 {
-    "version": "1777021951470",
+    "version": "1777067719086",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -11,7 +11,7 @@
         },
         {
             "path": "css/hud.css",
-            "sha256": "574c42be07663bfb086e2b9fc2b34ec7e8e7a158fb5f07d361a7f235b2e9a3a1"
+            "sha256": "ba59e8d23a4b89ed25b96797babf335c829009e86f8573f579b761c908ccb34c"
         },
         {
             "path": "css/menu.css",
@@ -39,15 +39,11 @@
         },
         {
             "path": "index.html",
-            "sha256": "ec6c3eaf13fe1180a4b4763cbe10e9b99c013e5be6f73512627600edc04377d0"
+            "sha256": "5e3847065b071929abfc0796b877dbaae258012044cf6a25c27735761b15dbf2"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
             "sha256": "b56ab1a738674849be8c1b3af6b4452583833aaf1e517c059c38d472d0e99d3a"
-        },
-        {
-            "path": "js/UI/hud/healthbar.js",
-            "sha256": "7ff56af692e24a380b20a6494b20025aafc28d0da4d54f026cf58ac500bc5df0"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
