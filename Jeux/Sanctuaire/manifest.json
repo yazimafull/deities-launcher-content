@@ -1,5 +1,5 @@
 {
-    "version": "1777068472127",
+    "version": "1777068982955",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "449d39b080ccf08cf12c6ea4887fe0bfffab0b98dfbb4d17126bcee751e26f40"
+            "sha256": "03566e5838e69600baf8f16394162ccb43c39254a448e48fc7516f3cbfb516ce"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
