@@ -1,5 +1,5 @@
 {
-    "version": "1777125295729",
+    "version": "1777126006081",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -19,7 +19,7 @@
         },
         {
             "path": "css/pylone.css",
-            "sha256": "0bff2b013634c1ba64da636c333d05f3559f76ed131d1e3852fdcaf28b5b33d7"
+            "sha256": "08b4f802d08cb737c0ae25984d35b1bea97840f6afb304d7b784303c1b423bab"
         },
         {
             "path": "css/sanctuaire.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "53820e601a804e0b81c0acb3f7ba900cb1e18a1da44c31abbd962deb5fb92c04"
+            "sha256": "8f4e8f9764821418facad96faaf4fd72d8a383c8c17a1e4de70f2355e106bc4e"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
