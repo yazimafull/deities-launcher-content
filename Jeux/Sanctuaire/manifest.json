@@ -1,5 +1,5 @@
 {
-    "version": "1777129332941",
+    "version": "1777130085204",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -159,7 +159,7 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "3772f5b04f7ff4cda95a8682ef0c5d7d2328dbd16140998cb2ed4aec54b22cfe"
+            "sha256": "25d0a868270b43bf51fa5d7cbf127f4a531119537688a7356cfc027a59d76165"
         },
         {
             "path": "main-menu-background.jpg",
