@@ -1,5 +1,5 @@
 {
-    "version": "1777121879994",
+    "version": "1777122918337",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "892dc3adcd09d4a98fc0a5b2a5080fd4473ed99652b8ac765fcd6b8f4a9aa78a"
+            "sha256": "c5e659444fe913a32654c9f69f563a6ee2a2ea99a740ea3c743dcbc8afb408cd"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
