@@ -1,12 +1,12 @@
 ﻿// Jeux/Sanctuaire/js/world/sanctuary.js
-// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels, lancement de run)
+// ROLE : Gestion du Sanctuaire (UI, zones, pylône, lancement de run)
 // EXPORTS : initSanctuary()
-// DEPENDANCES : ../core/main.js (goToMenu), ../core/gameLoop.js (startRun)
+// DEPENDANCES : goToMenu(), startRun()
 // SCREEN : data-screen="sanctuary"
-// NOTES : initSanctuary() doit être appelée par le screen manager quand l’écran Sanctuaire est affiché
+// NOTES : 1 zone = 1 handler dédié (plus de panel générique). Le pylône utilise un overlay séparé. La structure interne du pylône sera refaite plus tard.
 
 // ================================
-// IMPORTS (FIX COUPLAGE GLOBAL)
+// IMPORTS
 // ================================
 import { goToMenu } from "../core/main.js";
 import { startRun } from "../core/gameLoop.js";
@@ -19,13 +19,6 @@ console.log("🔥 sanctuary.js LOADED");
 // ================================
 // CONSTANTES
 // ================================
-const PANEL_TITLES = {
-    coffre: "Coffre du Sanctuaire",
-    forge: "Forge Sacrée",
-    marchand: "Marchand des Ombres",
-    grimoire: "Grimoire Ancien"
-};
-
 const STONES = [
     {
         name: "Pierre de Fureur",
@@ -80,21 +73,73 @@ function setDisabled(el, value) {
 }
 
 // ================================
-// INIT SANCTUARY (REMPLACE DOMContentLoaded)
+// INIT SANCTUARY
 // ================================
 export function initSanctuary() {
     console.log("🔥 initSanctuary EXECUTED");
 
-    // BACK MENU
+    initHeader();
+    initZones();
+    initPylone();
+    scaleSanctuary();
+}
+
+// ================================
+// HEADER PERSONNAGE
+// ================================
+function initHeader() {
+    try {
+        const raw = sessionStorage.getItem("activeCharacter");
+        if (!raw) return;
+
+        const char = JSON.parse(raw);
+
+        setText("character-name", char.name || "");
+        setText("character-class", char.avatarClass || "");
+        setText("character-level", char.level != null ? String(char.level) : "1");
+
+    } catch (e) {
+        console.warn("Sanctuary header: impossible de lire activeCharacter", e);
+    }
+}
+
+// ================================
+// ZONES DU SANCTUAIRE
+// ================================
+function initZones() {
+
+    const PANELS = {
+        pylone: openPylonePanel,
+        forge: () => console.log("[Sanctuary] Forge : WIP"),
+        marchand: () => console.log("[Sanctuary] Marchand : WIP"),
+        coffre: () => console.log("[Sanctuary] Coffre : WIP"),
+        grimoire: () => console.log("[Sanctuary] Grimoire : WIP")
+    };
+
+    document.querySelectorAll("[data-zone]").forEach(zone => {
+        zone.addEventListener("click", () => {
+            const key = zone.dataset.zone;
+            const handler = PANELS[key];
+            if (handler) handler();
+            else console.warn("Zone inconnue :", key);
+        });
+    });
+
     $("sanctuary-back-btn")?.addEventListener("click", () => {
         goToMenu();
     });
+}
 
-    // PYLONE OPEN
-    $("zone-pylone")?.addEventListener("click", () => {
-        $("pylone-overlay")?.classList.remove("hidden");
-    });
+// ================================
+// PANEL PYLÔNE
+// ================================
+function openPylonePanel() {
+    $("pylone-overlay")?.classList.remove("hidden");
+}
 
+function initPylone() {
+
+    // CANCEL
     $("pylone-cancel")?.addEventListener("click", () => {
         if (countdownInterval) {
             clearLaunchTimer();
@@ -147,30 +192,8 @@ export function initSanctuary() {
         updateAffixDisplay();
     });
 
-    // ZONES
-    document.querySelectorAll("[data-zone]").forEach(zone => {
-        zone.addEventListener("click", () => {
-            const key = zone.dataset.zone;
-            openSanctuaryPanel(key);
-        });
-    });
-
-    $("sanctuary-panel-close")?.addEventListener("click", () => {
-        $("sanctuary-panel-overlay")?.classList.add("hidden");
-    });
-
+    // LAUNCH
     $("pylone-launch")?.addEventListener("click", startLaunchCountdown);
-
-    // SCALE INIT
-    scaleSanctuary();
-}
-
-// ================================
-// PANELS
-// ================================
-function openSanctuaryPanel(zone) {
-    setText("sanctuary-panel-title", PANEL_TITLES[zone] || zone);
-    $("sanctuary-panel-overlay")?.classList.remove("hidden");
 }
 
 // ================================
@@ -236,117 +259,4 @@ function unlockChoices() {
 
     setPointer($("levelDropdown"), "auto");
     setPointer($("affixSlot"), "auto");
-    setDisabled($("pylone-launch"), false);
-}
-
-// ================================
-// COUNTDOWN
-// ================================
-function startLaunchCountdown() {
-
-    const countdown = $("pylone-countdown");
-    const btn = $("pylone-launch");
-
-    if (!countdown || !btn) return;
-
-    let seconds = 5;
-
-    countdown.classList.remove("hidden");
-    btn.disabled = true;
-
-    lockChoices();
-
-    countdownInterval = setInterval(() => {
-
-        seconds--;
-
-        if (seconds <= 0) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-            launchRun();
-        } else {
-            countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
-        }
-
-    }, 1000);
-}
-
-// ================================
-// CANCEL
-// ================================
-function clearLaunchTimer() {
-
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-
-    $("pylone-countdown")?.classList.add("hidden");
-
-    setDisabled($("pylone-launch"), false);
-
-    unlockChoices();
-}
-
-// ================================
-// LAUNCH RUN
-// ================================
-function launchRun() {
-
-    const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Forêt Mourante";
-    const levelText = $("levelLabel")?.textContent || "";
-    const difficulte = levelText.replace("Niveau ", "") || "I";
-    const affixName = selectedStone?.name || null;
-
-    const activeCharacter = sessionStorage.getItem("activeCharacter");
-
-    const config = {
-        character: activeCharacter ? JSON.parse(activeCharacter) : null,
-        biome,
-        difficulte,
-        affix: affixName
-    };
-
-    $("pylone-overlay")?.classList.add("hidden");
-
-    document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
-
-    startRun(config);
-}
-
-// ================================
-// SCALE
-// ================================
-function scaleSanctuary() {
-
-    const wrapper = $("sanctuary-wrapper");
-    if (!wrapper) return;
-
-    const baseW = 1920;
-    const baseH = 1080;
-
-    const scale = Math.min(
-        window.innerWidth / baseW,
-        window.innerHeight / baseH
-    );
-
-    wrapper.style.transform = `scale(${scale})`;
-    wrapper.style.left = `${(window.innerWidth - baseW * scale) / 2}px`;
-    wrapper.style.top = `${(window.innerHeight - baseH * scale) / 2}px`;
-}
-
-window.addEventListener("resize", scaleSanctuary);
-window.addEventListener("load", scaleSanctuary);
-
-// ================================
-// DEBUG
-// ================================
-document.addEventListener("keydown", (e) => {
-    if (e.key === "g") {
-        document.body.classList.toggle("sanctuary-show-grid");
-    }
-
-    if (e.key === "d") {
-        document.body.classList.toggle("sanctuary-debug-zones");
-    }
-});
+    setDisabled($("pylone
