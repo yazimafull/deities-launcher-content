@@ -1,9 +1,23 @@
 ﻿// Jeux/Sanctuaire/js/world/sanctuary.js
-// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels, lancement de run)
+// ============================================================================
+// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels,
+//        lancement de run, récapitulatif, validation des choix).
+//
 // EXPORTS : initSanctuary()
-// DEPENDANCES : ../core/main.js (goToMenu), ../core/gameLoop.js (startRun)
+//
+// DEPENDANCES :
+// - ../core/main.js → goToMenu
+// - ../core/gameLoop.js → startRun
+//
 // SCREEN : data-screen="sanctuary"
-// NOTES : 1 zone = 1 handler dédié. Le pylône utilise un overlay séparé (UI refaite).
+//
+// NOTES :
+// - Validation du pylône : biome + niveau obligatoires, affixe optionnel.
+// - Le récap affixe affiche le nom + la liste complète des modificateurs.
+// - Le bouton Lancer est désactivé tant que les prérequis ne sont pas remplis.
+// - 1 zone = 1 handler dédié. Le pylône utilise un overlay séparé.
+// ============================================================================
+
 
 // ================================
 // IMPORTS
@@ -80,6 +94,18 @@ function setDisabled(el, value) {
 }
 
 // ================================
+// VALIDATION LANCEMENT RUN
+// ================================
+function updateLaunchButtonState() {
+    const biome = document.querySelector(".biome-btn.active");
+    const level = $("levelLabel")?.textContent?.trim();
+
+    const canLaunch = biome && level && level !== "Aucun";
+
+    setDisabled($("pylone-launch"), !canLaunch);
+}
+
+// ================================
 // INIT SANCTUARY
 // ================================
 export function initSanctuary() {
@@ -142,6 +168,7 @@ function initZones() {
 // ================================
 function openPylonePanel() {
     $("pylone-overlay")?.classList.remove("hidden");
+    updateLaunchButtonState();
 }
 
 function initPylone() {
@@ -162,6 +189,7 @@ function initPylone() {
             document.querySelectorAll(".biome-btn").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             updateRecap();
+            updateLaunchButtonState();
         });
     });
 
@@ -183,6 +211,7 @@ function initPylone() {
 
         levelLabel.textContent = item.textContent.trim();
         updateRecap();
+        updateLaunchButtonState();
         menu.classList.remove("open");
     });
 
@@ -197,6 +226,7 @@ function initPylone() {
         if (choicesLocked) return;
         selectedStone = selectedStone === STONES[0] ? STONES[1] : STONES[0];
         updateAffixDisplay();
+        updateLaunchButtonState();
     });
 
     // LAUNCH
@@ -226,9 +256,11 @@ function updateAffixDisplay() {
         slot.classList.add("has-affix");
         slot.textContent = "🜄";
 
+        // Centre
         setText("affixSummary", selectedStone.name);
-        setText("recapAffix", `Affixe : ${selectedStone.name}`);
 
+        // Récap colonne droite
+        setText("recapAffix", `Affixe : ${selectedStone.name}`);
         setHTML(
             "recapAffixList",
             selectedStone.affixes
@@ -381,4 +413,3 @@ document.addEventListener("keydown", (e) => {
         document.body.classList.toggle("sanctuary-debug-zones");
     }
 });
-
