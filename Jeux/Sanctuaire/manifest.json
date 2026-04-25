@@ -1,5 +1,5 @@
 {
-    "version": "1777076196479",
+    "version": "1777076700619",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -143,7 +143,7 @@
         },
         {
             "path": "js/ui/hud/hudSystem.js",
-            "sha256": "ac61e83460234fb0b37c7148b7c995a029a48ff148bec3cb6d21dc60da19cf2d"
+            "sha256": "542d44f6014fde455ddd3c7c80e46c782538d92fcfef3b982150753d9c1d0799"
         },
         {
             "path": "js/world/biome_foret.js",
