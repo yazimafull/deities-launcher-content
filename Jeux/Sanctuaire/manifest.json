@@ -1,5 +1,5 @@
 {
-    "version": "1777130085204",
+    "version": "1777131458875",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "8f4e8f9764821418facad96faaf4fd72d8a383c8c17a1e4de70f2355e106bc4e"
+            "sha256": "5ea7505c5ca735a207147a6dd8500a0fb252bf47a74d7808d306b6534eebfa26"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
@@ -59,7 +59,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "825487fab86ad4afdc0e9923f1013ce2155e2e52e5d247803e39e6b9df2609a5"
+            "sha256": "a1440fb362991da3580d9a4d0c26c0937638f9593b968ed0ca51e51b370de8be"
         },
         {
             "path": "js/core/input.js",
@@ -75,7 +75,7 @@
         },
         {
             "path": "js/core/runManager.js",
-            "sha256": "9ab54a9c7e2d3e86f5b228ac666db48e83982d3a1a3ed2cb61025c89dee9a4cf"
+            "sha256": "8b74b805f9b2f402b9cfa09f7e70658258995b06d179da59856d745c1994624e"
         },
         {
             "path": "js/core/screenManager.js",
