@@ -1,5 +1,5 @@
 {
-    "version": "1777077465095",
+    "version": "1777078186395",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -47,7 +47,7 @@
         },
         {
             "path": "js/UI/menu/characterMenu.js",
-            "sha256": "410d539d6c436cbad7ed45b4354a39670096a9a855a7aea40062ccec7aeca989"
+            "sha256": "fd3821ae0c70163ffb606bf15a8262a8322f8bdab6034d3826abafd0f2ad023f"
         },
         {
             "path": "js/UI/menu/pauseMenu.js",
@@ -67,11 +67,11 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "8b65a7041bf3b4dfe4cf6ee439cdbcf910db41d8ac1de76ee6229cf3d4f1d07e"
+            "sha256": "86ccc006e315ec66460e5e547f87dfcabac880922107394805fe42dc885ff09b"
         },
         {
             "path": "js/core/main.js",
-            "sha256": "80561a5589109adbe88e9758f3ce4ae37a8e09ed2df8faaf8d327cfe8fd45556"
+            "sha256": "d268479e15c8e06a836e59e6086646fa8cb283f706c7801120248b2e5cad1129"
         },
         {
             "path": "js/core/runManager.js",
