@@ -1,5 +1,7 @@
 ﻿// ui/hud/hudSystem.js
 
+import { getState, GameState } from "../../core/state.js";
+
 let hudData = {
     hp: 1,
     maxHp: 1,
@@ -17,21 +19,38 @@ let hudData = {
 };
 
 // ================================
-// API HUD UNIQUE
+// API HUD
 // ================================
 export const HUD = {
 
     init(data = {}) {
-        hudData = { ...hudData, ...data };
+        hudData = {
+            hp: 1,
+            maxHp: 1,
+            shield: 0,
+            maxShield: 1,
+            xp: 0,
+            xpMax: 1,
+            objective: 0,
+            objectiveMax: 1,
+            bossSpawned: false,
+            ...data
+        };
+
         updateBars();
     },
 
     update(data = {}) {
+
+        // 🚨 IMPORTANT: ignore updates hors gameplay
+        if (getState() !== GameState.PLAYING) return;
+
         hudData = { ...hudData, ...data };
         updateBars();
     },
 
     draw(ctx, canvas) {
+        if (getState() !== GameState.PLAYING) return;
         if (!ctx || !canvas) return;
 
         drawObjective(ctx, canvas);
@@ -44,6 +63,22 @@ export const HUD = {
 
     hide() {
         document.getElementById("hud-root")?.classList.add("hidden");
+    },
+
+    reset() {
+        hudData = {
+            hp: 1,
+            maxHp: 1,
+            shield: 0,
+            maxShield: 1,
+            xp: 0,
+            xpMax: 1,
+            objective: 0,
+            objectiveMax: 1,
+            bossSpawned: false
+        };
+
+        updateBars();
     },
 
     toggleEditMode() {
@@ -72,13 +107,16 @@ function setBar(name, value, max, color) {
 }
 
 // ================================
-// BARS HTML
+// BARS
 // ================================
 function updateBars() {
 
     const hpRatio = ratio(hudData.hp, hudData.maxHp);
 
-    setBar("hp", hudData.hp, hudData.maxHp,
+    setBar(
+        "hp",
+        hudData.hp,
+        hudData.maxHp,
         hpRatio > 0.6 ? "#00ff55"
         : hpRatio > 0.3 ? "#ffaa00"
         : "#ff4444"
@@ -89,7 +127,7 @@ function updateBars() {
 }
 
 // ================================
-// OBJECTIVE DISPLAY
+// OBJECTIVE
 // ================================
 function drawObjective(ctx, canvas) {
 
@@ -115,7 +153,7 @@ function drawObjective(ctx, canvas) {
 }
 
 // ================================
-// BOSS TEXT
+// BOSS
 // ================================
 function drawBoss(ctx, canvas) {
 
