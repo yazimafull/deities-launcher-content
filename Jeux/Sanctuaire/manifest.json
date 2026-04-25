@@ -1,5 +1,5 @@
 {
-    "version": "1777131458875",
+    "version": "1777132413232",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -31,7 +31,7 @@
         },
         {
             "path": "game.json",
-            "sha256": "b57c31c57b1998ac208bb483fab991cf65f50378fd18a1160b1ccc2eb6015fed"
+            "sha256": "ad61bbcd0fddf3e93e79ff624b6df9f2afd70df149641f024b8871964c800014"
         },
         {
             "path": "icon.png",
