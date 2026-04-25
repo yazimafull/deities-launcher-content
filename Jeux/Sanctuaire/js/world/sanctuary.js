@@ -1,4 +1,4 @@
-﻿﻿// sanctuary.js — VERSION STABLE CLEAN
+﻿// sanctuary.js — VERSION STABLE CLEAN
 
 // ================================
 // IMPORTS (FIX COUPLAGE GLOBAL)
@@ -284,7 +284,11 @@ function launchRun() {
     const difficulte = levelText.replace("Niveau ", "") || "I";
     const affixName = selectedStone?.name || null;
 
+    // 🔥 FIX CRITIQUE : ajouter le personnage actif
+    const activeCharacter = sessionStorage.getItem("activeCharacter");
+
     const config = {
+        character: activeCharacter ? JSON.parse(activeCharacter) : null,
         biome,
         difficulte,
         affix: affixName
@@ -292,7 +296,6 @@ function launchRun() {
 
     $("pylone-overlay")?.classList.add("hidden");
 
-    // IMPORTANT FIX : data-screen system
     document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
 
     startRun(config);
