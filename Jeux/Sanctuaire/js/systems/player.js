@@ -1,97 +1,99 @@
 ﻿// systems/player.js
-// Stats et comportement du joueur — source unique de vérité
+// Source de vérité des stats + logique combat joueur
 
 // ================================
-// STATS DU JOUEUR
+// BASE STATS (TEMPLATE)
 // ================================
 export const playerStats = {
-    // --- MOUVEMENT ---
-    speed:               1.5,
+    // --- MOVE ---
+    speed: 1.5,
     moveSpeedMultiplier: 1.0,
 
-    // --- VIE ---
-    hp:      100,
-    maxHp:   100,
+    // --- HP ---
+    hp: 100,
+    maxHp: 100,
     hpRegen: 0,
 
-    // --- 🛡️ SHIELD UNIQUE ---
-    shield:      0,
-    maxShield:   0,
-    shieldRegen: 0.5, // points par seconde
+    // --- SHIELD ---
+    shield: 0,
+    maxShield: 0,
+    shieldRegen: 0.5,
 
-    // --- DÉFENSE ---
-    armor:          0,
-    resistance:     0,
-    dodgeChance:    0,
-    parryChance:    0,
-    parryReduction: 0.7,
-    blockChance:    0,
-    blockValue:     0,
+    // --- DEFENSE ---
+    armor: 0,
+    resistance: 0,
+    dodgeChance: 0,
+    parryChance: 0,
 
-    // --- COMBAT ---
-    damage:         10,
-    critChance:     0.1,
+    // --- OFFENSE ---
+    damage: 10,
+    critChance: 0.1,
     critMultiplier: 2,
-    element:        null,
+    element: null,
 
-    // --- TIR ---
-    fireRate:    500,
-    lastShot:    0,
+    // --- SHOOT ---
+    fireRate: 500,
+    lastShot: 0,
     bulletSpeed: 8,
-    bulletSize:  8,
+    bulletSize: 8,
     bulletRange: 800,
-    piercing:    false
+    piercing: false
 };
 
 // ================================
-// TIR AUTOMATIQUE
+// SHOOT LOGIC
 // ================================
-export function tryShoot(player, mobs, spawnBulletFn) {
-    if (!mobs || mobs.length === 0) return;
+export function tryShoot(player, enemies, spawnProjectile) {
+    if (!player || !enemies || enemies.length === 0) return;
 
     const now = performance.now();
-    if (now - player.lastShot < player.fireRate) return;
+    if (now - (player.lastShot || 0) < player.fireRate) return;
 
-    let best = null;
+    let target = null;
     let bestDist = Infinity;
 
-    for (let m of mobs) {
-        if (m.dead) continue;
+    for (const e of enemies) {
+        if (e.dead) continue;
 
-        const dx = m.x - player.x;
-        const dy = m.y - player.y;
+        const dx = e.x - player.x;
+        const dy = e.y - player.y;
         const d = dx * dx + dy * dy;
 
         if (d < bestDist) {
             bestDist = d;
-            best = m;
+            target = e;
         }
     }
 
-    if (!best) return;
+    if (!target) return;
 
     player.lastShot = now;
-    spawnBulletFn(player, best);
+    spawnProjectile(player, target);
 }
 
 // ================================
-// REGEN SHIELD
+// SHIELD REGEN (CALL FROM ENGINE)
 // ================================
-export function updateShield(dt) {
-    if (playerStats.shield < playerStats.maxShield) {
-        playerStats.shield += playerStats.shieldRegen * (dt / 1000);
+export function updateShield(player, dt) {
+    if (!player) return;
+    if (player.maxShield <= 0) return;
 
-        if (playerStats.shield > playerStats.maxShield) {
-            playerStats.shield = playerStats.maxShield;
+    if (player.shield < player.maxShield) {
+        player.shield += player.shieldRegen * (dt / 1000);
+
+        if (player.shield > player.maxShield) {
+            player.shield = player.maxShield;
         }
     }
 }
 
 // ================================
-// DESSIN DU JOUEUR
+// OPTIONAL PLAYER DRAW (pure visual)
 // ================================
 export function drawPlayerSprite(ctx, player) {
-    // Ombre
+    if (!ctx || !player) return;
+
+    // shadow
     ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.beginPath();
     ctx.ellipse(
@@ -105,7 +107,7 @@ export function drawPlayerSprite(ctx, player) {
     );
     ctx.fill();
 
-    // Corps
+    // body
     ctx.fillStyle = "#4aa3ff";
     ctx.fillRect(
         player.x - player.size / 2,

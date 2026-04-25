@@ -1,6 +1,6 @@
 ﻿// core/gameLoop.js
 
-import { setState, GameState } from "./state.js";
+import { GameState, setState } from "./state.js";
 import { cleanRun } from "./runManager.js";
 
 import { initBiomeForet } from "../world/biome_foret.js";
@@ -25,6 +25,19 @@ let lastTime = 0;
 let animId = null;
 
 // ================================
+const gameContext = {
+    objective: 0,
+    objectiveMax: 50,
+    bossSpawned: false,
+
+    spawnProjectile: null,
+
+    addObjective(value) {
+        this.objective += value;
+    }
+};
+
+// ================================
 function initPlayer() {
 
     player = {
@@ -32,7 +45,9 @@ function initPlayer() {
         x: innerWidth / 2,
         y: innerHeight / 2,
         size: 28,
-        lastShot: 0
+        lastShot: 0,
+        xp: 0,
+        xpMax: 100
     };
 
     setPlayer(player);
@@ -49,19 +64,6 @@ function loop(t) {
 
     animId = requestAnimationFrame(loop);
 }
-
-// ================================
-// CONTEXT (clean separation)
-const gameContext = {
-    objective: 0,
-    objectiveMax: 50,
-    bossSpawned: false,
-
-    spawnProjectile: null,
-    addObjective(value) {
-        this.objective += value;
-    }
-};
 
 // ================================
 export function startRun(config) {
@@ -94,6 +96,16 @@ export function startRun(config) {
     setState(GameState.PLAYING);
 
     HUD.show();
+
+    HUD.init({
+        hp: player.hp,
+        maxHp: player.maxHp,
+        xp: 0,
+        xpMax: player.xpMax,
+        objective: 0,
+        objectiveMax: gameContext.objectiveMax,
+        bossSpawned: false
+    });
 
     lastTime = performance.now();
     animId = requestAnimationFrame(loop);
