@@ -1,8 +1,10 @@
-﻿﻿// Jeux/Sanctuaire/core/gameLoop.js
+﻿// Jeux/Sanctuaire/core/gameLoop.js
 // ============================================================================
 // ROLE
-// Gestion du moteur principal : boucle de jeu, canvas, joueur, contexte global.
-// Ne gère PAS la logique de run (biomes, affixes, difficulté).
+// Moteur principal du jeu : gestion du canvas, initialisation du joueur,
+// boucle de jeu (update + render). Ne gère AUCUNE logique de run.
+// La logique de run (biome, affixes, difficulté, HUD, systèmes) est gérée
+// exclusivement par runManager.js.
 //
 // ============================================================================
 // EXPORTS
@@ -18,13 +20,13 @@
 //
 // ============================================================================
 // SCREEN
-// Aucun écran spécifique : moteur global utilisé pendant la RUN.
+// Utilisé pendant la RUN (canvas visible).
 //
 // ============================================================================
 // NOTES
-// - La logique de run (biome, affixes, difficulté) doit être gérée par runManager.
-// - Ce fichier doit rester simple : moteur, canvas, boucle, joueur.
-// - Ne pas ajouter de logique de gameplay ici.
+// - Ce fichier doit rester minimaliste : moteur pur, aucune logique gameplay.
+// - startRun() ne fait que préparer le canvas, init le joueur et lancer la loop.
+// - Toute la logique de run est gérée par startRunManager() dans runManager.js.
 // ============================================================================
 
 
@@ -84,7 +86,7 @@ function loop(t) {
 }
 
 // ============================================================================
-// START RUN
+// START RUN (MOTEUR UNIQUEMENT)
 // ============================================================================
 export function startRun(config) {
 
@@ -99,7 +101,7 @@ export function startRun(config) {
     canvas.height = innerHeight;
     canvas.classList.remove("hidden");
 
-    // Reset du contexte
+    // Reset du contexte global
     gameContext.objective = 0;
     gameContext.bossSpawned = false;
 
