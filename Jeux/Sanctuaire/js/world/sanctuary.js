@@ -1,10 +1,20 @@
-﻿// sanctuary.js — VERSION STABLE CLEAN
+﻿// Jeux/Sanctuaire/js/world/sanctuary.js
+// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels, lancement de run)
+// EXPORTS : initSanctuary()
+// DEPENDANCES : ../core/main.js (goToMenu), ../core/gameLoop.js (startRun)
+// SCREEN : data-screen="sanctuary"
+// NOTES : initSanctuary() doit être appelée par le screen manager quand l’écran Sanctuaire est affiché
 
 // ================================
 // IMPORTS (FIX COUPLAGE GLOBAL)
 // ================================
 import { goToMenu } from "../core/main.js";
 import { startRun } from "../core/gameLoop.js";
+
+// ================================
+// DEBUG LOAD
+// ================================
+console.log("🔥 sanctuary.js LOADED");
 
 // ================================
 // CONSTANTES
@@ -73,6 +83,7 @@ function setDisabled(el, value) {
 // INIT SANCTUARY (REMPLACE DOMContentLoaded)
 // ================================
 export function initSanctuary() {
+    console.log("🔥 initSanctuary EXECUTED");
 
     // BACK MENU
     $("sanctuary-back-btn")?.addEventListener("click", () => {
