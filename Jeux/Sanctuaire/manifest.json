@@ -1,5 +1,5 @@
 {
-    "version": "1777076700619",
+    "version": "1777077200397",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "449d39b080ccf08cf12c6ea4887fe0bfffab0b98dfbb4d17126bcee751e26f40"
+            "sha256": "a50993f9b926f63b47f051fcc123e3516b2834ea7b0b71ed4206c8facce81f7d"
         },
         {
             "path": "js/UI/hud/damageNumbers.js",
@@ -59,7 +59,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "e89975a6a1bb4daa9b49afb29f07385fc001c63eaa7d3c9d17e8c39413c94409"
+            "sha256": "86747781b24cb7d480175ff77c40d68c45859eca82ef57829f76646df359b983"
         },
         {
             "path": "js/core/input.js",
