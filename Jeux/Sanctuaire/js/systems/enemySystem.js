@@ -101,7 +101,10 @@ function updateMobAI(mob, player, dt) {
     const leashRange = mob.leashRange ?? 500;
     const damageCd = mob.damageCd ?? 800;
 
-    const speed = mob.speed * dt * 0.06;
+    // ================================
+    // DOCUMENT FIX : normalisation dt
+    // ================================
+    const speed = mob.speed * (dt / 1000);
 
     switch (mob.state) {
 

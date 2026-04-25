@@ -1,10 +1,18 @@
-﻿// core/main.js
+﻿﻿// core/main.js
 
 import { setState, GameState } from "./state.js";
 import { startRun } from "./gameLoop.js";
 import { Screens, setScreen } from "./screenManager.js";
 
 const ACTIVE_CHARACTER_KEY = "activeCharacter";
+
+// ================================
+// EXPORT FIX (pour sanctuary.js)
+// ================================
+export function goToMenu() {
+    setScreen(Screens.MENU);
+    setState(GameState.MENU);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 

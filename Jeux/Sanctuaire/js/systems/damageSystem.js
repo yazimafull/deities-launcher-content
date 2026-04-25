@@ -1,4 +1,4 @@
-﻿// systems/damageSystem.js
+﻿﻿// systems/damageSystem.js
 
 export let dmgNumbers = [];
 
@@ -165,15 +165,27 @@ export function computeDamage(target, dmgPacket) {
 
     let dmg = dmgPacket.base ?? 0;
 
+    // multiplicateur
     if (dmgPacket.multiplier) {
         dmg *= dmgPacket.multiplier;
     }
 
-    if (dmgPacket.type && target?.resistances) {
+    // ================================
+    // RÉSISTANCES (correction document)
+    // ================================
+    if (target?.resistances) {
 
-        const res = target.resistances[dmgPacket.type] ?? 0;
+        const type = dmgPacket.element ?? dmgPacket.type;
 
-        dmg *= (1 - res);
+        if (type) {
+            let res = target.resistances[type] ?? 0;
+
+            // clamp pour éviter les aberrations
+            if (res < -0.9) res = -0.9;   // vulnérabilité max +90%
+            if (res > 1.0) res = 1.0;     // immunité totale
+
+            dmg *= (1 - res);
+        }
     }
 
     return Math.floor(dmg);

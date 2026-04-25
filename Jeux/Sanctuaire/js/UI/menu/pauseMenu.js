@@ -1,17 +1,27 @@
 ﻿import { setState, GameState } from "../../core/state.js";
 import { setScreen, Screens } from "../../core/screenManager.js";
 
+// Variable fermée, initialisée dans initPauseMenu()
+let pauseOverlay = null;
+
+// Fonction demandée par le document de review
+export function openPause() {
+    if (!pauseOverlay) return;
+    pauseOverlay.classList.remove("hidden");
+    setState(GameState.PAUSED);
+}
+
 export function initPauseMenu() {
 
-    const overlay = document.getElementById("pause-overlay");
+    pauseOverlay = document.getElementById("pause-overlay");
 
     document.addEventListener("keydown", (e) => {
 
         if (e.key !== "Escape") return;
 
-        overlay.classList.toggle("hidden");
+        pauseOverlay.classList.toggle("hidden");
 
-        if (overlay.classList.contains("hidden")) {
+        if (pauseOverlay.classList.contains("hidden")) {
             setState(GameState.PLAYING);
         } else {
             setState(GameState.PAUSED);
@@ -20,7 +30,7 @@ export function initPauseMenu() {
 
     document.getElementById("pause-sanctuary")?.addEventListener("click", () => {
 
-        overlay.classList.add("hidden");
+        pauseOverlay.classList.add("hidden");
 
         setState(GameState.SANCTUARY);
         setScreen(Screens.SANCTUARY);

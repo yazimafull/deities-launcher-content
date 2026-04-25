@@ -1,4 +1,4 @@
-﻿// systems/projectile.js
+﻿﻿// systems/projectile.js
 
 export const projectiles = [];
 

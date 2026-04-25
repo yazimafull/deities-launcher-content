@@ -1,8 +1,9 @@
-﻿// world/biome_foret.js
+﻿﻿// world/biome_foret.js
 
 import { getState, GameState } from "../core/state.js";
 import { spawnEnemy, enemies } from "../systems/enemySystem.js";
 import { generateBiomeMobs } from "../systems/biomeSpawner.js";
+import { isDown } from "../core/input.js";
 
 // ================================
 // CONSTANTES
@@ -34,14 +35,6 @@ let target = null;
 let trees = [];
 let runConfig = {};
 let active = false;
-
-const keys = {};
-
-// ================================
-// INPUT GLOBAL
-// ================================
-window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
 // ================================
 // INIT
@@ -173,10 +166,10 @@ function updateMovement(player) {
 
     let dx = 0, dy = 0;
 
-    if (keys["z"] || keys["arrowup"]) dy -= 1;
-    if (keys["s"] || keys["arrowdown"]) dy += 1;
-    if (keys["q"] || keys["arrowleft"]) dx -= 1;
-    if (keys["d"] || keys["arrowright"]) dx += 1;
+    if (isDown("up")) dy -= 1;
+    if (isDown("down")) dy += 1;
+    if (isDown("left")) dx -= 1;
+    if (isDown("right")) dx += 1;
 
     if (dx === 0 && dy === 0 && target) {
 

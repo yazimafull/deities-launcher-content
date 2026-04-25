@@ -1,4 +1,10 @@
-﻿// sanctuary.js — VERSION STABLE CLEAN
+﻿﻿// sanctuary.js — VERSION STABLE CLEAN
+
+// ================================
+// IMPORTS (FIX COUPLAGE GLOBAL)
+// ================================
+import { goToMenu } from "../core/main.js";
+import { startRun } from "../core/gameLoop.js";
 
 // ================================
 // CONSTANTES
@@ -70,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // BACK MENU
     $("sanctuary-back-btn")?.addEventListener("click", () => {
-        window.goToMenu?.();
+        goToMenu();
     });
 
     // PYLONE OPEN
@@ -130,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateAffixDisplay();
     });
 
-    // ZONES (FIX IMPORTANT)
+    // ZONES
     document.querySelectorAll("[data-zone]").forEach(zone => {
         zone.addEventListener("click", () => {
             const key = zone.dataset.zone;
@@ -289,7 +295,7 @@ function launchRun() {
     // IMPORTANT FIX : data-screen system
     document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
 
-    window.startRun?.(config);
+    startRun(config);
 }
 
 // ================================
@@ -328,9 +334,3 @@ document.addEventListener("keydown", (e) => {
         document.body.classList.toggle("sanctuary-debug-zones");
     }
 });
-
-// ================================
-// GLOBAL EXPORTS
-// ================================
-window.clearLaunchTimer = clearLaunchTimer;
-window.unlockPyloneChoices = unlockChoices;

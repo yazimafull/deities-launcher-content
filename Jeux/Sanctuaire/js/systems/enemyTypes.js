@@ -1,4 +1,4 @@
-﻿// enemyTypes.js
+﻿﻿// enemyTypes.js
 
 export const enemyTypes = {
 
@@ -8,16 +8,12 @@ export const enemyTypes = {
         baseSpeed:     1.4,
         baseSize:      28,
         color:         "#884444",
-        aggroRange:    280,
-        leashRange:    500,
-        damageCd:      800,
         progressValue: 1,
         dropHealth:    false,
 
         isElite: false,
         isBoss:  false,
 
-        // futur compat RPG (optionnel mais utile)
         armor:      0,
         shield:     0,
         resistance: 0
@@ -29,9 +25,6 @@ export const enemyTypes = {
         baseSpeed:     1.1,
         baseSize:      42,
         color:         "#cc6600",
-        aggroRange:    320,
-        leashRange:    600,
-        damageCd:      1000,
         progressValue: 3,
         dropHealth:    true,
 
@@ -49,9 +42,6 @@ export const enemyTypes = {
         baseSpeed:     1.0,
         baseSize:      60,
         color:         "#7700aa",
-        aggroRange:    99999,
-        leashRange:    99999,
-        damageCd:      1200,
         progressValue: 0,
         dropHealth:    true,
 

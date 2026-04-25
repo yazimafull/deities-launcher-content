@@ -1,12 +1,12 @@
-﻿// world/biome_wip.js
+﻿﻿// world/biome_wip.js
 
 import { getState, GameState } from "../core/state.js";
 import { openPause } from "../UI/menu/pauseMenu.js";
+import { isDown } from "../core/input.js";
 
 let canvas, ctx;
 let animId = null;
 let biomeName = "";
-let escListener = null;
 
 // ================================
 // INIT BIOME
@@ -28,17 +28,6 @@ export function initBiomeWIP(name) {
     // ❌ SUPPRIMÉ : healthbar-container / xpbar-container
     // → remplacé par HUD system (data-driven)
 
-    // ================================
-    // INPUT PAUSE
-    // ================================
-    escListener = (e) => {
-        if (e.key === "Escape" && getState() === GameState.PLAYING) {
-            openPause();
-        }
-    };
-
-    window.addEventListener("keydown", escListener);
-
     animId = requestAnimationFrame(loop);
 }
 
@@ -49,11 +38,6 @@ export function stopBiomeWIP() {
 
     if (animId) cancelAnimationFrame(animId);
     animId = null;
-
-    if (escListener) {
-        window.removeEventListener("keydown", escListener);
-        escListener = null;
-    }
 
     const c = document.getElementById("game-canvas");
 
@@ -76,6 +60,11 @@ function loop() {
     if (getState() !== GameState.PLAYING) {
         animId = requestAnimationFrame(loop);
         return;
+    }
+
+    // Correction demandée : utiliser isDown() pour Escape
+    if (isDown("escape")) {
+        openPause();
     }
 
     draw();

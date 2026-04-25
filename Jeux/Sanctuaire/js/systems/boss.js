@@ -1,4 +1,4 @@
-﻿// systems/boss.js
+﻿﻿// systems/boss.js
 
 import { createEnemy } from "./enemyFactory.js";
 import { damagePlayer } from "./damageSystem.js";
@@ -26,6 +26,12 @@ export function isBossAlive() {
 
 export function getBoss() {
     return boss;
+}
+
+// Ajout demandé par le document de review :
+// Permettre au moteur de savoir si un boss est réellement actif.
+export function isBossActive() {
+    return boss !== null && boss.dead !== true;
 }
 
 // ================================
