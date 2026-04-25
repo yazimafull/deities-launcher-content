@@ -49,27 +49,102 @@
 <!-- =========================
      SANCTUARY
 ========================= -->
+<!-- =========================
+     SANCTUARY
+========================= -->
 <section class="screen hidden" data-screen="sanctuary">
 
-    <div class="sanctuary-wrapper">
+    <div id="sanctuary-wrapper" class="sanctuary-wrapper">
         <img src="sanctuary-background.jpg" alt="">
 
+        <!-- Barre perso (remplie par un autre module) -->
         <div class="character-bar">
             <span data-role="character-name"></span>
+            <span data-role="character-class"></span>
+            <span data-role="character-level"></span>
         </div>
 
-        <div class="zone" data-zone="pylone">Pylône</div>
+        <!-- ZONES INTERACTIVES (sanctuary.js écoute [data-zone]) -->
+        <div id="zone-pylone" class="zone" data-zone="pylone">Pylône</div>
         <div class="zone" data-zone="marchand">Marchand</div>
         <div class="zone" data-zone="coffre">Coffre</div>
         <div class="zone" data-zone="forge">Forge</div>
         <div class="zone" data-zone="grimoire">Grimoire</div>
 
-        <button class="btn" data-action="back-menu">Menu</button>
+        <!-- Bouton retour (sanctuary.js écoute #sanctuary-back-btn) -->
+        <button id="sanctuary-back-btn" class="btn" data-action="back-menu">Menu</button>
     </div>
 
     <div class="grid-overlay"></div>
 
+    <!-- OVERLAY PYLÔNE (utilisé par initSanctuary) -->
+    <div id="pylone-overlay" class="overlay hidden">
+        <div class="modal pylone-modal">
+
+            <h2>Pylône de Lancement</h2>
+
+            <!-- Biomes -->
+            <div class="biome-list">
+                <button class="biome-btn">Forêt Mourante</button>
+                <button class="biome-btn">Catacombes</button>
+                <button class="biome-btn">Citadelle</button>
+            </div>
+
+            <!-- Niveau (dropdown) -->
+            <div id="levelDropdown" class="dropdown">
+                <button class="dropdown-toggle">
+                    <span id="levelLabel">Niveau I</span>
+                </button>
+                <div id="levelMenu" class="dropdown-menu">
+                    <div class="dropdown-item">Niveau I</div>
+                    <div class="dropdown-item">Niveau II</div>
+                    <div class="dropdown-item">Niveau III</div>
+                </div>
+            </div>
+
+            <!-- Affixe -->
+            <div class="affix-section">
+                <div id="affixSlot" class="affix-slot">
+                    CLIQUE<br>POUR CHOISIR
+                </div>
+                <div class="affix-info">
+                    <div id="affixSummary">Aucune pierre sélectionnée.</div>
+                    <div id="recapAffixList"></div>
+                </div>
+            </div>
+
+            <!-- Récap -->
+            <div class="recap">
+                <div id="recapBiome">Biome : Aucun</div>
+                <div id="recapLevel">Niveau : I</div>
+                <div id="recapAffix">Affixe : Aucun</div>
+            </div>
+
+            <!-- Countdown + actions -->
+            <div id="pylone-countdown" class="countdown hidden">
+                Lancement dans 5s... (Annuler pour stopper)
+            </div>
+
+            <div class="actions">
+                <button id="pylone-launch" class="btn">Lancer la run</button>
+                <button id="pylone-cancel" class="btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL GÉNÉRIQUE (coffre / forge / marchand / grimoire) -->
+    <div id="sanctuary-panel-overlay" class="overlay hidden">
+        <div class="modal sanctuary-panel">
+            <h2 id="sanctuary-panel-title">Panel</h2>
+            <div class="panel-content">
+                <!-- contenu spécifique plus tard -->
+            </div>
+            <button id="sanctuary-panel-close" class="btn">Fermer</button>
+        </div>
+    </div>
+
 </section>
+
 
 <!-- =========================
      GAME CANVAS (IMPORTANT)
@@ -124,6 +199,23 @@
         </div>
     </div>
 </div>
+
+<div class="overlay hidden" data-overlay="delete-character">
+    <div class="modal">
+        <h1>Supprimer le personnage</h1>
+
+        <p>
+            Voulez-vous vraiment supprimer 
+            <strong data-role="delete-name">ce personnage</strong> ?
+        </p>
+
+        <div class="actions">
+            <button class="btn red" data-action="confirm-delete">Supprimer</button>
+            <button class="btn" data-action="close">Annuler</button>
+        </div>
+    </div>
+</div>
+
 
 <div class="overlay hidden" data-overlay="options">
     <div class="modal">
