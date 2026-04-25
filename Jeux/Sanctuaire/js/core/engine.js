@@ -1,4 +1,4 @@
-﻿﻿// core/engine.js
+﻿﻿﻿// core/engine.js
 
 import { GameState, getState } from "./state.js";
 
@@ -21,7 +21,7 @@ import {
 
 import { tryShoot, updateShield } from "../systems/player.js";
 
-import { updateXP, drawXP } from "../systems/xp.js";
+import { updateXP, drawXP, xpSystem } from "../systems/xp.js";
 
 import {
     updateBoss,
@@ -87,8 +87,8 @@ export function updateEngine(dt, context) {
         maxHp: player.maxHp,
         shield: player.shield ?? 0,
         maxShield: player.maxShield ?? 0,
-        xp: player.xp ?? 0,
-        xpMax: player.xpMax ?? 1,
+        xp: xpSystem.xp,
+        xpMax: xpSystem.xpToNext,
         objective: context.objective,
         objectiveMax: context.objectiveMax,
         bossSpawned: context.bossSpawned

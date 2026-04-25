@@ -81,7 +81,7 @@
 ========================= -->
 <div id="hud-root" class="hidden">
 
-    <div class="hud-block">
+    <div class="hud-block" data-hud="player">
         <div class="bars">
             <div class="bar" data-bar="hp"><div class="fill"></div></div>
             <div class="bar" data-bar="shield"><div class="fill"></div></div>
@@ -89,13 +89,16 @@
         </div>
     </div>
 
-    <div class="hud-block">
+    <div class="hud-block" data-hud="dungeon">
         <div class="header">
             <span data-role="level"></span>
             <span data-role="timer"></span>
             <span data-role="bonus"></span>
         </div>
     </div>
+
+    <!-- Grille d’édition HUD (nécessaire pour HUD.editMode) -->
+    <div id="hud-edit-grid"></div>
 
 </div>
 

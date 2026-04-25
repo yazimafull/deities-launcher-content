@@ -1,4 +1,4 @@
-﻿﻿// systems/biomeMobGenerator.js
+﻿﻿﻿// systems/biomeMobGenerator.js
 
 import { Bestiary } from "../data/bestiary.js";
 import { createEnemy } from "./enemyFactory.js";

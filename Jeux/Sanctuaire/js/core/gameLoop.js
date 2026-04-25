@@ -1,4 +1,4 @@
-﻿﻿// core/gameLoop.js
+﻿﻿﻿// core/gameLoop.js
 
 import { setPlayer, updateEngine, renderEngine } from "./engine.js";
 import { setState, GameState } from "./state.js";

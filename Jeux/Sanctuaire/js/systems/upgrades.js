@@ -1,21 +1,15 @@
-﻿ // systems/upgrades.js
+﻿// systems/upgrades.js
 
-import { playerStats } from "./player.js";
+import { getPlayer } from "../core/engine.js";
 
-// ================================
-// UPGRADES LIST
-// ================================
 export const allUpgrades = [
-
-    // ========================
-    // ELEMENTS
-    // ========================
     {
         id: "fire",
         name: "Feu - brûlure",
         type: "element",
         apply() {
-            playerStats.element = "fire";
+            const p = getPlayer();
+            if (p) p.element = "fire";
         }
     },
     {
@@ -23,7 +17,8 @@ export const allUpgrades = [
         name: "Glace - ralentissement",
         type: "element",
         apply() {
-            playerStats.element = "ice";
+            const p = getPlayer();
+            if (p) p.element = "ice";
         }
     },
     {
@@ -31,19 +26,17 @@ export const allUpgrades = [
         name: "Foudre - surcharge",
         type: "element",
         apply() {
-            playerStats.element = "lightning";
+            const p = getPlayer();
+            if (p) p.element = "lightning";
         }
     },
-
-    // ========================
-    // STATS OFFENSIVES
-    // ========================
     {
         id: "speed_up",
         name: "+20% vitesse",
         type: "stat",
         apply() {
-            playerStats.speed *= 1.2;
+            const p = getPlayer();
+            if (p) p.speed *= 1.2;
         }
     },
     {
@@ -51,7 +44,8 @@ export const allUpgrades = [
         name: "+20% dégâts",
         type: "stat",
         apply() {
-            playerStats.damage *= 1.2;
+            const p = getPlayer();
+            if (p) p.damage *= 1.2;
         }
     },
     {
@@ -59,7 +53,8 @@ export const allUpgrades = [
         name: "+20% cadence de tir",
         type: "stat",
         apply() {
-            playerStats.fireRate *= 0.8;
+            const p = getPlayer();
+            if (p) p.fireRate *= 0.8;
         }
     },
     {
@@ -67,23 +62,19 @@ export const allUpgrades = [
         name: "+10% crit",
         type: "stat",
         apply() {
-            playerStats.critChance += 0.1;
+            const p = getPlayer();
+            if (p) p.critChance += 0.1;
         }
     },
-
-    // ========================
-    // SURVIVABILITÉ
-    // ========================
     {
         id: "hp_up",
         name: "+20 HP max",
         type: "survival",
         apply() {
-            playerStats.maxHp += 20;
-            playerStats.hp = Math.min(
-                playerStats.hp + 20,
-                playerStats.maxHp
-            );
+            const p = getPlayer();
+            if (!p) return;
+            p.maxHp += 20;
+            p.hp = Math.min(p.hp + 20, p.maxHp);
         }
     }
 ];
