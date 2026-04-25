@@ -1,12 +1,8 @@
 ﻿/* =============================== */
-/*             PYLÔNE              */
+/*             PYLÔNE UI           */
 /* =============================== */
 
-/* =============================== */
-/*         FENÊTRE PYLÔNE          */
-/* =============================== */
-
-.pylone-ui .popup {
+.pylone-modal {
     width: 950px;
     padding: 30px;
     background: rgba(20,20,40,0.95);
@@ -14,61 +10,58 @@
     box-shadow: 0 0 25px rgba(74,111,165,0.7);
     color: #e2d3b5;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    font-family: 'Cinzel', serif;
+}
+
+/* =============================== */
+/*             HEADER              */
+/* =============================== */
+
+.pylone-title {
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: #d4af37;
+    margin: 0;
+}
+
+/* =============================== */
+/*           CONTENT GRID          */
+/* =============================== */
+
+.pylone-content {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto 1fr auto;
     gap: 20px;
 }
 
 /* =============================== */
-/*            TITRE                */
+/*           LEFT COLUMN           */
 /* =============================== */
 
-.popup-title {
-    font-size: 26px;
-    margin-bottom: 0;
-    text-align: left;
-    letter-spacing: 2px;
-    color: #d4af37;
-    grid-column: 1 / -1;
-}
-
-/* =============================== */
-/*           FOOTER                */
-/* =============================== */
-
-.popup-footer {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* =============================== */
-/*           SECTIONS              */
-/* =============================== */
-
-.section {
+.pylone-section {
     border: 1px solid #4a6fa5;
     padding: 15px;
     background: rgba(10,10,30,0.6);
-    margin-bottom: 15px;
     border-radius: 6px;
+    margin-bottom: 15px;
 }
 
-.section-label {
+.pylone-label {
     font-size: 14px;
     color: #d4af37;
     margin-bottom: 10px;
     letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* =============================== */
-/*        RANGÉE DE CHOIX          */
+/*           BIOME ROW             */
 /* =============================== */
 
-.biome-row,
-.affix-row {
+.pylone-biome-row {
     display: flex;
     gap: 10px;
 }
@@ -81,7 +74,6 @@
     cursor: pointer;
     transition: 0.2s;
     border-radius: 4px;
-    font-family: 'Cinzel', serif;
     font-size: 13px;
     color: #e2d3b5;
     background: rgba(10,10,30,0.6);
@@ -98,9 +90,8 @@
 /*           DROPDOWN              */
 /* =============================== */
 
-.dropdown {
+.pylone-dropdown {
     position: relative;
-    user-select: none;
 }
 
 .dropdown-toggle {
@@ -111,13 +102,19 @@
     align-items: center;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'Cinzel', serif;
     color: #e2d3b5;
     background: rgba(10,10,30,0.6);
     transition: 0.2s;
 }
 
-.dropdown-toggle:hover { border-color: #d4af37; }
+.dropdown-toggle:hover {
+    border-color: #d4af37;
+}
+
+.dropdown-arrow {
+    color: #d4af37;
+    font-size: 12px;
+}
 
 .dropdown-menu {
     position: absolute;
@@ -130,12 +127,13 @@
     display: none;
 }
 
-.dropdown.open .dropdown-menu { display: block; }
+.dropdown.open .dropdown-menu {
+    display: block;
+}
 
 .dropdown-item {
     padding: 10px 12px;
     cursor: pointer;
-    font-family: 'Cinzel', serif;
     color: #e2d3b5;
     transition: 0.15s;
 }
@@ -145,16 +143,17 @@
     color: #d4af37;
 }
 
-.caret {
-    font-size: 11px;
-    color: #d4af37;
+/* =============================== */
+/*           AFFIXE SLOT           */
+/* =============================== */
+
+.pylone-affix-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-/* =============================== */
-/*           SLOT AFFIXE           */
-/* =============================== */
-
-.affix-slot {
+.pylone-affix-slot {
     width: 60px;
     height: 60px;
     border: 1px solid #d4af37;
@@ -171,55 +170,60 @@
     flex-shrink: 0;
 }
 
-.affix-slot:hover { box-shadow: 0 0 12px rgba(212,175,55,0.5); }
+.pylone-affix-slot:hover {
+    box-shadow: 0 0 12px rgba(212,175,55,0.5);
+}
 
-.affix-summary {
-    font-family: 'Cinzel', serif;
+.pylone-affix-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#affixSummary {
     font-size: 13px;
     color: #b8a88a;
 }
 
+.pylone-affix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 /* =============================== */
-/*          RÉCAPITULATIF          */
+/*             RECAP               */
 /* =============================== */
 
-.popup-right {
+.pylone-recap {
     border: 1px solid #4a6fa5;
     padding: 15px;
     background: rgba(10,10,30,0.6);
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    height: fit-content;
 }
 
-.recap-title {
+.pylone-recap-title {
     color: #d4af37;
     font-size: 16px;
     margin-bottom: 10px;
-    font-family: 'Cinzel', serif;
 }
 
-.recap-line {
-    font-family: 'Cinzel', serif;
+.pylone-recap-line {
     font-size: 13px;
     color: #e2d3b5;
     margin-bottom: 6px;
 }
 
-.recap-affix-list {
+.pylone-recap-modifiers {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
 }
 
-/* =============================== */
-/*         BONUS / MALUS           */
-/* =============================== */
-
+/* BONUS / MALUS */
 .bonus { color: #6ee26e; }
 .malus { color: #ff6b6b; }
 
@@ -229,24 +233,18 @@
 
 .pylone-countdown {
     text-align: center;
-    font-family: 'Cinzel', serif;
     font-size: 18px;
     color: #d4af37;
-    margin: 16px 0 0;
     text-shadow: 0 0 10px #d4af37;
     letter-spacing: 2px;
 }
 
 /* =============================== */
-/*    LABEL GÉNÉRIQUE (options)    */
+/*             FOOTER              */
 /* =============================== */
 
-.pylone-label {
-    display: block;
-    font-family: 'Cinzel', serif;
-    color: #d4af37;
-    font-size: 14px;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+.pylone-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
