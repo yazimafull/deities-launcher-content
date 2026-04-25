@@ -1,4 +1,10 @@
 ﻿// ui/hud/hudSystem.js
+// Gère l’affichage du HUD en jeu : HP, shield, XP, objectif et boss.
+// Met à jour les barres via updateBars() et affiche les textes via draw().
+// Ignore les updates hors gameplay (GameState.PLAYING).
+// Fournit show/hide/reset/toggleEditMode pour le HUD.
+// Dessine l’objectif et l’alerte boss sur le canvas.
+// Stocke toutes les données HUD dans hudData.
 
 import { getState, GameState } from "../../core/state.js";
 

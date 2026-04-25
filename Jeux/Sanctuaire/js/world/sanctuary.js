@@ -11,7 +11,7 @@
 //
 // SCREEN : data-screen="sanctuary"
 //
-// NOTES :
+// NOTES :Si elle ne sont plus à jour , fait en sorte qu'elle le soit
 // - Validation du pylône : biome + niveau obligatoires, affixe optionnel.
 // - Le récap affixe affiche le nom + la liste complète des modificateurs.
 // - Le bouton Lancer est désactivé tant que les prérequis ne sont pas remplis.
@@ -24,6 +24,7 @@
 // ================================
 import { goToMenu } from "../core/main.js";
 import { startRun } from "../core/gameLoop.js";
+import { startRunManager } from "../core/runManager.js";
 
 // ================================
 // DEBUG LOAD
@@ -356,7 +357,9 @@ function clearLaunchTimer() {
 // ================================
 function launchRun() {
 
-    const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Forêt Mourante";
+    // 🔥 NOUVELLE VERSION : on lit l’ID technique, pas le texte UI
+    const biomeId = document.querySelector(".biome-btn.active")?.dataset.id || "foret";
+
     const levelText = $("levelLabel")?.textContent || "";
     const difficulte = levelText.replace("Niveau ", "") || "I";
     const affixName = selectedStone?.name || null;
@@ -365,7 +368,7 @@ function launchRun() {
 
     const config = {
         character: activeCharacter ? JSON.parse(activeCharacter) : null,
-        biome,
+        biomeId,          // 🔥 remplacé
         difficulte,
         affix: affixName
     };
@@ -374,7 +377,8 @@ function launchRun() {
 
     document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
 
-    startRun(config);
+    // 🔥 NOUVELLE VERSION : on passe par le runManager
+    startRunManager(config);
 }
 
 // ================================

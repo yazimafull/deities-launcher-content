@@ -1,44 +1,21 @@
 ﻿// Jeux/Sanctuaire/core/runManager.js
-// ============================================================================
-// ROLE
-// Gestion complète d’une RUN : préparation, chargement du biome, application
-// de la difficulté et des affixes, initialisation des systèmes, affichage du HUD,
-// puis lancement du moteur (startRun). Gère aussi la fin de run (cleanRun).
-//
-// ============================================================================
-// EXPORTS
-// - startRunManager(config)
-// - cleanRun()
-//
-// ============================================================================
-// DEPENDANCES
-// - state.js → setState, GameState
-// - enemySystem.js → enemies
-// - projectile.js → projectiles
-// - xp.js → xpOrbs
-// - boss.js → resetBoss
-// - hudSystem.js → HUD
-// - gameLoop.js → startRun (appelé depuis sanctuary.js)
-// - biomes dynamiques → import(`../world/biome_xxx.js`)
-//
-// ============================================================================
-// SCREEN
-// Utilisé pendant la RUN (HUD + canvas).
-//
-// ============================================================================
-// NOTES
-// - startRunManager() prépare la run : biome, difficulté, affixe, systèmes.
-// - startRun() (dans gameLoop.js) lance uniquement la boucle moteur.
-// - cleanRun() remet tout à zéro et retourne au MENU.
-// - Architecture propre : moteur pur, manager logique séparé.
-// ============================================================================
+/* 
+   ROUTE : Jeux/Sanctuaire/core/runManager.js
+   RÔLE : Orchestration complète d’une RUN (préparation, biome, HUD, moteur)
+   EXPORTS : startRunManager, cleanRun
+   DÉPENDANCES : state.js, enemySystem.js, projectile.js, xp.js, boss.js,
+                 hudSystem.js, gameLoop.js, Biomes (registre)
+   NOTES : startRunManager prépare la run, startRun lance le moteur pur.
+*/
 
 import { setState, GameState } from "./state.js";
 import { enemies } from "../systems/enemySystem.js";
 import { projectiles } from "../systems/projectile.js";
 import { xpOrbs } from "../systems/xp.js";
 import { resetBoss } from "../systems/boss.js";
-import { HUD } from "../ui/hud/hudSystem.js";
+import { HUD } from "../UI/hud/hudSystem.js";
+import { startRun } from "./gameLoop.js";
+import { Biomes } from "../data/biomes.js";   // 🔥 AJOUT : registre central
 
 // ============================================================================
 // START RUN MANAGER
@@ -53,20 +30,20 @@ export function startRunManager(config) {
     xpOrbs.length = 0;
     resetBoss();
 
-    // 2. CHARGEMENT DU BIOME
-    if (config.biome) {
-        const biomeId = config.biome.toLowerCase().replaceAll(" ", "_");
+    // 2. CHARGEMENT DU BIOME (NOUVELLE VERSION VIA REGISTRE)
+    const biome = Biomes[config.biomeId];
 
-        import(`../world/biome_${biomeId}.js`)
+    if (biome) {
+        console.log("🌍 Chargement biome :", biome.id);
+
+        biome.load()
             .then(module => {
-                if (module.startBiome) {
-                    console.log("🌍 Biome chargé :", biomeId);
-                    module.startBiome(config);
-                } else {
-                    console.warn(`Biome ${biomeId} trouvé mais pas de startBiome()`);
-                }
+                console.log("📦 Module biome chargé :", biome.id);
+                biome.start(module, config);
             })
             .catch(err => console.error("❌ Erreur chargement biome :", err));
+    } else {
+        console.error("❌ Biome introuvable dans le registre :", config.biomeId);
     }
 
     // 3. DIFFICULTÉ
@@ -82,13 +59,16 @@ export function startRunManager(config) {
     // 5. HUD
     HUD.show();
 
-    // 6. OBJECTIFS
-    // TODO : si tu as un système d’objectifs, initialise-le ici
+    // 6. OBJECTIFS (si tu en as)
+    // TODO : initialiser ici
 
     // 7. ETAT DU JEU
     setState(GameState.PLAYING);
 
     console.log("✔ Run Manager prêt");
+
+    // 8. LANCER LE MOTEUR
+    startRun(config);
 }
 
 // ============================================================================

@@ -44,7 +44,54 @@
         <button class="btn hidden" data-action="delete-character">Supprimer</button>
     </div>
 
+    <!-- =========================
+         POPUPS DU MENU (CORRIGÉ)
+    ========================= -->
+    <div class="overlay hidden" data-overlay="create-character">
+        <div class="modal">
+            <h1>Créer un personnage</h1>
+
+            <input type="text" maxlength="20" placeholder="Pseudo..." data-input="name">
+
+            <div class="classes">
+                <button class="class" data-class="eclat">Éclat</button>
+                <button class="class" data-class="vestige">Vestige</button>
+                <button class="class" data-class="gardien">Gardien</button>
+                <button class="class" data-class="souffle">Souffle</button>
+            </div>
+
+            <div class="actions">
+                <button class="btn" data-action="confirm-create">Créer</button>
+                <button class="btn" data-action="close">Retour</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay hidden" data-overlay="delete-character">
+        <div class="modal">
+            <h1>Supprimer le personnage</h1>
+
+            <p>
+                Voulez-vous vraiment supprimer 
+                <strong data-role="delete-name">ce personnage</strong> ?
+            </p>
+
+            <div class="actions">
+                <button class="btn red" data-action="confirm-delete">Supprimer</button>
+                <button class="btn" data-action="close">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay hidden" data-overlay="options">
+        <div class="modal">
+            <h2>Options</h2>
+            <button class="btn" data-action="close">Fermer</button>
+        </div>
+    </div>
+
 </section>
+
 <!-- =========================
      SANCTUARY
 ========================= -->
@@ -53,120 +100,108 @@
     <div id="sanctuary-wrapper" class="sanctuary-wrapper">
         <img src="sanctuary-background.jpg" alt="">
 
-        <!-- Barre perso (remplie par sanctuary.js) -->
         <div class="character-bar">
             <span id="character-name"></span>
             <span id="character-class"></span>
             <span id="character-level"></span>
         </div>
 
-
-        <!-- ZONES INTERACTIVES (sanctuary.js écoute [data-zone]) -->
         <div id="zone-pylone" class="zone" data-zone="pylone">Pylône</div>
         <div class="zone" data-zone="marchand">Marchand</div>
         <div class="zone" data-zone="coffre">Coffre</div>
         <div class="zone" data-zone="forge">Forge</div>
         <div class="zone" data-zone="grimoire">Grimoire</div>
 
-        <!-- Bouton retour (sanctuary.js écoute #sanctuary-back-btn) -->
         <button id="sanctuary-back-btn" class="btn" data-action="back-menu">Menu</button>
     </div>
 
     <div class="grid-overlay"></div>
 
-<!-- OVERLAY PYLÔNE -->
-<div id="pylone-overlay" class="overlay hidden">
-    <div class="modal pylone-modal">
+    <!-- =========================
+         OVERLAY PYLÔNE (OK)
+    ========================= -->
+    <div id="pylone-overlay" class="overlay hidden">
+        <div class="modal pylone-modal">
 
-        <!-- HEADER -->
-        <div class="pylone-header">
-            <h2 class="pylone-title">CONFIGURER LA RUN</h2>
-        </div>
+            <div class="pylone-header">
+                <h2 class="pylone-title">CONFIGURER LA RUN</h2>
+            </div>
 
-        <!-- CONTENT GRID -->
-        <div class="pylone-content">
+            <div class="pylone-content">
 
-            <!-- LEFT COLUMN -->
-            <div class="pylone-left">
+                <div class="pylone-left">
 
-                <!-- SECTION : BIOME -->
-                <div class="pylone-section">
-                    <div class="pylone-label">BIOME</div>
-
-                    <div class="pylone-biome-row">
-                        <button class="biome-btn">Forêt Mourante</button>
-                        <button class="biome-btn">Catacombes</button>
-                        <button class="biome-btn">Citadelle</button>
+                    <div class="pylone-section">
+                        <div class="pylone-label">BIOME</div>
+                        <div class="pylone-biome-row">
+                            <button class="biome-btn" data-id="foret">Forêt Mourante</button>
+                            <button class="biome-btn" data-id="ruines">Catacombes</button>
+                            <button class="biome-btn" data-id="abysses">Citadelle</button>
+                        </div>
                     </div>
+
+                    <div class="pylone-section">
+                        <div class="pylone-label">NIVEAU</div>
+
+                        <div id="levelDropdown" class="pylone-dropdown">
+                            <button class="dropdown-toggle">
+                                <span id="levelLabel">Niveau I</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+
+                            <div id="levelMenu" class="dropdown-menu">
+                                <div class="dropdown-item">Niveau I</div>
+                                <div class="dropdown-item">Niveau II</div>
+                                <div class="dropdown-item">Niveau III</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pylone-section">
+                        <div class="pylone-label">PIERRE D'AFFIXE</div>
+
+                        <div class="pylone-affix-box">
+                            <div id="affixSlot" class="pylone-affix-slot">
+                                CLIQUE<br>POUR CHOISIR
+                            </div>
+
+                            <div class="pylone-affix-info">
+                                <div id="affixSummary">Aucune pierre sélectionnée.</div>
+                                <div id="recapAffixList" class="pylone-affix-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- SECTION : NIVEAU -->
-                <div class="pylone-section">
-                    <div class="pylone-label">NIVEAU</div>
+                <div class="pylone-recap">
+                    <div class="pylone-recap-title">RÉCAPITULATIF</div>
 
-                    <div id="levelDropdown" class="pylone-dropdown">
-                        <button class="dropdown-toggle">
-                            <span id="levelLabel">Niveau I</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
+                    <div id="recapBiome" class="pylone-recap-line">Biome : Aucun</div>
+                    <div id="recapLevel" class="pylone-recap-line">Niveau : I</div>
+                    <div id="recapAffix" class="pylone-recap-line">Affixe : Aucun</div>
 
-                        <div id="levelMenu" class="dropdown-menu">
-                            <div class="dropdown-item">Niveau I</div>
-                            <div class="dropdown-item">Niveau II</div>
-                            <div class="dropdown-item">Niveau III</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION : AFFIXE -->
-                <div class="pylone-section">
-                    <div class="pylone-label">PIERRE D'AFFIXE</div>
-
-                    <div class="pylone-affix-box">
-                        <div id="affixSlot" class="pylone-affix-slot">
-                            CLIQUE<br>POUR CHOISIR
-                        </div>
-
-                        <div class="pylone-affix-info">
-                            <div id="affixSummary">Aucune pierre sélectionnée.</div>
-                            <div id="recapAffixList" class="pylone-affix-list"></div>
-                        </div>
-                    </div>
+                    <div id="recapModifiers" class="pylone-recap-modifiers"></div>
                 </div>
 
             </div>
 
-            <!-- RIGHT COLUMN : RECAP -->
-            <div class="pylone-recap">
-                <div class="pylone-recap-title">RÉCAPITULATIF</div>
+            <div id="pylone-countdown" class="pylone-countdown hidden">
+                Lancement dans 5s... (Annuler pour stopper)
+            </div>
 
-                <div id="recapBiome" class="pylone-recap-line">Biome : Aucun</div>
-                <div id="recapLevel" class="pylone-recap-line">Niveau : I</div>
-                <div id="recapAffix" class="pylone-recap-line">Affixe : Aucun</div>
-
-                <div id="recapModifiers" class="pylone-recap-modifiers"></div>
+            <div class="pylone-footer">
+                <button id="pylone-cancel" class="btn btn-secondary">ANNULER</button>
+                <button id="pylone-launch" class="btn btn-primary">LANCER LA RUN</button>
             </div>
 
         </div>
-
-        <!-- COUNTDOWN -->
-        <div id="pylone-countdown" class="pylone-countdown hidden">
-            Lancement dans 5s... (Annuler pour stopper)
-        </div>
-
-        <!-- FOOTER ACTIONS -->
-        <div class="pylone-footer">
-            <button id="pylone-cancel" class="btn btn-secondary">ANNULER</button>
-            <button id="pylone-launch" class="btn btn-primary">LANCER LA RUN</button>
-        </div>
-
     </div>
-</div>
 
-
+</section>
 
 <!-- =========================
-     GAME CANVAS (IMPORTANT)
+     GAME CANVAS
 ========================= -->
 <canvas id="game-canvas" class="hidden"></canvas>
 
@@ -191,56 +226,8 @@
         </div>
     </div>
 
-    <!-- Grille d’édition HUD (nécessaire pour HUD.editMode) -->
     <div id="hud-edit-grid"></div>
 
-</div>
-
-<!-- =========================
-     POPUPS
-========================= -->
-<div class="overlay hidden" data-overlay="create-character">
-    <div class="modal">
-        <h1>Créer un personnage</h1>
-
-        <input type="text" maxlength="20" placeholder="Pseudo..." data-input="name">
-
-        <div class="classes">
-            <button class="class" data-class="eclat">Éclat</button>
-            <button class="class" data-class="vestige">Vestige</button>
-            <button class="class" data-class="gardien">Gardien</button>
-            <button class="class" data-class="souffle">Souffle</button>
-        </div>
-
-        <div class="actions">
-            <button class="btn" data-action="confirm-create">Créer</button>
-            <button class="btn" data-action="close">Retour</button>
-        </div>
-    </div>
-</div>
-
-<div class="overlay hidden" data-overlay="delete-character">
-    <div class="modal">
-        <h1>Supprimer le personnage</h1>
-
-        <p>
-            Voulez-vous vraiment supprimer 
-            <strong data-role="delete-name">ce personnage</strong> ?
-        </p>
-
-        <div class="actions">
-            <button class="btn red" data-action="confirm-delete">Supprimer</button>
-            <button class="btn" data-action="close">Annuler</button>
-        </div>
-    </div>
-</div>
-
-
-<div class="overlay hidden" data-overlay="options">
-    <div class="modal">
-        <h2>Options</h2>
-        <button class="btn" data-action="close">Fermer</button>
-    </div>
 </div>
 
 <!-- =========================
@@ -251,21 +238,16 @@
 
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-
     document.querySelector('[data-action="quit"]')?.addEventListener("click", () => {
         if (window.electronAPI?.quitGame) {
             window.electronAPI.quitGame();
         }
     });
-
 });
 </script>
 
 <script type="module">
 import { HUD } from "./js/UI/hud/hudSystem.js";
-
-// IMPORTANT: HUD NE DOIT PAS ÊTRE INIT ICI
-// il est maintenant géré par startRun()
 
 window.addEventListener("keydown", e => {
     if (e.key.toLowerCase() === "h") {

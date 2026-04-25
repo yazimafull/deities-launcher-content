@@ -1,42 +1,47 @@
 ﻿// Jeux/Sanctuaire/js/core/main.js
-// ROLE : Point d’entrée du menu principal + gestion du bouton "Play"
-// GÈRE : Sélection du personnage, transition vers l’écran Sanctuaire
+// ROUTE : js/core/main.js
+// ROLE  : Gestion du bouton Play + transition vers Sanctuaire
 // EXPORTS : goToMenu()
-// DÉPENDANCES : state.js (setState, GameState), screenManager.js (Screens, setScreen)
-// NOTES : Ce fichier ne lance jamais une run ; il ne fait que changer d’écran
+// NOTES : Listener Play idempotent (une seule fois)
 
 import { setState, GameState } from "./state.js";
 import { Screens, setScreen } from "./screenManager.js";
 
 const ACTIVE_CHARACTER_KEY = "activeCharacter";
 
-// ================================
-// EXPORT : utilisé par d’autres modules (ex : retour depuis Sanctuaire)
-// ================================
+let MAIN_INITIALIZED = false; // 🔥 Empêche les doublons
+
 export function goToMenu() {
     setScreen(Screens.MENU);
     setState(GameState.MENU);
 }
 
-// ================================
-// INIT MENU
-// ================================
 document.addEventListener("DOMContentLoaded", () => {
+
+    if (MAIN_INITIALIZED) {
+        console.warn("⚠️ main.js déjà initialisé — listener ignoré");
+        return;
+    }
+    MAIN_INITIALIZED = true;
 
     const playBtn = document.querySelector('[data-action="play"]');
 
-    playBtn?.addEventListener("click", () => {
+    if (playBtn) {
+        playBtn.onclick = () => {
 
-        const selected = document.querySelector(".character-item.selected");
-        if (!selected) return;
+            const selected = document.querySelector(".character-item.selected");
+            if (!selected) return;
 
-        const active = sessionStorage.getItem(ACTIVE_CHARACTER_KEY);
-        if (!active) return;
+            const active = sessionStorage.getItem(ACTIVE_CHARACTER_KEY);
+            if (!active) return;
 
-        // IMPORTANT :
-        // On NE lance PAS la run ici.
-        // On bascule simplement vers l’écran Sanctuaire.
-        setScreen(Screens.SANCTUARY);
-        setState(GameState.SANCTUARY);
-    });
+            // IMPORTANT :
+            // On NE lance PAS la run ici.
+            // On bascule simplement vers l’écran Sanctuaire.
+            setScreen(Screens.SANCTUARY);
+            setState(GameState.SANCTUARY);
+        };
+    }
+
+    console.log("🎯 main.js listeners initialisés (une seule fois)");
 });

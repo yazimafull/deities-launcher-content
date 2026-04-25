@@ -1,7 +1,15 @@
-﻿// systems/enemyFactory.js
-// Version étendue — supporte élite, entourage, affixes, scaling
+﻿// enemyFactory.js
+/*
+   ROUTE : js/systems/enemyFactory.js
+   RÔLE : Fabrique les ennemis à partir du bestiaire (scaling, affixes, élite, entourage)
+   EXPORTS : createEnemy
+   DÉPENDANCES : Bestiary
+   NOTES :
+   - Import modifié pour utiliser Bestiary directement.
+   - Aucune autre modification.
+*/
 
-import { enemyTypes } from "./enemyTypes.js";
+import { Bestiary as enemyTypes } from "../data/bestiary.js";
 
 const RANGES = {
     normal: { aggroRange: 280,   leashRange: 500,   damageCd: 800  },
@@ -24,9 +32,9 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) 
     // ================================
     // SCALING
     // ================================
-    let hp     = Math.floor(base.baseHp     * (1 + (diff - 1) * 0.35));
-    let damage = Math.floor(base.baseDamage * (1 + (diff - 1) * 0.25));
-    let speed  = base.baseSpeed * (1 + (diff - 1) * 0.05);
+    let hp     = Math.floor(base.stats.hp     * (1 + (diff - 1) * 0.35));
+    let damage = Math.floor(base.stats.damage * (1 + (diff - 1) * 0.25));
+    let speed  = base.stats.speed * (1 + (diff - 1) * 0.05);
 
     // ================================
     // MOB BASE
@@ -46,14 +54,14 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) 
         maxHp: hp,
         damage,
         speed,
-        size: base.baseSize,
-        color: base.color,
+        size: base.stats.size,
+        color: base.color ?? "#884444",
 
-        aggroRange: ranges.aggroRange,
+        aggroRange: ranges.aggroRange ?? base.stats.aggroRange ?? 280,
         leashRange: ranges.leashRange,
         damageCd: ranges.damageCd,
 
-        progressValue: base.progressValue ?? 1,
+        progressValue: base.rewards?.objectivePoints ?? 1,
         dropHealth: base.dropHealth ?? false,
 
         state: "idle",
@@ -66,7 +74,6 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) 
 
         objectivePoints: bestiaryData?.objectivePoints ?? 1,
 
-        // IMPORTANT: bestiary override prioritaire
         elite: bestiaryData?.elite ?? (type === "elite"),
 
         entourage: bestiaryData?.entourage ?? 0,
@@ -86,7 +93,6 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData = null) 
 
         mob.objectivePoints *= 3;
 
-        // fallback entourage si pas défini
         if (mob.entourage === 0) {
             mob.entourage = 3;
         }

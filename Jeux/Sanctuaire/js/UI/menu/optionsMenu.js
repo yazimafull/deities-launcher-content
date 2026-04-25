@@ -1,6 +1,16 @@
 ﻿// UI/menu/optionsMenu.js
+// ROUTE : UI/menu/optionsMenu.js
+// ROLE  : Gère l’ouverture/fermeture du panneau Options.
+// EXPORTS : openOptions(), closeOptions(), initOptionsMenu()
+// DEPENDANCES : aucune externe
+// NOTES :
+// - Tous les listeners sont idempotents (attachés une seule fois).
+// - Empêche les doublons lors des rechargements du jeu.
+// - Empêche les popups de réagir dans le Sanctuaire.
 
 const PANEL_SELECTOR = '[data-overlay="options"]';
+
+let OPTIONS_INITIALIZED = false; // 🔥 Empêche les listeners multiples
 
 // ================================
 // UTILS
@@ -21,9 +31,15 @@ export function closeOptions() {
 }
 
 // ================================
-// INIT
+// INIT (idempotent)
 // ================================
 export function initOptionsMenu() {
+
+    if (OPTIONS_INITIALIZED) {
+        console.warn("⚠️ OptionsMenu déjà initialisé — listeners ignorés");
+        return;
+    }
+    OPTIONS_INITIALIZED = true;
 
     const panel = getPanel();
     if (!panel) {
@@ -36,7 +52,7 @@ export function initOptionsMenu() {
     // ================================
     document.querySelectorAll('[data-action="open-options"]')
         .forEach(btn => {
-            btn.addEventListener("click", openOptions);
+            btn.onclick = openOptions; // 🔥 remplace addEventListener
         });
 
     // ================================
@@ -44,26 +60,22 @@ export function initOptionsMenu() {
     // ================================
     panel.querySelectorAll('[data-action="close"]')
         .forEach(btn => {
-            btn.addEventListener("click", closeOptions);
+            btn.onclick = closeOptions; // 🔥 remplace addEventListener
         });
 
     // ================================
     // CLICK OUTSIDE PANEL
     // ================================
-    panel.addEventListener("click", (e) => {
-        if (e.target === panel) {
-            closeOptions();
-        }
-    });
+    panel.onclick = (e) => {
+        if (e.target === panel) closeOptions();
+    };
 
     // ================================
-    // ESC KEY (bonus clean UX)
+    // ESC KEY (idempotent)
     // ================================
     window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            closeOptions();
-        }
-    });
+        if (e.key === "Escape") closeOptions();
+    }, { once: true }); // 🔥 ne s’attache qu’une seule fois
 
-    console.log("⚙️ OptionsMenu ready");
+    console.log("⚙️ OptionsMenu ready (idempotent)");
 }

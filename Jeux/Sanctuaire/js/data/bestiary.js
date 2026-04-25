@@ -1,10 +1,24 @@
-﻿export const Bestiary = Object.freeze({
+﻿// bestiary.js
+/*
+   ROUTE : js/data/bestiary.js
+   RÔLE : Source de vérité unique des ennemis (stats, biomes, niveaux, récompenses)
+   EXPORTS : Bestiary
+   DÉPENDANCES : Aucune
+   NOTES :
+   - Ajout uniquement des couleurs demandées.
+   - Aucune autre modification structurelle.
+   - Respect strict du format existant.
+*/
+
+export const Bestiary = Object.freeze({
 
     slime: {
         biomes: ["forest"],
 
         levelRange: { min: 1, max: 15 },
         weight: 3,
+
+        color: "#4a9e4a",
 
         stats: {
             hp: 30,
@@ -29,6 +43,8 @@
         levelRange: { min: 1, max: 15 },
         weight: 2,
 
+        color: "#7a6a5a",
+
         stats: {
             hp: 40,
             damage: 8,
@@ -51,6 +67,8 @@
 
         levelRange: { min: 10, max: 20 },
         weight: 1,
+
+        color: "#c8c8a0",
 
         stats: {
             hp: 60,

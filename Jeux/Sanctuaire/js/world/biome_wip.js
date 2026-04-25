@@ -1,4 +1,11 @@
-﻿﻿// world/biome_wip.js
+﻿// Jeux/Sanctuaire/js/world/biome_wip.js
+/* 
+   ROUTE : Jeux/Sanctuaire/js/world/biome_wip.js
+   RÔLE : Biome générique WIP (Ruines / Abysses) avec affichage simple et boucle dédiée
+   EXPORTS : initBiomeWIP, stopBiomeWIP
+   DÉPENDANCES : state.js, pauseMenu.js, input.js
+   NOTES : Utilisé pour les biomes placeholders. Le registre passe "ruines" ou "abysses".
+*/
 
 import { getState, GameState } from "../core/state.js";
 import { openPause } from "../UI/menu/pauseMenu.js";
@@ -25,8 +32,7 @@ export function initBiomeWIP(name) {
 
     canvas.classList.remove("hidden");
 
-    // ❌ SUPPRIMÉ : healthbar-container / xpbar-container
-    // → remplacé par HUD system (data-driven)
+    // HUD gère désormais les barres → plus d'UI legacy ici
 
     animId = requestAnimationFrame(loop);
 }
@@ -47,9 +53,7 @@ export function stopBiomeWIP() {
         c.classList.add("hidden");
     }
 
-    // ❌ SUPPRIMÉ : UI legacy
-    // document.getElementById("healthbar-container")
-    // document.getElementById("xpbar-container")
+    // Ancien HUD supprimé → rien à nettoyer ici
 }
 
 // ================================
@@ -62,7 +66,7 @@ function loop() {
         return;
     }
 
-    // Correction demandée : utiliser isDown() pour Escape
+    // Pause via input system
     if (isDown("escape")) {
         openPause();
     }
