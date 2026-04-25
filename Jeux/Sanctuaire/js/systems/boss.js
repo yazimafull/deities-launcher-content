@@ -3,23 +3,44 @@
 import { createEnemy } from "./enemyFactory.js";
 import { damagePlayer } from "./damageSystem.js";
 
+// ================================
+// STATE
+// ================================
 export let boss = null;
-let bossSpawned = false;
+let spawnEvent = null;
 
+// ================================
+// RESET
+// ================================
 export function resetBoss() {
     boss = null;
-    bossSpawned = false;
+    spawnEvent = null;
 }
 
-export function isBossSpawned() {
-    return bossSpawned;
+// ================================
+// STATUS
+// ================================
+export function isBossAlive() {
+    return boss && !boss.dead;
+}
+
+export function getBoss() {
+    return boss;
+}
+
+// ================================
+// EVENT SYSTEM (ENGINE FRIENDLY)
+// ================================
+export function consumeBossEvent() {
+    const e = spawnEvent;
+    spawnEvent = null;
+    return e;
 }
 
 // ================================
 // SPAWN
 // ================================
 export function spawnBoss(player, difficulty, biome = "foret") {
-    bossSpawned = true;
 
     boss = createEnemy(
         "boss",
@@ -31,29 +52,32 @@ export function spawnBoss(player, difficulty, biome = "foret") {
 
     boss.lastDmgTime = 0;
 
-    showBossAlert();
+    // event instead of DOM
+    spawnEvent = "spawn";
 }
 
 // ================================
 // UPDATE
 // ================================
-export function updateBoss(player) {
+export function updateBoss(player, dt) {
+
     if (!boss || boss.dead) return;
 
-    const dx   = player.x - boss.x;
-    const dy   = player.y - boss.y;
+    const dx = player.x - boss.x;
+    const dy = player.y - boss.y;
     const dist = Math.hypot(dx, dy);
 
-    // mouvement vers joueur
+    // move toward player
     if (dist > 0) {
         boss.x += (dx / dist) * boss.speed;
         boss.y += (dy / dist) * boss.speed;
     }
 
     // ================================
-    // CONTACT → UTILISE DAMAGE SYSTEM (SHIELD INCLUDED)
+    // CONTACT DAMAGE
     // ================================
     if (dist < (player.size / 2 + boss.size / 2)) {
+
         const now = performance.now();
 
         if (now - boss.lastDmgTime > (boss.damageCd || 1200)) {
@@ -72,6 +96,7 @@ export function updateBoss(player) {
 // DAMAGE BOSS
 // ================================
 export function damageBoss(amount) {
+
     if (!boss || boss.dead) return;
 
     boss.hp -= amount;
@@ -85,7 +110,8 @@ export function damageBoss(amount) {
 // ================================
 // DRAW BOSS
 // ================================
-export function drawBoss(ctx, camera, canvas) {
+export function drawBoss(ctx, camera) {
+
     if (!boss || boss.dead) return;
 
     ctx.fillStyle = boss.color || "#7700aa";
@@ -118,22 +144,27 @@ export function drawBoss(ctx, camera, canvas) {
 }
 
 // ================================
-// INDICATOR
+// INDICATOR (OFFSCREEN)
 // ================================
 export function drawBossIndicator(ctx, camera, canvas) {
+
     if (!boss || boss.dead) return;
 
-    const bsx = boss.x - camera.x;
-    const bsy = boss.y - camera.y;
+    const bx = boss.x - camera.x;
+    const by = boss.y - camera.y;
 
     if (
-        bsx >= 0 &&
-        bsx <= canvas.width &&
-        bsy >= 0 &&
-        bsy <= canvas.height
+        bx >= 0 &&
+        bx <= canvas.width &&
+        by >= 0 &&
+        by <= canvas.height
     ) return;
 
-    const angle  = Math.atan2(bsy - canvas.height / 2, bsx - canvas.width / 2);
+    const angle = Math.atan2(
+        by - canvas.height / 2,
+        bx - canvas.width / 2
+    );
+
     const radius = Math.min(canvas.width, canvas.height) / 2 - 40;
 
     const x = canvas.width / 2 + Math.cos(angle) * radius;
@@ -152,42 +183,4 @@ export function drawBossIndicator(ctx, camera, canvas) {
     ctx.fill();
 
     ctx.restore();
-}
-
-// ================================
-// ALERT UI
-// ================================
-function showBossAlert() {
-    const el = document.createElement("div");
-
-    el.style.cssText = `
-        position: fixed;
-        top: 30%;
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: 'Cinzel', serif;
-        font-size: 32px;
-        color: #dd00ff;
-        text-shadow: 0 0 20px #dd00ff;
-        z-index: 9000;
-        pointer-events: none;
-        animation: fadeout 3s forwards;
-    `;
-
-    el.textContent = "⚠ Un Gardien Corrompu approche...";
-    document.body.appendChild(el);
-
-    if (!document.getElementById("boss-alert-style")) {
-        const s = document.createElement("style");
-        s.id = "boss-alert-style";
-        s.textContent = `
-            @keyframes fadeout {
-                0%,70% { opacity: 1; }
-                100% { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(s);
-    }
-
-    setTimeout(() => el.remove(), 3000);
 }

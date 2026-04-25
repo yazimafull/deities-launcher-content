@@ -3,11 +3,14 @@
 export let dmgNumbers = [];
 
 // ================================
-// DAMAGE NUMBERS
+// DAMAGE NUMBERS SYSTEM
 // ================================
 export function updateDamageNumbers(dt) {
+
     for (let i = dmgNumbers.length - 1; i >= 0; i--) {
+
         const n = dmgNumbers[i];
+
         n.y -= dt * 0.05;
         n.alpha -= dt * 0.0008;
 
@@ -18,18 +21,25 @@ export function updateDamageNumbers(dt) {
 }
 
 export function drawDamageNumbers(ctx) {
+
     for (let n of dmgNumbers) {
+
         ctx.save();
+
         ctx.globalAlpha = n.alpha;
         ctx.font = n.isCrit ? "bold 20px Cinzel" : "16px Cinzel";
-        ctx.fillStyle = n.isPlayer ? "#ff4444" : "#ffcc88";
         ctx.textAlign = "center";
+
+        ctx.fillStyle = n.isPlayer ? "#ff4444" : "#ffcc88";
+
         ctx.fillText(n.value, n.x, n.y);
+
         ctx.restore();
     }
 }
 
 export function spawnDamageNumber(x, y, value, isCrit = false, isPlayer = false) {
+
     dmgNumbers.push({
         x,
         y,
@@ -44,18 +54,22 @@ export function spawnDamageNumber(x, y, value, isCrit = false, isPlayer = false)
 // DOT SYSTEM
 // ================================
 export function updateDots(dt, entity) {
-    if (!entity.dots) return;
+
+    if (!entity?.dots) return;
 
     for (let i = entity.dots.length - 1; i >= 0; i--) {
-        const dot = entity.dots[i];
-        dot.timer += dt;
 
+        const dot = entity.dots[i];
+
+        dot.timer += dt;
+        dot.remaining -= dt;
+
+        // tick damage (1s)
         if (dot.timer >= 1000) {
             dot.timer = 0;
+
             applyDamage(entity, dot.amount, { type: dot.type });
         }
-
-        dot.remaining -= dt;
 
         if (dot.remaining <= 0) {
             entity.dots.splice(i, 1);
@@ -64,6 +78,7 @@ export function updateDots(dt, entity) {
 }
 
 export function applyDot(entity, dotConfig) {
+
     if (!entity.dots) entity.dots = [];
 
     entity.dots.push({
@@ -75,62 +90,89 @@ export function applyDot(entity, dotConfig) {
 }
 
 // ================================
-// DAMAGE ENEMY
+// CORE DAMAGE FUNCTIONS
 // ================================
 export function damageEnemy(mob, dmgPacket) {
-    if (mob.dead) return;
+
+    if (!mob || mob.dead) return;
 
     const finalDamage = computeDamage(mob, dmgPacket);
 
     mob.hp = Math.max(0, mob.hp - finalDamage);
 
-    spawnDamageNumber(mob.x, mob.y, finalDamage, dmgPacket.isCrit);
+    spawnDamageNumber(
+        mob.x,
+        mob.y,
+        finalDamage,
+        dmgPacket.isCrit,
+        false
+    );
 
-    if (dmgPacket.dot) applyDot(mob, dmgPacket.dot);
+    if (dmgPacket.dot) {
+        applyDot(mob, dmgPacket.dot);
+    }
 }
 
 // ================================
-// DAMAGE PLAYER (SHIELD UNIQUE)
+// PLAYER DAMAGE (SHIELD SAFE)
 // ================================
 export function damagePlayer(player, dmgPacket) {
+
+    if (!player) return;
+
     let damage = computeDamage(player, dmgPacket);
 
     // ================================
-    // SHIELD ABSORPTION (UNIQUE)
+    // SHIELD FIRST
     // ================================
     if (player.shield > 0) {
+
         const absorbed = Math.min(player.shield, damage);
+
         player.shield -= absorbed;
         damage -= absorbed;
 
-        // feedback shield absorb
-        spawnDamageNumber(player.x, player.y, absorbed, false, true);
+        if (absorbed > 0) {
+            spawnDamageNumber(player.x, player.y, absorbed, false, true);
+        }
     }
 
     // ================================
     // HP DAMAGE
     // ================================
     if (damage > 0) {
+
         player.hp = Math.max(0, player.hp - damage);
-        spawnDamageNumber(player.x, player.y, damage, dmgPacket.isCrit, true);
+
+        spawnDamageNumber(
+            player.x,
+            player.y,
+            damage,
+            dmgPacket.isCrit,
+            true
+        );
     }
 
-    // DOT
-    if (dmgPacket.dot) applyDot(player, dmgPacket.dot);
+    if (dmgPacket.dot) {
+        applyDot(player, dmgPacket.dot);
+    }
 }
 
 // ================================
-// DAMAGE CALCULATION
+// DAMAGE CALCULATION CORE
 // ================================
 export function computeDamage(target, dmgPacket) {
+
     let dmg = dmgPacket.base ?? 0;
 
     if (dmgPacket.multiplier) {
         dmg *= dmgPacket.multiplier;
     }
 
-    if (dmgPacket.type && target.resistances) {
+    if (dmgPacket.type && target?.resistances) {
+
         const res = target.resistances[dmgPacket.type] ?? 0;
+
         dmg *= (1 - res);
     }
 
@@ -138,17 +180,20 @@ export function computeDamage(target, dmgPacket) {
 }
 
 // ================================
-// BIOME DAMAGE
+// BIOME DAMAGE SYSTEM
 // ================================
 let biomeTickTimer = 0;
 
 export function applyBiomeDamage(dt, difficulty, player) {
+
     const dmgPerSecond = Math.max(0, difficulty - 1);
+
     if (dmgPerSecond <= 0) return;
 
     biomeTickTimer += dt;
 
     if (biomeTickTimer >= 1000) {
+
         biomeTickTimer = 0;
 
         damagePlayer(player, {

@@ -9,28 +9,31 @@ export const enemies = [];
 // ================================
 export function spawnEnemy(mob) {
 
-    // 🔥 normalisation spawn (IMPORTANT)
     mob.spawnX = mob.spawnX ?? mob.x;
     mob.spawnY = mob.spawnY ?? mob.y;
 
     mob.maxHp = mob.maxHp ?? mob.hp;
     mob.state = mob.state ?? "idle";
 
+    mob.lastDmgTime = 0;
+    mob.dead = false;
+
     enemies.push(mob);
 
     // ================================
-    // ENTOURAGE ÉLITE
+    // ELITE ENTOURAGE
     // ================================
-    if (mob.isElite && mob.entourage && mob.entourage > 0) {
+    if (mob.isElite && mob.entourage > 0) {
 
         const offsets = [
-            {dx: 40, dy: 0},
-            {dx:-40, dy: 0},
-            {dx: 0,  dy: 40},
-            {dx: 0,  dy:-40}
+            { dx: 40, dy: 0 },
+            { dx: -40, dy: 0 },
+            { dx: 0, dy: 40 },
+            { dx: 0, dy: -40 }
         ];
 
         for (let i = 0; i < mob.entourage; i++) {
+
             const o = offsets[i % offsets.length];
 
             const ally = {
@@ -38,7 +41,6 @@ export function spawnEnemy(mob) {
 
                 isElite: false,
                 entourage: 0,
-                entourageType: null,
 
                 x: mob.x + o.dx,
                 y: mob.y + o.dy,
@@ -47,7 +49,11 @@ export function spawnEnemy(mob) {
                 spawnY: mob.y + o.dy,
 
                 maxHp: mob.maxHp * 0.6,
-                hp:    mob.maxHp * 0.6
+                hp: mob.maxHp * 0.6,
+
+                state: "idle",
+                lastDmgTime: 0,
+                dead: false
             };
 
             enemies.push(ally);
@@ -61,6 +67,7 @@ export function spawnEnemy(mob) {
 export function updateEnemies(dt, player) {
 
     for (let i = enemies.length - 1; i >= 0; i--) {
+
         const mob = enemies[i];
 
         if (mob.dead) {
@@ -92,12 +99,16 @@ function updateMobAI(mob, player, dt) {
 
     const aggroRange = mob.aggroRange ?? 280;
     const leashRange = mob.leashRange ?? 500;
-    const damageCd   = mob.damageCd ?? 800;
+    const damageCd = mob.damageCd ?? 800;
+
+    const speed = mob.speed * dt * 0.06;
 
     switch (mob.state) {
 
         case "idle":
-            if (distToPlayer < aggroRange) mob.state = "chase";
+            if (distToPlayer < aggroRange) {
+                mob.state = "chase";
+            }
             break;
 
         case "chase":
@@ -108,16 +119,19 @@ function updateMobAI(mob, player, dt) {
             }
 
             if (distToPlayer > 0) {
-                mob.x += (dx / distToPlayer) * mob.speed * dt * 0.06;
-                mob.y += (dy / distToPlayer) * mob.speed * dt * 0.06;
+                mob.x += (dx / distToPlayer) * speed;
+                mob.y += (dy / distToPlayer) * speed;
             }
 
-            if (distToPlayer < ((player.size ?? 28)/2 + (mob.size ?? 28)/2)) {
-                if (now - (mob.lastDmgTime || 0) > damageCd) {
+            if (distToPlayer < ((player.size ?? 28) / 2 + (mob.size ?? 28) / 2)) {
+
+                if (now - mob.lastDmgTime > damageCd) {
+
                     damagePlayer(player, {
                         base: mob.damage,
                         type: "physical"
                     });
+
                     mob.lastDmgTime = now;
                 }
             }
@@ -126,24 +140,28 @@ function updateMobAI(mob, player, dt) {
         case "leash":
 
             if (distToSpawn > 4) {
-                mob.x += (sx / distToSpawn) * mob.speed * dt * 0.09;
-                mob.y += (sy / distToSpawn) * mob.speed * dt * 0.09;
 
-                mob.hp = Math.min(mob.maxHp, mob.hp + 0.3);
+                mob.x += (sx / distToSpawn) * speed * 1.2;
+                mob.y += (sy / distToSpawn) * speed * 1.2;
+
+                mob.hp = Math.min(mob.maxHp, mob.hp + 0.2);
             } else {
                 mob.hp = mob.maxHp;
                 mob.state = "idle";
             }
 
-            if (distToPlayer < aggroRange) mob.state = "chase";
+            if (distToPlayer < aggroRange) {
+                mob.state = "chase";
+            }
             break;
     }
 }
 
 // ================================
-// COLLISIONS MOB / MOB
+// MOB / MOB COLLISION
 // ================================
 function resolveMobCollisions() {
+
     for (let i = 0; i < enemies.length; i++) {
         for (let j = i + 1; j < enemies.length; j++) {
 
@@ -156,23 +174,28 @@ function resolveMobCollisions() {
 
             const min = (a.size ?? 28) + (b.size ?? 28);
 
-            if (dist < min && dist > 0) {
-                const o = (min - dist) / 2;
+            if (dist > 0 && dist < min) {
 
-                a.x -= (dx / dist) * o;
-                a.y -= (dy / dist) * o;
+                const overlap = (min - dist) / 2;
 
-                b.x += (dx / dist) * o;
-                b.y += (dy / dist) * o;
+                const ox = (dx / dist) * overlap;
+                const oy = (dy / dist) * overlap;
+
+                a.x -= ox;
+                a.y -= oy;
+
+                b.x += ox;
+                b.y += oy;
             }
         }
     }
 }
 
 // ================================
-// COLLISION MOB / PLAYER
+// PLAYER COLLISION
 // ================================
 function resolvePlayerCollision(player) {
+
     for (let mob of enemies) {
 
         const dx = mob.x - player.x;
@@ -181,11 +204,12 @@ function resolvePlayerCollision(player) {
 
         const min = (mob.size ?? 28) + (player.size ?? 28);
 
-        if (dist < min && dist > 0) {
-            const o = min - dist;
+        if (dist > 0 && dist < min) {
 
-            mob.x += (dx / dist) * o;
-            mob.y += (dy / dist) * o;
+            const overlap = min - dist;
+
+            mob.x += (dx / dist) * overlap;
+            mob.y += (dy / dist) * overlap;
         }
     }
 }
@@ -196,38 +220,48 @@ function resolvePlayerCollision(player) {
 export function drawEnemies(ctx) {
 
     for (let mob of enemies) {
+
         if (mob.dead) continue;
 
         ctx.globalAlpha = mob.alpha ?? 1;
 
-        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        // shadow
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
         ctx.beginPath();
-        ctx.ellipse(mob.x, mob.y + mob.size/2 - 2, mob.size/2, 5, 0, 0, Math.PI*2);
+        ctx.ellipse(mob.x, mob.y + mob.size / 2, mob.size / 2, 5, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        // body
         ctx.fillStyle = mob.state === "chase"
             ? brighten(mob.color)
             : mob.color;
 
         ctx.beginPath();
-        ctx.arc(mob.x, mob.y, mob.size/2, 0, Math.PI*2);
+        ctx.arc(mob.x, mob.y, mob.size / 2, 0, Math.PI * 2);
         ctx.fill();
 
+        // elite outline
         if (mob.isElite) {
             ctx.strokeStyle = "#ffcc00";
             ctx.lineWidth = 2.5;
             ctx.stroke();
         }
 
+        // HP bar
         const bw = mob.size * 1.4;
 
         ctx.fillStyle = "rgba(0,0,0,0.55)";
-        ctx.fillRect(mob.x - bw/2, mob.y - mob.size/2 - 10, bw, 5);
+        ctx.fillRect(
+            mob.x - bw / 2,
+            mob.y - mob.size / 2 - 10,
+            bw,
+            5
+        );
 
         ctx.fillStyle = mob.isElite ? "#ffcc00" : "#ff4444";
         ctx.fillRect(
-            mob.x - bw/2,
-            mob.y - mob.size/2 - 10,
+            mob.x - bw / 2,
+            mob.y - mob.size / 2 - 10,
             bw * Math.max(0, mob.hp / mob.maxHp),
             5
         );
@@ -240,15 +274,18 @@ export function drawEnemies(ctx) {
 // UTIL
 // ================================
 function brighten(hex) {
-    try {
-        const r = parseInt(hex.slice(1,3), 16);
-        const g = parseInt(hex.slice(3,5), 16);
-        const b = parseInt(hex.slice(5,7), 16);
 
-        const f = v => Math.min(255, v + 40).toString(16).padStart(2,"0");
+    if (!hex) return "#884444";
+
+    try {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+
+        const f = v => Math.min(255, v + 40).toString(16).padStart(2, "0");
 
         return `#${f(r)}${f(g)}${f(b)}`;
     } catch {
-        return hex ?? "#884444";
+        return "#884444";
     }
 }

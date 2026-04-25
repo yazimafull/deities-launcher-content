@@ -5,16 +5,17 @@ import { allUpgrades } from "./upgrades.js";
 import { addUpgradeToPanel } from "./upgradePanel.js";
 
 // ================================
-// UI STATE
+// STATE
 // ================================
 let panel = null;
 let container = null;
 let initialized = false;
 
 // ================================
-// INIT UI
+// INIT UI (SAFE)
 // ================================
 function initLevelUpUI() {
+
     panel = document.getElementById("levelup-menu");
     container = document.getElementById("upgrade-choices");
 
@@ -26,14 +27,18 @@ function initLevelUpUI() {
     initialized = true;
 }
 
-document.addEventListener("DOMContentLoaded", initLevelUpUI);
+// lazy init safe
+function ensureInit() {
+    if (!initialized) initLevelUpUI();
+    return panel && container;
+}
 
 // ================================
-// OUVERTURE DU MENU LEVEL UP
+// OPEN LEVEL UP MENU
 // ================================
 export function openLevelUpMenu() {
-    if (!initialized) initLevelUpUI();
-    if (!panel || !container) return;
+
+    if (!ensureInit()) return;
 
     setState(GameState.LEVELUP);
 
@@ -42,36 +47,51 @@ export function openLevelUpMenu() {
 
     const options = pickRandomUpgrades(3);
 
-    options.forEach(up => {
+    for (const up of options) {
+
         const btn = document.createElement("button");
         btn.className = "btn";
         btn.textContent = up.name;
 
         btn.onclick = () => {
+
             try {
-                up.apply();              // applique l'upgrade
-                addUpgradeToPanel(up);   // affiche dans HUD
-            } catch (e) {
-                console.error("[levelup] erreur upgrade:", e);
+                up.apply?.();
+                addUpgradeToPanel?.(up);
+            } catch (err) {
+                console.error("[levelup] upgrade error:", err);
             }
 
-            panel.classList.add("hidden");
-            setState(GameState.PLAYING);
+            closeLevelUpMenu();
         };
 
         container.appendChild(btn);
-    });
+    }
 }
 
 // ================================
-// UTILITAIRE RANDOM UPGRADES
+// CLOSE MENU
+// ================================
+export function closeLevelUpMenu() {
+
+    if (!ensureInit()) return;
+
+    panel.classList.add("hidden");
+    setState(GameState.PLAYING);
+}
+
+// ================================
+// RANDOM PICK SYSTEM
 // ================================
 function pickRandomUpgrades(n) {
+
     const pool = [...allUpgrades];
     const result = [];
 
     while (result.length < n && pool.length > 0) {
+
         const idx = Math.floor(Math.random() * pool.length);
+
         result.push(pool.splice(idx, 1)[0]);
     }
 
