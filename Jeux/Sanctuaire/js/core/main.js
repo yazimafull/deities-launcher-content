@@ -1,7 +1,6 @@
-﻿﻿// core/main.js
+﻿// core/main.js
 
 import { setState, GameState } from "./state.js";
-import { startRun } from "./gameLoop.js";
 import { Screens, setScreen } from "./screenManager.js";
 
 const ACTIVE_CHARACTER_KEY = "activeCharacter";
@@ -26,11 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const active = sessionStorage.getItem(ACTIVE_CHARACTER_KEY);
         if (!active) return;
 
-        setScreen(Screens.RUN);
-        setState(GameState.PLAYING);
-
-        startRun({
-            character: JSON.parse(active)
-        });
+        // 🔥 FIX : NE PAS lancer la run ici
+        // Aller au Sanctuaire uniquement
+        setScreen(Screens.SANCTUARY);
+        setState(GameState.SANCTUARY);
     });
 });
