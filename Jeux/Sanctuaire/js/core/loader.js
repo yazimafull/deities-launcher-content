@@ -1,5 +1,4 @@
-﻿ // js/core/loader.js
- // Point d'entrée unique — charge tous les modules dans le bon ordre
+﻿// js/core/loader.js
 
 // ================================
 // CORE ENGINE
@@ -9,11 +8,11 @@ import "./input.js";
 import "./utils.js";
 
 import "./runManager.js";
-import "./gameLoop.js";   // expose window.startRun
-import "./main.js";       // expose navigation (menu ↔ sanctuaire)
+import "./gameLoop.js";
+import "./main.js";
 
 // ================================
-// SYSTEMS (GAMEPLAY)
+// SYSTEMS
 // ================================
 import "../systems/player.js";
 import "../systems/enemyTypes.js";
@@ -38,8 +37,6 @@ import "../UI/menu/characterMenu.js";
 import "../UI/menu/pauseMenu.js";
 
 import "../UI/hud/hudSystem.js";
-import "../UI/hud/healthbar.js";
-import "../UI/hud/damageNumbers.js";
 
 // ================================
 // WORLD
@@ -49,6 +46,6 @@ import "../world/biome_foret.js";
 import "../world/biome_wip.js";
 
 // ================================
-// BOOT LOG
+// BOOT
 // ================================
 console.log("✅ Loader : modules initialisés.");
