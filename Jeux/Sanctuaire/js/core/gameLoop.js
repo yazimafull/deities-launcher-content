@@ -25,6 +25,8 @@ let lastTime = 0;
 let animId = null;
 
 // ================================
+// CONTEXT RUN
+// ================================
 const gameContext = {
     objective: 0,
     objectiveMax: 50,
@@ -66,20 +68,25 @@ function loop(t) {
 }
 
 // ================================
+// START RUN
+// ================================
 export function startRun(config) {
 
+    // stop previous loop
     if (animId) cancelAnimationFrame(animId);
 
+    // reset engine state
     cleanRun();
 
+    // canvas init
     canvas = document.getElementById("game-canvas");
     ctx = canvas.getContext("2d");
 
     canvas.width = innerWidth;
     canvas.height = innerHeight;
-
     canvas.classList.remove("hidden");
 
+    // reset gameplay data
     enemies.length = 0;
     projectiles.length = 0;
     xpOrbs.length = 0;
@@ -89,24 +96,32 @@ export function startRun(config) {
 
     resetBoss();
 
+    // player + world
     initPlayer();
     initBiomeForet(config);
     initBiomeWIP?.();
 
+    // IMPORTANT: state switch BEFORE HUD init
     setState(GameState.PLAYING);
 
-    HUD.show();
-
+    // ================================
+    // HUD INIT (ONLY HERE)
+    // ================================
     HUD.init({
         hp: player.hp,
         maxHp: player.maxHp,
-        xp: 0,
+        shield: player.shield,
+        maxShield: player.maxShield,
+        xp: player.xp,
         xpMax: player.xpMax,
-        objective: 0,
+        objective: gameContext.objective,
         objectiveMax: gameContext.objectiveMax,
-        bossSpawned: false
+        bossSpawned: gameContext.bossSpawned
     });
 
+    HUD.show();
+
+    // start loop
     lastTime = performance.now();
     animId = requestAnimationFrame(loop);
 }

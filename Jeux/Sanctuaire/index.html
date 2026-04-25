@@ -6,7 +6,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- CSS MODULAIRE -->
+    <!-- CSS -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/system.css">
@@ -24,7 +24,8 @@
 <section class="screen" data-screen="character-select">
 
     <div class="panel left-panel">
-        <img src="icon.png" class="game-logo" alt="Game Logo" loading="lazy">
+        <img src="icon.png" class="game-logo" alt="Game Logo">
+
         <div class="left-menu">
             <button class="btn" data-action="open-options">Options</button>
             <button class="btn" data-action="quit">Quitter</button>
@@ -51,18 +52,17 @@
 <section class="screen hidden" data-screen="sanctuary">
 
     <div class="sanctuary-wrapper">
-        <img src="sanctuary-background.jpg" alt="" loading="lazy">
+        <img src="sanctuary-background.jpg" alt="">
 
         <div class="character-bar">
             <span data-role="character-name"></span>
         </div>
 
-        <!-- Zones interactives -->
-        <div class="zone" data-zone="pylone" tabindex="0" role="button">Pylône</div>
-        <div class="zone" data-zone="marchand" tabindex="0" role="button">Marchand</div>
-        <div class="zone" data-zone="coffre" tabindex="0" role="button">Coffre</div>
-        <div class="zone" data-zone="forge" tabindex="0" role="button">Forge</div>
-        <div class="zone" data-zone="grimoire" tabindex="0" role="button">Grimoire</div>
+        <div class="zone" data-zone="pylone">Pylône</div>
+        <div class="zone" data-zone="marchand">Marchand</div>
+        <div class="zone" data-zone="coffre">Coffre</div>
+        <div class="zone" data-zone="forge">Forge</div>
+        <div class="zone" data-zone="grimoire">Grimoire</div>
 
         <button class="btn" data-action="back-menu">Menu</button>
     </div>
@@ -72,11 +72,16 @@
 </section>
 
 <!-- =========================
+     GAME CANVAS (IMPORTANT)
+========================= -->
+<canvas id="game-canvas" class="hidden"></canvas>
+
+<!-- =========================
      HUD
 ========================= -->
-<div id="hud-root">
+<div id="hud-root" class="hidden">
 
-    <div class="hud-block" data-hud="player">
+    <div class="hud-block">
         <div class="bars">
             <div class="bar" data-bar="hp"><div class="fill"></div></div>
             <div class="bar" data-bar="shield"><div class="fill"></div></div>
@@ -84,7 +89,7 @@
         </div>
     </div>
 
-    <div class="hud-block" data-hud="dungeon">
+    <div class="hud-block">
         <div class="header">
             <span data-role="level"></span>
             <span data-role="timer"></span>
@@ -92,18 +97,10 @@
         </div>
     </div>
 
-    <div class="hud-block" data-hud="enemy">
-        <div class="enemy-bar">
-            <div class="track">
-                <div class="fill"></div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- =========================
-     POPUPS (GENERIC)
+     POPUPS
 ========================= -->
 <div class="overlay hidden" data-overlay="create-character">
     <div class="modal">
@@ -125,9 +122,6 @@
     </div>
 </div>
 
-<!-- =========================
-     OPTIONS
-========================= -->
 <div class="overlay hidden" data-overlay="options">
     <div class="modal">
         <h2>Options</h2>
@@ -144,12 +138,9 @@
 <script>
 window.addEventListener("DOMContentLoaded", () => {
 
-    // Quit button
     document.querySelector('[data-action="quit"]')?.addEventListener("click", () => {
         if (window.electronAPI?.quitGame) {
             window.electronAPI.quitGame();
-        } else {
-            console.warn("Electron API non disponible");
         }
     });
 
@@ -159,14 +150,8 @@ window.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { HUD } from "./js/UI/hud/hudSystem.js";
 
-HUD.init({
-    dungeon: {
-        level: 1,
-        timeLimitMs: 300000,
-        enemyForcesMax: 100,
-        affixes: []
-    }
-});
+// IMPORTANT: HUD NE DOIT PAS ÊTRE INIT ICI
+// il est maintenant géré par startRun()
 
 window.addEventListener("keydown", e => {
     if (e.key.toLowerCase() === "h") {
