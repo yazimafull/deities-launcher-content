@@ -1,7 +1,7 @@
 ﻿// core/screenManager.js
 
 import { setState, GameState } from "./state.js";
-import { initSanctuary } from "../UI/sanctuary.js"; // 🔥 AJOUT
+import { initSanctuary } from "../world/sanctuary.js"; // 🔥 AJOUT
 
 export const Screens = {
     MENU: "character-select",
