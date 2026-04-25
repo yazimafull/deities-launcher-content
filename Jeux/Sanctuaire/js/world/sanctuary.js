@@ -1,9 +1,9 @@
 ﻿// Jeux/Sanctuaire/js/world/sanctuary.js
-// ROLE : Gestion du Sanctuaire (UI, zones, pylône, lancement de run)
+// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels, lancement de run)
 // EXPORTS : initSanctuary()
-// DEPENDANCES : goToMenu(), startRun()
+// DEPENDANCES : ../core/main.js (goToMenu), ../core/gameLoop.js (startRun)
 // SCREEN : data-screen="sanctuary"
-// NOTES : 1 zone = 1 handler dédié (plus de panel générique). Le pylône utilise un overlay séparé. La structure interne du pylône sera refaite plus tard.
+// NOTES : 1 zone = 1 handler dédié. Le pylône utilise un overlay séparé (UI refaite).
 
 // ================================
 // IMPORTS
@@ -19,6 +19,13 @@ console.log("🔥 sanctuary.js LOADED");
 // ================================
 // CONSTANTES
 // ================================
+const PANEL_TITLES = {
+    coffre: "Coffre du Sanctuaire",
+    forge: "Forge Sacrée",
+    marchand: "Marchand des Ombres",
+    grimoire: "Grimoire Ancien"
+};
+
 const STONES = [
     {
         name: "Pierre de Fureur",
@@ -259,4 +266,118 @@ function unlockChoices() {
 
     setPointer($("levelDropdown"), "auto");
     setPointer($("affixSlot"), "auto");
-    setDisabled($("pylone
+    setDisabled($("pylone-launch"), false);
+}
+
+// ================================
+// COUNTDOWN
+// ================================
+function startLaunchCountdown() {
+
+    const countdown = $("pylone-countdown");
+    const btn = $("pylone-launch");
+
+    if (!countdown || !btn) return;
+
+    let seconds = 5;
+
+    countdown.classList.remove("hidden");
+    countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
+    btn.disabled = true;
+
+    lockChoices();
+
+    countdownInterval = setInterval(() => {
+
+        seconds--;
+
+        if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            launchRun();
+        } else {
+            countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
+        }
+
+    }, 1000);
+}
+
+// ================================
+// CANCEL
+// ================================
+function clearLaunchTimer() {
+
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+
+    $("pylone-countdown")?.classList.add("hidden");
+
+    setDisabled($("pylone-launch"), false);
+
+    unlockChoices();
+}
+
+// ================================
+// LAUNCH RUN
+// ================================
+function launchRun() {
+
+    const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Forêt Mourante";
+    const levelText = $("levelLabel")?.textContent || "";
+    const difficulte = levelText.replace("Niveau ", "") || "I";
+    const affixName = selectedStone?.name || null;
+
+    const activeCharacter = sessionStorage.getItem("activeCharacter");
+
+    const config = {
+        character: activeCharacter ? JSON.parse(activeCharacter) : null,
+        biome,
+        difficulte,
+        affix: affixName
+    };
+
+    $("pylone-overlay")?.classList.add("hidden");
+
+    document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
+
+    startRun(config);
+}
+
+// ================================
+// SCALE
+// ================================
+function scaleSanctuary() {
+
+    const wrapper = $("sanctuary-wrapper");
+    if (!wrapper) return;
+
+    const baseW = 1920;
+    const baseH = 1080;
+
+    const scale = Math.min(
+        window.innerWidth / baseW,
+        window.innerHeight / baseH
+    );
+
+    wrapper.style.transform = `scale(${scale})`;
+    wrapper.style.left = `${(window.innerWidth - baseW * scale) / 2}px`;
+    wrapper.style.top = `${(window.innerHeight - baseH * scale) / 2}px`;
+}
+
+window.addEventListener("resize", scaleSanctuary);
+window.addEventListener("load", scaleSanctuary);
+
+// ================================
+// DEBUG
+// ================================
+document.addEventListener("keydown", (e) => {
+    if (e.key === "g") {
+        document.body.classList.toggle("sanctuary-show-grid");
+    }
+
+    if (e.key === "d") {
+        document.body.classList.toggle("sanctuary-debug-zones");
+    }
+});
