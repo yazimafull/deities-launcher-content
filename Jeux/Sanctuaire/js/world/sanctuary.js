@@ -70,9 +70,9 @@ function setDisabled(el, value) {
 }
 
 // ================================
-// INIT
+// INIT SANCTUARY (REMPLACE DOMContentLoaded)
 // ================================
-document.addEventListener("DOMContentLoaded", () => {
+export function initSanctuary() {
 
     // BACK MENU
     $("sanctuary-back-btn")?.addEventListener("click", () => {
@@ -149,7 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     $("pylone-launch")?.addEventListener("click", startLaunchCountdown);
-});
+
+    // SCALE INIT
+    scaleSanctuary();
+}
 
 // ================================
 // PANELS
@@ -284,7 +287,6 @@ function launchRun() {
     const difficulte = levelText.replace("Niveau ", "") || "I";
     const affixName = selectedStone?.name || null;
 
-    // 🔥 FIX CRITIQUE : ajouter le personnage actif
     const activeCharacter = sessionStorage.getItem("activeCharacter");
 
     const config = {

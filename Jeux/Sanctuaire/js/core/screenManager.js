@@ -1,6 +1,7 @@
 ﻿// core/screenManager.js
 
 import { setState, GameState } from "./state.js";
+import { initSanctuary } from "../UI/sanctuary.js"; // 🔥 AJOUT
 
 export const Screens = {
     MENU: "character-select",
@@ -27,6 +28,11 @@ export function setScreen(screen) {
         ?.classList.remove("hidden");
 
     currentScreen = screen;
+
+    // 🔥 FIX : initialiser le sanctuaire quand on arrive dessus
+    if (screen === Screens.SANCTUARY) {
+        initSanctuary();
+    }
 
     console.log("📺 Screen →", screen);
 }
