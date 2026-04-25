@@ -79,6 +79,22 @@
     padding-bottom: 60px;
 }
 
+.center-panel .btn {
+    background: rgba(0,0,0,0.55);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+}
+
+.center-panel .btn:hover:not(:disabled) {
+    background: rgba(201,168,106,0.2);
+    box-shadow: 0 0 12px rgba(201,168,106,0.5);
+}
+
 .play-btn {
     width: 220px;
     padding: 16px;
