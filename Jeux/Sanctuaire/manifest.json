@@ -1,5 +1,5 @@
 {
-    "version": "1777126398109",
+    "version": "1777128380901",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -15,7 +15,7 @@
         },
         {
             "path": "css/menu.css",
-            "sha256": "37a26e9faa49d9be37dc1256042f0d177e78f087ef45e25ed4349f130e50de78"
+            "sha256": "b3ed3881cbbfedcb19d1027e4157dadaadbb305e32da24ecffe24ed16928358c"
         },
         {
             "path": "css/pylone.css",
