@@ -1,5 +1,5 @@
 {
-    "version": "1777118620569",
+    "version": "1777118872873",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -79,7 +79,7 @@
         },
         {
             "path": "js/core/screenManager.js",
-            "sha256": "19fe1601e6e1a31b452959f738d2eee714a119593ae127905c3959cba8bac438"
+            "sha256": "e254231c060d9253bec8be0d59e073fbf141c53d3c94d1c3d47359daa323078c"
         },
         {
             "path": "js/core/state.js",
