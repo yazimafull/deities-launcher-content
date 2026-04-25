@@ -1,5 +1,5 @@
 {
-    "version": "1777105303235",
+    "version": "1777108650220",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -47,7 +47,7 @@
         },
         {
             "path": "js/UI/menu/characterMenu.js",
-            "sha256": "a80f810eed262402dcd99bb78922ef2757bf0e8486aaa1e493d17ed90469d126"
+            "sha256": "10bfbc0eb9d4d68fb58ef0924110e326f700704b7cbb7d8eb5cb98977535c71a"
         },
         {
             "path": "js/UI/menu/optionsMenu.js",
@@ -55,15 +55,15 @@
         },
         {
             "path": "js/UI/menu/pauseMenu.js",
-            "sha256": "b56b8626874f4ebaa3cd731c947a3d0a227347a869c0ab75ab1bd353f1d085d3"
+            "sha256": "bb2404da4547a0112ba77e20698488cd409219fa07b09c43bfdd439a9d3d4492"
         },
         {
             "path": "js/core/engine.js",
-            "sha256": "b864784b0deada0efa73464c1b268444fd4a126eb74dcbe6d786e74f4f68f748"
+            "sha256": "3fdb8979b0b46ee208948adf7ceaf0eb3179ae0422211f70490c649de2caded8"
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "86747781b24cb7d480175ff77c40d68c45859eca82ef57829f76646df359b983"
+            "sha256": "8220b398d1ac7ed9923474715bd92163c84958da54de3714bceebc20de17ab11"
         },
         {
             "path": "js/core/input.js",
@@ -71,15 +71,19 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "2d22120eec5820d0ff73248c9d57a1fd1f2142af7064840851c488143c598bb3"
+            "sha256": "b3e32c233b69777b03446536535e62879835f7aa88d7fec9bbf1bdba67c7a228"
         },
         {
             "path": "js/core/main.js",
-            "sha256": "d268479e15c8e06a836e59e6086646fa8cb283f706c7801120248b2e5cad1129"
+            "sha256": "63b628d03f298ab0bc3f84e7efc1f47aaa5380ce00efd550c0534c82e1030957"
         },
         {
             "path": "js/core/runManager.js",
             "sha256": "3a7c99055086e59bcd3fd8c8b6de1641cb5c8dc13d14359baec3ed36bd3fb6f4"
+        },
+        {
+            "path": "js/core/screenManager.js",
+            "sha256": "fa9124205fe717254b1602a43420903b08d7717816dcc482321a7f4fd33cd2b3"
         },
         {
             "path": "js/core/state.js",
@@ -95,7 +99,7 @@
         },
         {
             "path": "js/systems/biomeSpawner.js",
-            "sha256": "ebcf4c1ad481b46834fefb5ab90f0c6ecb646041fdb4b56fc8eb53ae73f0fa20"
+            "sha256": "8c6445343dbac5f4bf3477d1afa3ba4d917b5f379900b541bc1a786550a0c231"
         },
         {
             "path": "js/systems/boss.js",
@@ -115,7 +119,7 @@
         },
         {
             "path": "js/systems/enemySystem.js",
-            "sha256": "09abc0597eb7d9dec0a2de1bd0d4fe33d38036fe11ae86870f268aea9b8582e0"
+            "sha256": "302ac641a6e9156dff2d3515ad2ca6a557bbfd98cc256992511e10335d9881e1"
         },
         {
             "path": "js/systems/enemyTypes.js",
@@ -123,7 +127,7 @@
         },
         {
             "path": "js/systems/levelup.js",
-            "sha256": "69cd0e9f4a8957f2f706ca9badf356242f82e847314a71687713378419f244b6"
+            "sha256": "b98454c2c2c6fb6775c1f0260b01a0f6170e0ae7690a4da9ab6402621b1dd1f5"
         },
         {
             "path": "js/systems/player.js",
