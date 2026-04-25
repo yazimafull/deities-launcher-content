@@ -1,4 +1,4 @@
-﻿// systems/biomeMobGenerator.js
+﻿﻿// systems/biomeMobGenerator.js
 
 import { Bestiary } from "../data/bestiary.js";
 import { createEnemy } from "./enemyFactory.js";
@@ -22,7 +22,9 @@ export function generateBiomeMobs(biomeId, level, affixes = []) {
         // ================================
         // 2. FILTRE LEVEL
         // ================================
-        if (level < data.minLevel || level > data.maxLevel) continue;
+        const minLvl = data.levelRange?.min ?? data.minLevel ?? 1;
+        const maxLvl = data.levelRange?.max ?? data.maxLevel ?? 99;
+        if (level < minLvl || level > maxLvl) continue;
 
         // ================================
         // 3. WEIGHT (densité spawn)

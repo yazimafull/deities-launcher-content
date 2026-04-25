@@ -10,6 +10,7 @@ import "./utils.js";
 import "./runManager.js";
 import "./gameLoop.js";
 import "./main.js";
+import "./screenManager.js"; // ✅ AJOUT IMPORTANT
 
 // ================================
 // SYSTEMS (NO DOM SIDE EFFECT)
@@ -35,7 +36,7 @@ import "../systems/boss.js";
 // ================================
 import { initCharacterMenu } from "../UI/menu/characterMenu.js";
 import { initPauseMenu } from "../UI/menu/pauseMenu.js";
-import { initOptionsMenu } from "../UI/menu/optionsMenu.js"; // ✅ NEW
+import { initOptionsMenu } from "../UI/menu/optionsMenu.js";
 import { HUD } from "../UI/hud/hudSystem.js";
 
 // ================================
@@ -59,7 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // =========================
     initCharacterMenu();
     initPauseMenu();
-    initOptionsMenu(); // ✅ IMPORTANT
+    initOptionsMenu();
 
     // =========================
     // HUD INIT (SAFE DEFAULT)
@@ -73,5 +74,4 @@ window.addEventListener("DOMContentLoaded", () => {
         objectiveMax: 1,
         bossSpawned: false
     });
-
 });

@@ -1,10 +1,11 @@
-﻿// core/engine.js
+﻿﻿// core/engine.js
 
 import { GameState, getState } from "./state.js";
 
 import { updateBiomeForet, drawBiomeForet, camera } from "../world/biome_foret.js";
 
 import { enemies, updateEnemies, drawEnemies } from "../systems/enemySystem.js";
+
 import {
     projectiles,
     updateProjectiles,
@@ -42,36 +43,20 @@ export function getPlayer() {
 }
 
 // ================================
-// UPDATE ENGINE
+// UPDATE ENGINE (PURE GAME LOGIC)
 // ================================
 export function updateEngine(dt, context) {
 
     if (getState() !== GameState.PLAYING) return;
     if (!player) return;
 
-    // ========================
-    // PLAYER PASSIVE SYSTEMS
-    // ========================
-    updateShield(dt);
+    updateShield(player, dt);
 
-    // ========================
-    // WORLD
-    // ========================
     updateBiomeForet(dt, player);
-
-    // ========================
-    // ENEMIES
-    // ========================
     updateEnemies(dt, player);
 
-    // ========================
-    // SHOOTING
-    // ========================
     tryShoot(player, enemies, context.spawnProjectile);
 
-    // ========================
-    // PROJECTILES
-    // ========================
     updateProjectiles(projectiles);
 
     handleProjectileCollisions(projectiles, enemies, (p, m) => {
@@ -90,29 +75,20 @@ export function updateEngine(dt, context) {
         }
     });
 
-    // ========================
-    // BOSS
-    // ========================
     if (context.bossSpawned && boss) {
         updateBoss(player);
     }
 
-    // ========================
-    // XP + FX
-    // ========================
     updateXP(player);
     updateDamageNumbers(dt);
 
-    // ========================
-    // HUD SYNC (SOURCE UNIQUE)
-    // ========================
     HUD.update({
         hp: player.hp,
         maxHp: player.maxHp,
-        shield: player.shield,
-        maxShield: player.maxShield,
-        xp: player.xp || 0,
-        xpMax: player.xpMax || 1,
+        shield: player.shield ?? 0,
+        maxShield: player.maxShield ?? 0,
+        xp: player.xp ?? 0,
+        xpMax: player.xpMax ?? 1,
         objective: context.objective,
         objectiveMax: context.objectiveMax,
         bossSpawned: context.bossSpawned
@@ -120,7 +96,7 @@ export function updateEngine(dt, context) {
 }
 
 // ================================
-// RENDER ENGINE
+// RENDER ENGINE (PURE RENDER)
 // ================================
 export function renderEngine(ctx, canvas, context) {
 
@@ -128,18 +104,15 @@ export function renderEngine(ctx, canvas, context) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // WORLD
     drawBiomeForet(ctx, canvas, player);
 
     ctx.save();
     ctx.translate(-camera.x, -camera.y);
 
-    // ENTITIES
     drawEnemies(ctx);
     drawProjectiles(ctx, projectiles);
     drawXP(ctx);
 
-    // BOSS
     if (context.bossSpawned && boss) {
         drawBoss(ctx, camera, canvas);
         drawBossIndicator(ctx, camera, canvas);
@@ -147,9 +120,7 @@ export function renderEngine(ctx, canvas, context) {
 
     ctx.restore();
 
-    // FX OVERLAY
     drawDamageNumbers(ctx);
 
-    // HUD CANVAS LAYER
     HUD.draw(ctx, canvas);
 }

@@ -1,4 +1,4 @@
-﻿// ui/menu/characterMenu.js
+﻿﻿// ui/menu/characterMenu.js
 
 // ================================
 // STATE LOCAL
@@ -208,6 +208,10 @@ export function selectCharacter(name) {
 
     if (playBtn) playBtn.disabled = false;
     if (deleteBtn) deleteBtn.classList.remove("hidden");
+
+    const chars = loadCharacters();
+    const char = chars.find(c => c.name === name);
+    if (char) sessionStorage.setItem("activeCharacter", JSON.stringify(char));
 }
 
 // ================================

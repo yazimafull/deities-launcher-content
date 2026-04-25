@@ -3,19 +3,13 @@
 import { GameState, setState } from "../core/state.js";
 import { allUpgrades } from "./upgrades.js";
 import { addUpgradeToPanel } from "./upgradePanel.js";
+import { HUD } from "../ui/hud/hudSystem.js";
 
-// ================================
-// STATE
-// ================================
 let panel = null;
 let container = null;
 let initialized = false;
 
-// ================================
-// INIT UI (SAFE)
-// ================================
 function initLevelUpUI() {
-
     panel = document.getElementById("levelup-menu");
     container = document.getElementById("upgrade-choices");
 
@@ -27,20 +21,18 @@ function initLevelUpUI() {
     initialized = true;
 }
 
-// lazy init safe
 function ensureInit() {
     if (!initialized) initLevelUpUI();
     return panel && container;
 }
 
-// ================================
-// OPEN LEVEL UP MENU
-// ================================
 export function openLevelUpMenu() {
 
     if (!ensureInit()) return;
 
     setState(GameState.LEVELUP);
+
+    HUD.hide(); // 🔥 IMPORTANT
 
     panel.classList.remove("hidden");
     container.innerHTML = "";
@@ -69,29 +61,24 @@ export function openLevelUpMenu() {
     }
 }
 
-// ================================
-// CLOSE MENU
-// ================================
 export function closeLevelUpMenu() {
 
     if (!ensureInit()) return;
 
     panel.classList.add("hidden");
+
+    HUD.show(); // 🔥 IMPORTANT
+
     setState(GameState.PLAYING);
 }
 
-// ================================
-// RANDOM PICK SYSTEM
-// ================================
 function pickRandomUpgrades(n) {
 
     const pool = [...allUpgrades];
     const result = [];
 
     while (result.length < n && pool.length > 0) {
-
         const idx = Math.floor(Math.random() * pool.length);
-
         result.push(pool.splice(idx, 1)[0]);
     }
 
