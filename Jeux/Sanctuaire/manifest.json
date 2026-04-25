@@ -1,5 +1,5 @@
 {
-    "version": "1777077200397",
+    "version": "1777077465095",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -71,7 +71,7 @@
         },
         {
             "path": "js/core/main.js",
-            "sha256": "64918615322a078a97c270b4465d35a1aa9567888d060c5af070b0aa80fc86fc"
+            "sha256": "80561a5589109adbe88e9758f3ce4ae37a8e09ed2df8faaf8d327cfe8fd45556"
         },
         {
             "path": "js/core/runManager.js",
