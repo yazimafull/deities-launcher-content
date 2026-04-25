@@ -20,28 +20,30 @@ export function saveCharacters(characters) {
 }
 
 // ================================
-// INIT ENTRY POINT (IMPORTANT)
+// INIT (appelé par loader)
 // ================================
 export function initCharacterMenu() {
 
     const list = document.querySelector('[data-role="character-list"]');
     const playBtn = document.querySelector('[data-action="play"]');
-    const createBtn = document.querySelector('[data-action="create-character"]');
     const deleteBtn = document.querySelector('[data-action="delete-character"]');
 
     if (!list) return;
 
+    // reset UI
     list.innerHTML = "";
+    selectedCharacterName = null;
 
-    loadCharacters().forEach(c => addCharacterToList(c));
+    // load characters
+    loadCharacters().forEach(addCharacterToList);
 
-    // refresh UI state
+    // reset buttons
     if (playBtn) playBtn.disabled = true;
     if (deleteBtn) deleteBtn.classList.add("hidden");
 
     bindEvents();
 
-    console.log("✅ CharacterMenu initialisé");
+    console.log("✅ CharacterMenu ready");
 }
 
 // ================================
@@ -51,7 +53,7 @@ function bindEvents() {
 
     const createBtn = document.querySelector('[data-action="create-character"]');
     const playBtn   = document.querySelector('[data-action="play"]');
-    const deleteBtn  = document.querySelector('[data-action="delete-character"]');
+    const deleteBtn = document.querySelector('[data-action="delete-character"]');
 
     const createOverlay = document.querySelector('[data-overlay="create-character"]');
     const deleteOverlay = document.querySelector('[data-overlay="delete-character"]');
@@ -61,13 +63,17 @@ function bindEvents() {
 
     const cancelBtns = document.querySelectorAll('[data-action="close"]');
 
+    // ================================
     // OPEN CREATE
+    // ================================
     createBtn?.addEventListener("click", () => {
         resetCreatePanel();
         createOverlay?.classList.remove("hidden");
     });
 
+    // ================================
     // CLOSE OVERLAYS
+    // ================================
     cancelBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             createOverlay?.classList.add("hidden");
@@ -75,7 +81,9 @@ function bindEvents() {
         });
     });
 
+    // ================================
     // CLASS SELECT
+    // ================================
     document.querySelectorAll(".class").forEach(btn => {
         btn.addEventListener("click", () => {
 
@@ -87,7 +95,9 @@ function bindEvents() {
         });
     });
 
-    // CREATE CONFIRM
+    // ================================
+    // CREATE CHARACTER
+    // ================================
     confirmCreate?.addEventListener("click", () => {
 
         const input = document.querySelector('[data-input="name"]');
@@ -115,27 +125,12 @@ function bindEvents() {
 
         createOverlay?.classList.add("hidden");
 
-        playBtn.disabled = false;
+        if (playBtn) playBtn.disabled = false;
     });
 
-    // PLAY
-    playBtn?.addEventListener("click", () => {
-
-        const selected = document.querySelector(".character-item.selected");
-        if (!selected) return;
-
-        const name = selected.dataset.name;
-        const chars = loadCharacters();
-        const char = chars.find(c => c.name === name);
-
-        if (!char) return;
-
-        sessionStorage.setItem("activeCharacter", JSON.stringify(char));
-
-        console.log("▶ Jouer avec :", char);
-    });
-
-    // DELETE
+    // ================================
+    // DELETE CHARACTER
+    // ================================
     deleteBtn?.addEventListener("click", () => {
 
         if (!selectedCharacterName) return;
@@ -162,8 +157,13 @@ function bindEvents() {
 
         deleteOverlay?.classList.add("hidden");
 
-        playBtn.disabled = true;
+        if (playBtn) playBtn.disabled = true;
+        deleteBtn?.classList.add("hidden");
     });
+
+    // ⚠️ IMPORTANT :
+    // ❌ PAS de logique PLAY ici
+    // 👉 c'est main.js qui gère le lancement
 }
 
 // ================================
@@ -190,7 +190,7 @@ export function addCharacterToList(character) {
 }
 
 // ================================
-// SELECT
+// SELECT CHARACTER
 // ================================
 export function selectCharacter(name) {
 
