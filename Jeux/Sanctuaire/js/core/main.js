@@ -3,76 +3,61 @@
 import { setState, GameState } from "./state.js";
 import { initPauseMenu } from "../UI/menu/pauseMenu.js";
 
-const ACTIVE_CHARACTER_KEY = "activeCharacter";
-
 document.addEventListener("DOMContentLoaded", () => {
 
     const playBtn = document.querySelector('[data-action="play"]');
+    const menuScreen = document.querySelector('[data-screen="character-select"]');
+    const sanctuaryScreen = document.querySelector('[data-screen="sanctuary"]');
 
+    // 👉 PLAY = uniquement transition screen
     playBtn?.addEventListener("click", () => {
 
-        if (playBtn.disabled) return;
+        const selected = document.querySelector(".character-item.selected");
+        if (!selected) return;
 
-        const selectedItem = document.querySelector(".character-item.selected");
-        if (!selectedItem) return;
+        // sécurité simple
+        const activeCharacter = sessionStorage.getItem("activeCharacter");
 
-        const characterName = selectedItem.dataset.name;
-        const characterClass = selectedItem.querySelector("small")?.textContent || "";
-
-        if (!characterName || !characterClass) {
-            console.error("Personnage invalide");
+        if (!activeCharacter) {
+            console.warn("Aucun personnage actif en session");
             return;
         }
 
-        sessionStorage.setItem(
-            ACTIVE_CHARACTER_KEY,
-            JSON.stringify({
-                name: characterName,
-                avatarClass: characterClass
-            })
-        );
+        menuScreen?.classList.add("hidden");
+        sanctuaryScreen?.classList.remove("hidden");
 
-        goToSanctuary();
+        setState(GameState.SANCTUARY);
     });
 
     initPauseMenu();
 });
 
 // =========================
-// SANCTUARY
+// SANCTUARY NAVIGATION
 // =========================
 export function goToSanctuary() {
 
-    const menu = document.querySelector('[data-screen="character-select"]');
-    const sanctuary = document.querySelector('[data-screen="sanctuary"]');
+    document.querySelector('[data-screen="character-select"]')
+        ?.classList.add("hidden");
 
-    menu?.classList.add("hidden");
-    sanctuary?.classList.remove("hidden");
+    document.querySelector('[data-screen="sanctuary"]')
+        ?.classList.remove("hidden");
 
     setState(GameState.SANCTUARY);
-
-    const active = JSON.parse(sessionStorage.getItem(ACTIVE_CHARACTER_KEY) || "{}");
-
-    const nameEl = document.querySelector('[data-role="character-name"]');
-
-    if (nameEl && active.name) {
-        nameEl.textContent = `${active.name} - ${active.avatarClass}`;
-    }
 }
 
 window.goToSanctuary = goToSanctuary;
 
-
 // =========================
-// MENU
+// BACK TO MENU
 // =========================
 export function goToMenu() {
 
-    const menu = document.querySelector('[data-screen="character-select"]');
-    const sanctuary = document.querySelector('[data-screen="sanctuary"]');
+    document.querySelector('[data-screen="sanctuary"]')
+        ?.classList.add("hidden");
 
-    sanctuary?.classList.add("hidden");
-    menu?.classList.remove("hidden");
+    document.querySelector('[data-screen="character-select"]')
+        ?.classList.remove("hidden");
 
     setState(GameState.MENU);
 }
