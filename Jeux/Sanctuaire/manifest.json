@@ -1,5 +1,5 @@
 {
-    "version": "1777122918337",
+    "version": "1777125295729",
     "files": [
         {
             "path": "css/gameplay.css",
@@ -39,7 +39,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "c5e659444fe913a32654c9f69f563a6ee2a2ea99a740ea3c743dcbc8afb408cd"
+            "sha256": "53820e601a804e0b81c0acb3f7ba900cb1e18a1da44c31abbd962deb5fb92c04"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
@@ -159,7 +159,7 @@
         },
         {
             "path": "js/world/sanctuary.js",
-            "sha256": "853c994b299de936af453f24a295706838ef6d654045868c13d189e50539ebcb"
+            "sha256": "88e35992526f9ae9e45f03ebccd8e2ba7bcfe8434a239aaf53645de88bfbbe66"
         },
         {
             "path": "main-menu-background.jpg",
