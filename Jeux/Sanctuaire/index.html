@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿<!--
+   ROUTE : Jeux/Sanctuaire/index.html
+   RÔLE : Structure principale du jeu (écrans, overlays, HUD, canvas, chargement UI)
+   EXPORTS : (HTML uniquement)
+   DÉPENDANCES : css/*, js/core/loader.js, UI/hud/hudSystem.js
+   NOTES :
+   - Contient tous les écrans : character-select, sanctuary, game, death, pause
+   - Overlays unifiés : options, delete-character, pause, sanctuary-confirm, levelup
+   - HUD séparé dans #hud-root (hors ui-root)
+   - Le moteur est initialisé via js/core/loader.js
+-->
+
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +39,7 @@
         <img src="icon.png" class="game-logo" alt="Game Logo">
 
         <div class="left-menu">
-            <button class="btn" data-action="open-options">Options</button>
+            <button class="btn" data-action="open-options" data-options-context="menu">Options</button>
             <button class="btn" data-action="quit">Quitter</button>
         </div>
     </div>
@@ -44,9 +56,7 @@
         <button class="btn hidden" data-action="delete-character">Supprimer</button>
     </div>
 
-    <!-- =========================
-         POPUPS DU MENU (CORRIGÉ)
-    ========================= -->
+    <!-- POPUPS MENU -->
     <div class="overlay hidden" data-overlay="create-character">
         <div class="modal">
             <h1>Créer un personnage</h1>
@@ -83,12 +93,7 @@
         </div>
     </div>
 
-    <div class="overlay hidden" data-overlay="options">
-        <div class="modal">
-            <h2>Options</h2>
-            <button class="btn" data-action="close">Fermer</button>
-        </div>
-    </div>
+    <!-- (ANCIEN overlay options supprimé ici) -->
 
 </section>
 
@@ -117,9 +122,7 @@
 
     <div class="grid-overlay"></div>
 
-    <!-- =========================
-         OVERLAY PYLÔNE (OK)
-    ========================= -->
+    <!-- OVERLAY PYLÔNE -->
     <div id="pylone-overlay" class="overlay hidden">
         <div class="modal pylone-modal">
 
@@ -206,7 +209,134 @@
 <canvas id="game-canvas" class="hidden"></canvas>
 
 <!-- =========================
-     HUD
+     UI ROOT
+========================= -->
+<div id="ui-root">
+    <!-- === Overlays in-game === -->
+
+    <!-- =========================
+         PAUSE OVERLAY
+    ========================= -->
+    <div id="pause-overlay" class="overlay hidden">
+        <div class="modal modal-pause">
+            <h2>Pause</h2>
+
+            <div class="pause-buttons">
+                <button class="pause-btn" id="pause-resume">▶ Reprendre</button>
+                <button class="pause-btn" id="pause-options" data-action="open-options" data-options-context="ingame">⚙ Options</button>
+                <button class="pause-btn pause-btn-danger" id="pause-sanctuary">⬅ Retour Sanctuaire</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         SANCTUARY CONFIRM
+    ========================= -->
+    <div id="sanctuary-confirm-overlay" class="overlay hidden">
+        <div class="modal modal-danger">
+            <h2>Quitter la run ?</h2>
+            <p class="modal-warning-text">
+                Si vous retournez au sanctuaire, vous perdrez toute l'expérience de cette run.
+            </p>
+            <div class="actions">
+                <button class="btn btn-cancel" id="sanctuary-confirm-cancel">Annuler</button>
+                <button class="btn btn-danger" id="sanctuary-confirm-ok">Retour au Sanctuaire</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+         DEATH SCREEN
+    ========================= -->
+    <div id="death-screen" class="screen hidden">
+        <div class="modal">
+            <h2>Vous êtes mort</h2>
+            <button class="btn" id="death-back">Retour Sanctuaire</button>
+        </div>
+    </div>
+
+    <!-- =========================
+         LEVELUP MENU
+    ========================= -->
+    <div id="levelup-menu" class="overlay hidden">
+        <div class="modal">
+            <h2>Choisissez une amélioration</h2>
+            <div id="upgrade-choices"></div>
+        </div>
+    </div>
+
+    <!-- =========================
+         UPGRADE PANEL
+    ========================= -->
+    <div id="upgrade-panel" class="hidden">
+        <ul id="upgrade-list"></ul>
+    </div>
+
+    <!-- =========================
+         OPTIONS OVERLAY UNIFIÉ
+    ========================= -->
+    <div id="options-overlay" class="overlay hidden">
+        <div class="modal modal-options">
+            <h2>Options</h2>
+
+            <div class="options-tabs">
+                <button class="options-tab active" data-tab="son">🔊 Son</button>
+                <button class="options-tab" data-tab="raccourcis">⌨ Raccourcis</button>
+                <button class="options-tab" data-tab="hud">🖥 HUD</button>
+            </div>
+
+            <div class="options-panel" data-panel="son">
+                <div class="options-section">
+                    <label class="options-label">Volume général</label>
+                    <input type="range" class="options-slider" id="opt-volume-master" min="0" max="100" value="80">
+                </div>
+                <div class="options-section">
+                    <label class="options-label">Musique</label>
+                    <input type="range" class="options-slider" id="opt-volume-music" min="0" max="100" value="70">
+                </div>
+                <div class="options-section">
+                    <label class="options-label">Effets sonores</label>
+                    <input type="range" class="options-slider" id="opt-volume-sfx" min="0" max="100" value="80">
+                </div>
+            </div>
+
+            <div class="options-panel hidden" data-panel="raccourcis">
+                <div class="options-section">
+                    <p class="options-hint options-ingame-only">Cliquez sur un raccourci puis appuyez sur la touche souhaitée.</p>
+                    <p class="options-hint options-menu-only hidden">Les raccourcis sont configurables uniquement en jeu.</p>
+                    <div class="keybind-row">
+                        <span>Pause</span>
+                        <button class="keybind-btn" data-action-key="pause">Échap</button>
+                    </div>
+                    <div class="keybind-row">
+                        <span>Debug ranges</span>
+                        <button class="keybind-btn" data-action-key="debug-ranges">R</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="options-panel hidden" data-panel="hud">
+                <div class="options-section">
+                    <p class="options-hint options-ingame-only">
+                        Positionnez les éléments du HUD librement. Sauvegardez pour conserver vos changements.
+                    </p>
+                    <p class="options-hint options-menu-only hidden">
+                        L’édition du HUD est disponible uniquement en jeu.
+                    </p>
+                    <button class="btn btn-primary" id="options-hud-edit-btn">✏ Éditer le HUD</button>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-cancel" data-action="close">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================
+     HUD (reste hors ui-root)
 ========================= -->
 <div id="hud-root" class="hidden">
 
@@ -233,7 +363,6 @@
 <!-- =========================
      SCRIPTS
 ========================= -->
-
 <script type="module" src="js/core/loader.js"></script>
 
 <script>

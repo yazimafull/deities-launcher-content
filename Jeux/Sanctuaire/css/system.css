@@ -1,21 +1,41 @@
-﻿/* =============================== */
+﻿/* css/system.css
+   ROUTE : Jeux/Sanctuaire/css/system.css
+   RÔLE : Styles globaux du système UI (overlays, modals, boutons, panels génériques)
+   EXPORTS : (CSS uniquement)
+   DÉPENDANCES : global.css
+   NOTES :
+   - Harmonisation complète de la charte graphique (boutons, modals, overlays)
+   - Overlay adapté au scale global (#ui-root) : position absolute, z-index retiré
+   - Composants réutilisables : .btn, .overlay, .modal, .actions, .pause-btn
+   - Utilisé par tous les menus : création perso, options, pause, delete, coming-soon
+*/
+
+
+/* =============================== */
 /*         BOUTON GÉNÉRIQUE        */
 /* =============================== */
 
 .btn {
+    /* === AJOUT : harmonisation charte graphique === */
     display: block;
     margin: 10px auto;
     padding: 12px 25px;
-    background: #222;
-    border: 2px solid white;
-    color: white;
-    font-size: 20px;
+    background: rgba(10,10,30,0.8);
+    border: 2px solid #c9a86a;
+    color: #e2d3b5;
+    font-size: 17px;
     cursor: pointer;
     transition: 0.2s;
     font-family: 'Cinzel', serif;
+    border-radius: 3px;
+    letter-spacing: 1px;
 }
 
-.btn:hover { background: #444; }
+.btn:hover {
+    background: rgba(201,168,106,0.15);
+    box-shadow: 0 0 14px rgba(201,168,106,0.4);
+}
+
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* =============================== */
@@ -23,14 +43,18 @@
 /* =============================== */
 
 .overlay {
-    position: fixed;
+    /* === AJOUT : adaptation au scale global (#ui-root) === */
+    position: absolute; /* fixed → absolute */
     inset: 0;
     background: rgba(0,0,0,0.70);
-    z-index: 9000;
+    /* z-index supprimé — géré par #ui-root */
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
+/* (reste du fichier inchangé) */
+
 
 /* =============================== */
 /*         MODAL GÉNÉRIQUE         */

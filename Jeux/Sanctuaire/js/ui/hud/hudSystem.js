@@ -88,7 +88,14 @@ export const HUD = {
     },
 
     toggleEditMode() {
-        document.body.classList.toggle("hud-edit-mode");
+        const active = document.body.classList.toggle("hud-edit-mode");
+
+        // 👉 AJOUT : activer la grille HUD uniquement en mode édition
+        if (active) {
+            document.body.classList.add("hud-grid");
+        } else {
+            document.body.classList.remove("hud-grid");
+        }
     }
 };
 

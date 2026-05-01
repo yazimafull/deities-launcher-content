@@ -1,9 +1,13 @@
 ﻿// Jeux/Sanctuaire/js/core/screenManager.js
-// ROLE : Gestion centralisée des écrans du jeu (menu, sanctuaire, run, loot, death)
-// GÈRE : Masquage/affichage des écrans via data-screen, suivi de l’écran actif
-// EXPORTS : Screens, setScreen(), getScreen()
-// DÉPENDANCES : state.js (setState, GameState), world/sanctuary.js (initSanctuary)
-// NOTES : initSanctuary() doit être exécuté UNIQUEMENT quand l’écran Sanctuaire devient actif
+/*
+   ROUTE : core/screenManager.js
+   RÔLE : Gestion centralisée des écrans (menu, sanctuaire, run, loot, death)
+   EXPORTS : Screens, setScreen, getScreen
+   DÉPENDANCES : state.js, world/sanctuary.js
+   NOTES :
+   - initSanctuary() doit être appelé UNIQUEMENT quand l'écran Sanctuaire devient actif
+   - Le retour au sanctuaire depuis une run force le rechargement même si currentScreen === sanctuary
+*/
 
 import { setState, GameState } from "./state.js";
 import { initSanctuary } from "../world/sanctuary.js";
@@ -11,7 +15,6 @@ import { initSanctuary } from "../world/sanctuary.js";
 export const Screens = {
     MENU: "character-select",
     SANCTUARY: "sanctuary",
-    RUN: "run",
     LOOT: "loot",
     DEATH: "death"
 };
@@ -23,13 +26,19 @@ let currentScreen = Screens.MENU;
 // ================================
 export function setScreen(screen) {
 
-    if (screen === currentScreen) return;
+    // On autorise le retour au sanctuaire même si currentScreen === sanctuary
+    // car pendant la run, currentScreen reste sur sanctuary (pas d'écran RUN)
+    if (screen === currentScreen && screen !== Screens.SANCTUARY) return;
 
     // Masquer tous les écrans
     document.querySelectorAll(".screen")
         .forEach(s => s.classList.add("hidden"));
 
-    // Afficher l’écran demandé
+    // Toujours cacher le canvas quand on change d'écran
+    const canvas = document.getElementById("game-canvas");
+    if (canvas) canvas.classList.add("hidden");
+
+    // Afficher l'écran demandé
     document
         .querySelector(`[data-screen="${screen}"]`)
         ?.classList.remove("hidden");

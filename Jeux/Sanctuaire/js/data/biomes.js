@@ -1,16 +1,26 @@
-﻿// js/data/biomes.js
-/* 
-   ROUTE : js/data/biomes.js
-   RÔLE : Registre central des biomes (source de vérité unique)
+﻿﻿// js/data/biomes.js
+/*
+   ROUTE : Jeux/Sanctuaire/js/data/biomes.js
+   RÔLE : Registre central des biomes (source de vérité unique pour chargement + paramètres)
    EXPORTS : Biomes
-   DÉPENDANCES : import dynamique vers biome_foret.js et biome_wip.js
-   NOTES : Standardise le chargement + démarrage des biomes via runManager
+   DÉPENDANCES : imports dynamiques vers biome_foret.js et biome_wip.js
+   NOTES :
+   - Définit les paramètres de run : objectiveMax, eliteMin, eliteMax
+   - Chaque biome fournit load() + start() pour runManager
+   - Utilisé par runManager, biomeSpawner et engine
+   - Les modules de biome doivent exposer initBiomeForet() ou initBiomeWIP()
 */
+
 
 export const Biomes = {
     foret: {
         id: "foret",
         label: "Forêt Mourante",
+
+        // === AJOUT : paramètres de run ===
+        objectiveMax: 50,
+        eliteMin: 4,
+        eliteMax: 6,
 
         // Charge le module du biome Forêt
         load: () => import("../world/biome_foret.js"),
@@ -29,6 +39,11 @@ export const Biomes = {
         id: "ruines",
         label: "Ruines Oubliées",
 
+        // === AJOUT : paramètres de run ===
+        objectiveMax: 75,
+        eliteMin: 5,
+        eliteMax: 8,
+
         // Charge le module WIP
         load: () => import("../world/biome_wip.js"),
 
@@ -45,6 +60,11 @@ export const Biomes = {
     abysses: {
         id: "abysses",
         label: "Abysses",
+
+        // === AJOUT : paramètres de run ===
+        objectiveMax: 100,
+        eliteMin: 6,
+        eliteMax: 10,
 
         // Charge le module WIP
         load: () => import("../world/biome_wip.js"),

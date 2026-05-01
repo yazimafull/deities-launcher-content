@@ -1,4 +1,12 @@
-﻿/* =============================== */
+﻿/* 
+   ROUTE : css/global.css
+   RÔLE : Styles globaux, structure des écrans, canvas, wrapper UI
+   EXPORTS : (CSS uniquement)
+   DÉPENDANCES : system.css, menu.css, hud.css
+   NOTES : Ajout du wrapper #ui-root pour scale global
+*/
+
+/* =============================== */
 /*            GLOBAL               */
 /* =============================== */
 
@@ -39,4 +47,25 @@ body {
     top: 0;
     left: 0;
     z-index: 10;
+}
+
+/* =============================== */
+/*         UI ROOT WRAPPER         */
+/* =============================== */
+
+#ui-root {
+    /* === AJOUT : wrapper global pour scale UI === */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    pointer-events: none;
+    z-index: 8000;
+}
+
+#ui-root > * {
+    /* === AJOUT : réactivation des interactions internes === */
+    pointer-events: auto;
 }

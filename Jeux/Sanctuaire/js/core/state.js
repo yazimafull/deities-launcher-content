@@ -1,8 +1,13 @@
-﻿// Jeux/Sanctuaire/js/core/state.js
-// ROLE : Gestion centralisée de l’état global du jeu (MENU, SANCTUARY, RUN, etc.)
-// GÈRE : currentState, transitions d’état, vérifications d’état
-// EXPORTS : GameState, getState(), setState(), isState()
-// NOTES : setState() est appelé par screenManager, main.js, pauseMenu, sanctuary.js
+﻿﻿// Jeux/Sanctuaire/js/core/state.js
+/*
+   ROUTE : core/state.js
+   RÔLE : Gestion centralisée de l’état global du jeu
+   EXPORTS : GameState, getState, setState, isState
+   DÉPENDANCES : aucune
+   NOTES :
+   - PLAYING remplace l’ancien RUN (corrigé dans les autres modules)
+   - setState() log l’état pour debug
+*/
 
 export const GameState = Object.freeze({
     MENU: 0,        // sélection personnage

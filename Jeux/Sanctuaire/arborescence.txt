@@ -1,0 +1,111 @@
+Structure du dossier pour le volume NVME
+Le num‚ro de s‚rie du volume est E64B-91D2
+C:.
+|   arborescence.txt
+|   game.json
+|   icon.png
+|   index.html
+|   main-menu-background.jpg
+|   manifest.json
+|   sanctuary-background.jpg
+|   
++---css
+|       gameplay.css
+|       global.css
+|       hud.css
+|       menu.css
+|       pylone.css
+|       sanctuaire.css
+|       system.css
+|       
+\---js
+    +---core
+    |       engine.js
+    |       gameLoop.js
+    |       input.js
+    |       keybinds.js
+    |       loader.js
+    |       main.js
+    |       runManager.js
+    |       screenManager.js
+    |       state.js
+    |       uiScale.js
+    |       utils.js
+    |       
+    +---data
+    |       affixes.js
+    |       bestiary.js
+    |       biomes.js
+    |       playerBase.js
+    |       stats.js
+    |       weaponData.js
+    |       
+    +---systems
+    |   |   biomeSpawner.js
+    |   |   cameraSystem.js
+    |   |   combatSystem.js
+    |   |   damageSystem.js
+    |   |   deathSystem.js
+    |   |   debugSystem.js
+    |   |   levelup.js
+    |   |   movementSystem.js
+    |   |   Nouveau document texte.txt
+    |   |   projectileSystem.js
+    |   |   upgradePanel.js
+    |   |   upgrades.js
+    |   |   
+    |   +---enemy
+    |   |       bossSystem.js
+    |   |       enemyAI.js
+    |   |       enemyCollision.js
+    |   |       enemyDeath.js
+    |   |       enemyFactory.js
+    |   |       enemyRender.js
+    |   |       enemySystem.js
+    |   |       
+    |   +---item
+    |   |   |   assembleArmor.js
+    |   |   |   assembleWeapon.js
+    |   |   |   canCombine.js
+    |   |   |   createItem.js
+    |   |   |   disassembler.js
+    |   |   |   getFinalProfile.js
+    |   |   |   lootSystem.js
+    |   |   |   merchantLevels.js
+    |   |   |   mergeStats.js
+    |   |   |   socketSystem.js
+    |   |   |   
+    |   |   \---profiles
+    |   |           armorProfiles.js
+    |   |           gemProfiles.js
+    |   |           itemProfiles.js
+    |   |           talismanProfiles.js
+    |   |           trinketProfiles.js
+    |   |           weaponProfiles.js
+    |   |           
+    |   +---player
+    |   |       player.js
+    |   |       playerRenderSystem.js
+    |   |       playerRuntimeSystem.js
+    |   |       playerStatsSystem.js
+    |   |       
+    |   \---xp
+    |           jobXP.js
+    |           old_xp.js
+    |           runXP.js
+    |           soulXP.js
+    |           
+    +---UI
+    |   +---hud
+    |   |       hudSystem.js
+    |   |       
+    |   \---menu
+    |           characterMenu.js
+    |           optionsMenu.js
+    |           pauseMenu.js
+    |           
+    \---world
+            biome_foret.js
+            biome_wip.js
+            sanctuary.js
+            

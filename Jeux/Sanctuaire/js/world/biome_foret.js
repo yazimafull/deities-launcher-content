@@ -1,9 +1,17 @@
-﻿﻿// world/biome_foret.js
+﻿// world/biome_foret.js
+/*
+   ROUTE : world/biome_foret.js
+   RÔLE : Rendu du biome forêt (décor, arbres, fade, target)
+   EXPORTS : initBiomeForet, stopBiomeForet, updateBiomeForet, drawBiomeForet
+   DÉPENDANCES : state.js, cameraSystem.js
+   NOTES :
+   - Le biome ne gère plus mouvement, caméra, clic, mobs.
+   - Le moteur (engine + systems) gère tout le gameplay.
+   - Le biome est désormais un renderer pur.
+*/
 
 import { getState, GameState } from "../core/state.js";
-import { spawnEnemy, enemies } from "../systems/enemySystem.js";
-import { generateBiomeMobs } from "../systems/biomeSpawner.js";
-import { isDown } from "../core/input.js";
+import { camera } from "../systems/cameraSystem.js";
 
 // ================================
 // CONSTANTES
@@ -19,8 +27,6 @@ const BORDER_SIZE = 8;
 const REVEAL_RADIUS = 640;
 const TREE_FADE_ALPHA = 0.25;
 const TREE_FULL_ALPHA = 1.0;
-const DIAGONAL = 0.707;
-const TARGET_THRESHOLD = 5;
 const PLAYER_MARGIN = 80;
 
 const TREE_COLORS = ["#1a4a1a", "#1e5c1e", "#145214", "#2d6e2d", "#0f3b0f"];
@@ -29,11 +35,7 @@ const TREE_COLORS = ["#1a4a1a", "#1e5c1e", "#145214", "#2d6e2d", "#0f3b0f"];
 // STATE
 // ================================
 let canvas, ctx;
-export let camera = { x: 0, y: 0 };
-
-let target = null;
 let trees = [];
-let runConfig = {};
 let active = false;
 
 // ================================
@@ -41,7 +43,6 @@ let active = false;
 // ================================
 export function initBiomeForet(config = {}) {
 
-    runConfig = config;
     active = true;
 
     canvas = document.getElementById("game-canvas");
@@ -50,14 +51,9 @@ export function initBiomeForet(config = {}) {
     ctx = canvas.getContext("2d");
 
     resizeCanvas();
-
     window.addEventListener("resize", resizeCanvas);
-    canvas.addEventListener("click", onClick);
-
-    target = null;
 
     generateTrees();
-    generateMobs();
 }
 
 // ================================
@@ -70,7 +66,6 @@ export function stopBiomeForet() {
     window.removeEventListener("resize", resizeCanvas);
 
     if (canvas) {
-        canvas.removeEventListener("click", onClick);
         ctx?.clearRect(0, 0, canvas.width, canvas.height);
         canvas.classList.add("hidden");
     }
@@ -83,18 +78,6 @@ function resizeCanvas() {
     if (!canvas) return;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-}
-
-// ================================
-// CLICK TARGET
-// ================================
-function onClick(e) {
-    if (getState() !== GameState.PLAYING || !active) return;
-
-    target = {
-        x: e.clientX + camera.x,
-        y: e.clientY + camera.y
-    };
 }
 
 // ================================
@@ -129,92 +112,19 @@ function generateTrees() {
 }
 
 // ================================
-// MOB SPAWN
+// UPDATE (FADE UNIQUEMENT)
 // ================================
-function generateMobs() {
-
-    const level = Number(runConfig.difficulte) || 1;
-    const affixes = runConfig.affix ? [runConfig.affix] : [];
-
-    const mobs = generateBiomeMobs("forest", level, affixes);
-
-    const margin = BORDER_SIZE * TILE_SIZE + PLAYER_MARGIN;
-
-    for (const mob of mobs) {
-        mob.x = margin + Math.random() * (MAP_WIDTH - margin * 2);
-        mob.y = margin + Math.random() * (MAP_HEIGHT - margin * 2);
-        spawnEnemy(mob);
-    }
-}
-
-// ================================
-// UPDATE
-// ================================
-export function updateBiomeForet(dt, player) {
+export function updateBiomeForet(dt, player, enemies) {
 
     if (!active || !player) return;
 
-    updateMovement(player);
-    updateCamera(player);
-    updateTreeFade(player);
-}
-
-// ================================
-// PLAYER MOVE
-// ================================
-function updateMovement(player) {
-
-    let dx = 0, dy = 0;
-
-    if (isDown("up")) dy -= 1;
-    if (isDown("down")) dy += 1;
-    if (isDown("left")) dx -= 1;
-    if (isDown("right")) dx += 1;
-
-    if (dx === 0 && dy === 0 && target) {
-
-        const tx = target.x - player.x;
-        const ty = target.y - player.y;
-
-        const dist = Math.hypot(tx, ty);
-
-        if (dist > TARGET_THRESHOLD) {
-            dx = tx / dist;
-            dy = ty / dist;
-        } else {
-            target = null;
-        }
-    }
-
-    if (dx && dy) {
-        dx *= DIAGONAL;
-        dy *= DIAGONAL;
-    }
-
-    const speed = player.speed * (player.moveSpeedMultiplier || 1);
-
-    player.x += dx * speed;
-    player.y += dy * speed;
-
-    player.x = Math.max(player.size / 2, Math.min(MAP_WIDTH - player.size / 2, player.x));
-    player.y = Math.max(player.size / 2, Math.min(MAP_HEIGHT - player.size / 2, player.y));
-}
-
-// ================================
-// CAMERA
-// ================================
-function updateCamera(player) {
-
-    if (!canvas) return;
-
-    camera.x = Math.max(0, Math.min(MAP_WIDTH - canvas.width, player.x - canvas.width / 2));
-    camera.y = Math.max(0, Math.min(MAP_HEIGHT - canvas.height, player.y - canvas.height / 2));
+    updateTreeFade(player, enemies);
 }
 
 // ================================
 // TREE FADE
 // ================================
-function updateTreeFade(player) {
+function updateTreeFade(player, enemies) {
 
     const alive = enemies.filter(e => !e.dead);
 
@@ -234,11 +144,11 @@ function updateTreeFade(player) {
             }
         }
 
-        const target = (underPlayer || underEnemy)
+        const targetAlpha = (underPlayer || underEnemy)
             ? TREE_FADE_ALPHA
             : TREE_FULL_ALPHA;
 
-        tree.alpha += (target - tree.alpha) * 0.12;
+        tree.alpha += (targetAlpha - tree.alpha) * 0.12;
     }
 }
 
@@ -256,9 +166,6 @@ export function drawBiomeForet(ctx, canvas, player) {
     ctx.translate(-camera.x, -camera.y);
 
     drawTrees(ctx, canvas);
-    drawPlayer(ctx, player);
-
-    if (target) drawTarget(ctx);
 
     ctx.restore();
 }
@@ -291,36 +198,4 @@ function drawTrees(ctx, canvas) {
 
         ctx.globalAlpha = 1;
     }
-}
-
-// ================================
-// PLAYER
-// ================================
-function drawPlayer(ctx, player) {
-
-    ctx.fillStyle = "rgba(0,0,0,0.25)";
-    ctx.beginPath();
-    ctx.ellipse(player.x, player.y + player.size / 2, player.size / 2, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#4aa3ff";
-    ctx.fillRect(
-        player.x - player.size / 2,
-        player.y - player.size / 2,
-        player.size,
-        player.size
-    );
-}
-
-// ================================
-// TARGET
-// ================================
-function drawTarget(ctx) {
-
-    ctx.strokeStyle = "rgba(255,255,255,0.5)";
-    ctx.lineWidth = 2;
-
-    ctx.beginPath();
-    ctx.arc(target.x, target.y, 8, 0, Math.PI * 2);
-    ctx.stroke();
 }

@@ -1,24 +1,49 @@
-﻿// Jeux/Sanctuaire/js/UI/menu/pauseMenu.js
-// ROLE : Gestion du menu Pause pendant une run (ouvrir/fermer, retour Sanctuaire)
-// GÈRE : Touche Échap, overlay pause, navigation vers Sanctuaire
-// EXPORTS : openPause(), initPauseMenu()
-// CONDITIONS : Ne doit fonctionner QUE en GameState.RUN
-// NOTES : Le Sanctuaire n’a pas de pause menu → protections obligatoires
+﻿// UI/menu/pauseMenu.js
+/*
+   ROUTE : Jeux/Sanctuaire/js/UI/menu/pauseMenu.js
+   RÔLE : Gestion du menu Pause en run (ouverture, fermeture, confirmation Sanctuaire)
+   EXPORTS : openPause, initPauseMenu
+   DÉPENDANCES : state.js, screenManager.js, gameLoop.js, runManager.js
+   NOTES :
+   - Fonctionne en GameState.PLAYING et GameState.PAUSED
+   - ESC ouvre/ferme le menu pause
+   - Retour Sanctuaire passe par un overlay de confirmation
+   - stopRun() + cleanRun() appliqués avant retour au Sanctuaire
+*/
 
 import { setState, GameState, getState } from "../../core/state.js";
 import { setScreen, Screens } from "../../core/screenManager.js";
 
-// Variable fermée, initialisée dans initPauseMenu()
+// === AJOUT CLAUDE ===
+import { stopRun } from "../../core/gameLoop.js";
+import { cleanRun } from "../../core/runManager.js";
+
 let pauseOverlay = null;
+let sanctuaryConfirmOverlay = null;
+let sanctuaryConfirmCancelBtn = null;
+let sanctuaryConfirmOkBtn = null;
 
 // ================================
-// OUVERTURE EXTERNE (appelée par d'autres modules)
+// OUVERTURE EXTERNE
 // ================================
 export function openPause() {
     if (!pauseOverlay) return;
-    if (getState() !== GameState.RUN) return; // 🔥 sécurité
+    if (getState() !== GameState.PLAYING) return;
     pauseOverlay.classList.remove("hidden");
     setState(GameState.PAUSED);
+}
+
+// ================================
+// CONFIRM SANCTUAIRE
+// ================================
+function showSanctuaryConfirm() {
+    if (!sanctuaryConfirmOverlay) return;
+    sanctuaryConfirmOverlay.classList.remove("hidden");
+}
+
+function hideSanctuaryConfirm() {
+    if (!sanctuaryConfirmOverlay) return;
+    sanctuaryConfirmOverlay.classList.add("hidden");
 }
 
 // ================================
@@ -28,11 +53,14 @@ export function initPauseMenu() {
 
     pauseOverlay = document.getElementById("pause-overlay");
 
-    // Si l'overlay n'existe pas (ex : Sanctuaire), on stoppe tout
     if (!pauseOverlay) {
-        console.warn("⚠️ pauseMenu : aucun overlay trouvé → mode RUN uniquement");
+        console.warn("⚠️ pauseMenu : aucun overlay trouvé → mode PLAYING uniquement");
         return;
     }
+
+    sanctuaryConfirmOverlay = document.getElementById("sanctuary-confirm-overlay");
+    sanctuaryConfirmCancelBtn = document.getElementById("sanctuary-confirm-cancel");
+    sanctuaryConfirmOkBtn = document.getElementById("sanctuary-confirm-ok");
 
     // ================================
     // ESCAPE KEY
@@ -41,30 +69,53 @@ export function initPauseMenu() {
 
         if (e.key !== "Escape") return;
 
-        // 🔥 Ne jamais ouvrir le menu pause hors RUN
-        if (getState() !== GameState.RUN && getState() !== GameState.PAUSED) {
+        const state = getState();
+        if (state !== GameState.PLAYING && state !== GameState.PAUSED) {
             return;
         }
 
-        // Toggle pause
         const isHidden = pauseOverlay.classList.toggle("hidden");
 
         if (isHidden) {
-            setState(GameState.RUN);
+            setState(GameState.PLAYING);
         } else {
             setState(GameState.PAUSED);
         }
     });
 
     // ================================
-    // RETOUR SANCTUAIRE
+    // BOUTON REPRENDRE
+    // ================================
+    document.getElementById("pause-resume")?.addEventListener("click", () => {
+        pauseOverlay.classList.add("hidden");
+        setState(GameState.PLAYING);
+    });
+
+    // ================================
+    // RETOUR SANCTUAIRE → ouvre la confirmation
     // ================================
     document.getElementById("pause-sanctuary")?.addEventListener("click", () => {
+        showSanctuaryConfirm();
+    });
 
+    // ================================
+    // CONFIRMATION : Annuler
+    // ================================
+    sanctuaryConfirmCancelBtn?.addEventListener("click", () => {
+        hideSanctuaryConfirm();
+        // On revient au menu pause
+        pauseOverlay.classList.remove("hidden");
+    });
+
+    // ================================
+    // CONFIRMATION : Retour Sanctuaire
+    // === VERSION MODIFIÉE CLAUDE ===
+    // ================================
+    sanctuaryConfirmOkBtn?.addEventListener("click", () => {
+        hideSanctuaryConfirm();
         pauseOverlay.classList.add("hidden");
-
-        // On repasse en état Sanctuaire
-        setState(GameState.SANCTUARY);
+        stopRun();
+        cleanRun();
         setScreen(Screens.SANCTUARY);
     });
 }

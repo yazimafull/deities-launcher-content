@@ -1,14 +1,17 @@
 ﻿// UI/menu/optionsMenu.js
-// ROUTE : UI/menu/optionsMenu.js
-// ROLE  : Gère l’ouverture/fermeture du panneau Options.
-// EXPORTS : openOptions(), closeOptions(), initOptionsMenu()
-// DEPENDANCES : aucune externe
-// NOTES :
-// - Tous les listeners sont idempotents (attachés une seule fois).
-// - Empêche les doublons lors des rechargements du jeu.
-// - Empêche les popups de réagir dans le Sanctuaire.
+/*
+   ROUTE : Jeux/Sanctuaire/js/UI/menu/optionsMenu.js
+   RÔLE : Gestion du panneau Options unifié (ouverture, fermeture, listeners idempotents)
+   EXPORTS : openOptions, closeOptions, initOptionsMenu
+   DÉPENDANCES : aucune (module autonome, manipule uniquement le DOM)
+   NOTES :
+   - Cible désormais l’overlay unifié #options-overlay
+   - Listeners idempotents : attachés une seule fois même après reload
+   - Empêche les doublons et comportements fantômes
+   - ESC ferme le panneau (listener unique grâce à { once: true })
+*/
 
-const PANEL_SELECTOR = '[data-overlay="options"]';
+const PANEL_SELECTOR = '#options-overlay'; // 🔥 Nouveau sélecteur correct
 
 let OPTIONS_INITIALIZED = false; // 🔥 Empêche les listeners multiples
 

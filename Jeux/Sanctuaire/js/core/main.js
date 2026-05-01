@@ -6,6 +6,9 @@
 
 import { setState, GameState } from "./state.js";
 import { Screens, setScreen } from "./screenManager.js";
+import { stopRun } from "./gameLoop.js";
+import { resetInput } from "./input.js";
+
 
 const ACTIVE_CHARACTER_KEY = "activeCharacter";
 
@@ -36,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!active) return;
 
             // IMPORTANT :
-            // On NE lance PAS la run ici.
-            // On bascule simplement vers l’écran Sanctuaire.
+            stopRun();
+            resetInput();
             setScreen(Screens.SANCTUARY);
             setState(GameState.SANCTUARY);
         };

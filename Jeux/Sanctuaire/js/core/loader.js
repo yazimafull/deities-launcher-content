@@ -1,20 +1,24 @@
-﻿// js/core/loader.js
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/core/loader.js
 
-// ======================================================
-// ROUTE : js/core/loader.js
-// ROLE  : Point d’entrée global. Charge les modules SANS
-//         attacher de listeners multiples. Initialise
-//         uniquement les handlers globaux une seule fois.
-// EXPORTS : aucun (fichier d’orchestration)
-// DEPENDANCES : state.js, input.js, utils.js, runManager.js,
-//               gameLoop.js, main.js, screenManager.js,
-//               UI/menu/*, UI/hud/*, world/*
-// NOTES :
-// - NE DOIT PAS attacher de listeners multiples.
-// - NE DOIT PAS réinitialiser les handlers à chaque écran.
-// - Tous les init UI doivent être idempotents (une seule exécution).
-// ======================================================
+   ARBORESCENCE :
+     Jeux → Sanctuaire → js → core → loader.js
 
+   RÔLE :
+     POINT D’ENTRÉE GLOBAL DU JEU
+
+   PRINCIPLE :
+     - Charge tous les modules une seule fois
+     - Ne contient aucune logique gameplay
+     - Ne crée aucun listener dupliqué
+     - Initialise uniquement UI + bindings globaux
+
+   DÉPENDANCES :
+     - state / input / engine core
+     - systems (player, enemies, movement, combat…)
+     - UI modules
+     - world modules
+*/
 
 // ================================
 // CORE
@@ -26,28 +30,82 @@ import "./utils.js";
 import "./runManager.js";
 import "./gameLoop.js";
 import "./main.js";
-import "./screenManager.js"; // Gestion des écrans
+import "./screenManager.js";
 
 // ================================
-// SYSTEMS (NO DOM SIDE EFFECT)
+// UI SCALE
 // ================================
-import "../systems/player.js";
-import "../systems/enemyFactory.js";
-import "../systems/enemySystem.js";
+import { initUIScale } from "./uiScale.js";
 
-import "../systems/projectile.js";
+// ================================
+// SYSTEMS
+// ================================
+
+// PLAYER
+import "../systems/player/player.js";
+import "../systems/player/playerStatsSystem.js";
+import "../systems/player/playerRuntimeSystem.js";
+import "../systems/player/playerRenderSystem.js";
+
+// ENEMY
+import "../systems/enemy/enemyFactory.js";
+import "../systems/enemy/enemySystem.js";
+import "../systems/enemy/enemyAI.js";
+import "../systems/enemy/enemyCollision.js";
+import "../systems/enemy/enemyDeath.js";
+import "../systems/enemy/enemyRender.js";
+import "../systems/enemy/bossSystem.js";
+
+// COMBAT
+import "../systems/projectileSystem.js";
+import "../systems/combatSystem.js";
 import "../systems/damageSystem.js";
 import "../systems/deathSystem.js";
 
-import "../systems/xp.js";
+// XP
+import "../systems/xp/runXP.js";
+import "../systems/xp/soulXP.js";
+import "../systems/xp/jobXP.js";
+
+// LEVEL / UPGRADES
 import "../systems/levelup.js";
 import "../systems/upgrades.js";
 import "../systems/upgradePanel.js";
 
-import "../systems/boss.js";
+// MOVEMENT / CAMERA
+import "../systems/cameraSystem.js";
+import "../systems/movementSystem.js";
+
+// DEBUG
+import "../systems/debugSystem.js";
+
+// BIOME SPAWNER
+import "../systems/biomeSpawner.js";
 
 // ================================
-// UI MODULES (MANUAL INIT)
+// ITEM SYSTEMS
+// ================================
+import "../systems/item/assembleArmor.js";
+import "../systems/item/assembleWeapon.js";
+import "../systems/item/canCombine.js";
+import "../systems/item/createItem.js";
+import "../systems/item/disassembler.js";
+import "../systems/item/getFinalProfile.js";
+import "../systems/item/lootSystem.js";
+import "../systems/item/merchantLevels.js";
+import "../systems/item/mergeStats.js";
+import "../systems/item/socketSystem.js";
+
+// item profiles
+import "../systems/item/profiles/armorProfiles.js";
+import "../systems/item/profiles/gemProfiles.js";
+import "../systems/item/profiles/itemProfiles.js";
+import "../systems/item/profiles/talismanProfiles.js";
+import "../systems/item/profiles/trinketProfiles.js";
+import "../systems/item/profiles/weaponProfiles.js";
+
+// ================================
+// UI
 // ================================
 import { initCharacterMenu } from "../UI/menu/characterMenu.js";
 import { initPauseMenu } from "../UI/menu/pauseMenu.js";
@@ -61,35 +119,40 @@ import "../world/sanctuary.js";
 import "../world/biome_foret.js";
 import "../world/biome_wip.js";
 
-console.log("✅ Loader chargé (modules prêts, init manuel)");
+// ================================
+// BOOT STATE
+// ================================
+console.log("✅ Loader chargé");
 
+let UI_INITIALIZED = false;
 
-// ======================================================
-// BOOT SEQUENCING — INIT UNIQUE
-// ======================================================
-
-let UI_INITIALIZED = false; // 🔥 Empêche les doublons de listeners
-
+// ================================
+// BOOT GAME
+// ================================
 window.addEventListener("DOMContentLoaded", () => {
 
     console.log("🚀 Boot game start");
 
-    // =========================
-    // UI INIT — UNE SEULE FOIS
-    // =========================
+    // UI SCALE GLOBAL
+    initUIScale();
+
+    // ================================
+    // UI INIT (ONE SHOT)
+    // ================================
     if (!UI_INITIALIZED) {
-        initCharacterMenu();  // Attache les listeners du menu
-        initPauseMenu();      // Attache les listeners du pause menu
-        initOptionsMenu();    // Attache les listeners du menu options
+
+        initCharacterMenu();
+        initPauseMenu();
+        initOptionsMenu();
+
         UI_INITIALIZED = true;
-        console.log("🎯 UI initialisée (une seule fois)");
-    } else {
-        console.warn("⚠️ UI déjà initialisée — listeners non dupliqués");
+
+        console.log("🎯 UI initialisée");
     }
 
-    // =========================
-    // HUD INIT (SAFE DEFAULT)
-    // =========================
+    // ================================
+    // HUD INIT
+    // ================================
     HUD.init({
         hp: 100,
         maxHp: 100,

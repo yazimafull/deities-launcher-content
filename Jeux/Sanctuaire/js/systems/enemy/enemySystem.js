@@ -1,6 +1,20 @@
-﻿﻿// systems/enemySystem.js
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/systems/enemy/enemySystem.js
 
-import { damagePlayer } from "./damageSystem.js";
+   RÔLE :
+     Runtime des ennemis (IA, collisions, mort). 
+     Ne gère aucune logique de progression (XP, loot, objectif).
+     Sur la mort, délègue l’événement à runXP + callbacks externes.
+
+   PRINCIPES :
+     - IA simple idle/chase
+     - Collision mob/mob + mob/player (anti-jitter)
+     - Mort = onEnemyKilled(mob, config, player)
+     - Aucune stat avancée ici (calculs centralisés ailleurs)
+*/
+
+
+import { onEnemyKilled } from "../xp/runXP.js";
 
 export const enemies = [];
 
@@ -9,20 +23,27 @@ export const enemies = [];
 // ================================
 export function spawnEnemy(mob) {
 
+    mob.isMob = true;
+
     mob.spawnX = mob.spawnX ?? mob.x;
     mob.spawnY = mob.spawnY ?? mob.y;
 
     mob.maxHp = mob.maxHp ?? mob.hp;
-    mob.state = mob.state ?? "idle";
 
-    mob.lastDmgTime = 0;
     mob.dead = false;
+    mob.state = "idle";
+
+    mob.speed = mob.speed ?? 80;
+
+    mob.size = mob.size ?? 28;
+    mob.visualSize = mob.visualSize ?? mob.size;
+
+    mob.meleeRange = mob.meleeRange ?? 0;
+    mob.attackSpeed = mob.attackSpeed ?? 800;
 
     enemies.push(mob);
 
-    // ================================
-    // ELITE ENTOURAGE
-    // ================================
+    // entourage elite
     if (mob.isElite && mob.entourage > 0) {
 
         const offsets = [
@@ -48,11 +69,10 @@ export function spawnEnemy(mob) {
                 spawnX: mob.x + o.dx,
                 spawnY: mob.y + o.dy,
 
-                maxHp: mob.maxHp * 0.6,
                 hp: mob.maxHp * 0.6,
+                maxHp: mob.maxHp * 0.6,
 
                 state: "idle",
-                lastDmgTime: 0,
                 dead: false
             };
 
@@ -64,13 +84,17 @@ export function spawnEnemy(mob) {
 // ================================
 // UPDATE
 // ================================
-export function updateEnemies(dt, player) {
+export function updateEnemies(dt, player, config) {
 
     for (let i = enemies.length - 1; i >= 0; i--) {
 
         const mob = enemies[i];
 
-        if (mob.dead) {
+        // mort
+        if (mob.hp <= 0 && !mob.dead) {
+
+            handleMobDeath(mob, config, player);
+
             enemies.splice(i, 1);
             continue;
         }
@@ -83,78 +107,45 @@ export function updateEnemies(dt, player) {
 }
 
 // ================================
-// IA
+// ENEMY DEATH
+// ================================
+function handleMobDeath(mob, config, player) {
+
+    mob.dead = true;
+
+    // délègue TOUT à runXP
+    onEnemyKilled(mob, config, player);
+
+    // callback externe (objectif, loot…)
+    if (typeof config.onMobKilled === "function") {
+        config.onMobKilled(mob);
+    }
+}
+
+// ================================
+// MOB AI
 // ================================
 function updateMobAI(mob, player, dt) {
 
-    const now = performance.now();
-
     const dx = player.x - mob.x;
     const dy = player.y - mob.y;
-    const distToPlayer = Math.hypot(dx, dy);
 
-    const sx = mob.spawnX - mob.x;
-    const sy = mob.spawnY - mob.y;
-    const distToSpawn = Math.hypot(sx, sy);
+    const dist = Math.hypot(dx, dy);
 
     const aggroRange = mob.aggroRange ?? 280;
-    const leashRange = mob.leashRange ?? 500;
-    const damageCd = mob.damageCd ?? 800;
 
-    // ================================
-    // DOCUMENT FIX : normalisation dt
-    // ================================
     const speed = mob.speed * (dt / 1000);
 
     switch (mob.state) {
 
         case "idle":
-            if (distToPlayer < aggroRange) {
-                mob.state = "chase";
-            }
+            if (dist < aggroRange) mob.state = "chase";
             break;
 
         case "chase":
-
-            if (distToSpawn > leashRange) {
-                mob.state = "leash";
-                break;
-            }
-
-            if (distToPlayer > 0) {
-                mob.x += (dx / distToPlayer) * speed;
-                mob.y += (dy / distToPlayer) * speed;
-            }
-
-            if (distToPlayer < ((player.size ?? 28) / 2 + (mob.size ?? 28) / 2)) {
-
-                if (now - mob.lastDmgTime > damageCd) {
-
-                    damagePlayer(player, {
-                        base: mob.damage,
-                        type: "physical"
-                    });
-
-                    mob.lastDmgTime = now;
-                }
-            }
-            break;
-
-        case "leash":
-
-            if (distToSpawn > 4) {
-
-                mob.x += (sx / distToSpawn) * speed * 1.2;
-                mob.y += (sy / distToSpawn) * speed * 1.2;
-
-                mob.hp = Math.min(mob.maxHp, mob.hp + 0.2);
-            } else {
-                mob.hp = mob.maxHp;
-                mob.state = "idle";
-            }
-
-            if (distToPlayer < aggroRange) {
-                mob.state = "chase";
+            if (dist > 0) {
+                mob.x += (dx / dist) * speed;
+                mob.y += (dy / dist) * speed;
             }
             break;
     }
@@ -166,6 +157,7 @@ function updateMobAI(mob, player, dt) {
 function resolveMobCollisions() {
 
     for (let i = 0; i < enemies.length; i++) {
+
         for (let j = i + 1; j < enemies.length; j++) {
 
             const a = enemies[i];
@@ -173,13 +165,14 @@ function resolveMobCollisions() {
 
             const dx = b.x - a.x;
             const dy = b.y - a.y;
+
             const dist = Math.hypot(dx, dy);
 
-            const min = (a.size ?? 28) + (b.size ?? 28);
+            const min = (a.size / 2) + (b.size / 2);
 
             if (dist > 0 && dist < min) {
 
-                const overlap = (min - dist) / 2;
+                const overlap = (min - dist) * 0.5;
 
                 const ox = (dx / dist) * overlap;
                 const oy = (dy / dist) * overlap;
@@ -199,20 +192,34 @@ function resolveMobCollisions() {
 // ================================
 function resolvePlayerCollision(player) {
 
-    for (let mob of enemies) {
+    if (player.dead) return;
+
+    for (const mob of enemies) {
+
+        if (mob.dead) continue;
 
         const dx = mob.x - player.x;
         const dy = mob.y - player.y;
+
         const dist = Math.hypot(dx, dy);
 
-        const min = (mob.size ?? 28) + (player.size ?? 28);
+        const min = (mob.size / 2) + (player.size / 2);
 
         if (dist > 0 && dist < min) {
 
             const overlap = min - dist;
 
-            mob.x += (dx / dist) * overlap;
-            mob.y += (dy / dist) * overlap;
+            const maxPush = 2.5;
+            const push = Math.min(overlap * 0.5, maxPush);
+
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            mob.x += nx * push;
+            mob.y += ny * push;
+
+            player.x -= nx * push;
+            player.y -= ny * push;
         }
     }
 }
@@ -222,7 +229,7 @@ function resolvePlayerCollision(player) {
 // ================================
 export function drawEnemies(ctx) {
 
-    for (let mob of enemies) {
+    for (const mob of enemies) {
 
         if (mob.dead) continue;
 
@@ -231,7 +238,15 @@ export function drawEnemies(ctx) {
         // shadow
         ctx.fillStyle = "rgba(0,0,0,0.25)";
         ctx.beginPath();
-        ctx.ellipse(mob.x, mob.y + mob.size / 2, mob.size / 2, 5, 0, 0, Math.PI * 2);
+        ctx.ellipse(
+            mob.x,
+            mob.y + mob.visualSize / 2,
+            mob.visualSize / 2,
+            5,
+            0,
+            0,
+            Math.PI * 2
+        );
         ctx.fill();
 
         // body
@@ -240,7 +255,13 @@ export function drawEnemies(ctx) {
             : mob.color;
 
         ctx.beginPath();
-        ctx.arc(mob.x, mob.y, mob.size / 2, 0, Math.PI * 2);
+        ctx.arc(
+            mob.x,
+            mob.y,
+            mob.visualSize / 2,
+            0,
+            Math.PI * 2
+        );
         ctx.fill();
 
         // elite outline
@@ -250,13 +271,13 @@ export function drawEnemies(ctx) {
             ctx.stroke();
         }
 
-        // HP bar
-        const bw = mob.size * 1.4;
+        // hp bar
+        const bw = mob.visualSize * 1.4;
 
         ctx.fillStyle = "rgba(0,0,0,0.55)";
         ctx.fillRect(
             mob.x - bw / 2,
-            mob.y - mob.size / 2 - 10,
+            mob.y - mob.visualSize / 2 - 10,
             bw,
             5
         );
@@ -264,7 +285,7 @@ export function drawEnemies(ctx) {
         ctx.fillStyle = mob.isElite ? "#ffcc00" : "#ff4444";
         ctx.fillRect(
             mob.x - bw / 2,
-            mob.y - mob.size / 2 - 10,
+            mob.y - mob.visualSize / 2 - 10,
             bw * Math.max(0, mob.hp / mob.maxHp),
             5
         );
@@ -274,7 +295,7 @@ export function drawEnemies(ctx) {
 }
 
 // ================================
-// UTIL
+// COLOR UTIL
 // ================================
 function brighten(hex) {
 
@@ -285,9 +306,13 @@ function brighten(hex) {
         const g = parseInt(hex.slice(3, 5), 16);
         const b = parseInt(hex.slice(5, 7), 16);
 
-        const f = v => Math.min(255, v + 40).toString(16).padStart(2, "0");
+        const f = v =>
+            Math.min(255, v + 40)
+                .toString(16)
+                .padStart(2, "0");
 
         return `#${f(r)}${f(g)}${f(b)}`;
+
     } catch {
         return "#884444";
     }

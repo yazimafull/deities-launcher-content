@@ -405,15 +405,3 @@ function scaleSanctuary() {
 window.addEventListener("resize", scaleSanctuary);
 window.addEventListener("load", scaleSanctuary);
 
-// ================================
-// DEBUG
-// ================================
-document.addEventListener("keydown", (e) => {
-    if (e.key === "g") {
-        document.body.classList.toggle("sanctuary-show-grid");
-    }
-
-    if (e.key === "d") {
-        document.body.classList.toggle("sanctuary-debug-zones");
-    }
-});
