@@ -2,123 +2,93 @@
    ROUTE : Jeux/Sanctuaire/js/systems/player/playerStatsSystem.js
 
    RÔLE :
-     Calcul pur des statistiques finales du joueur.
-     Combine : basePlayer + weapon + affixes + talents + buffs.
-     Gère aussi la régénération HP / Shield (stat-based).
+     Fusionner TOUTES les sources de stats :
+       - arme
+       - armure
+       - trinkets
+       - buffs
+       - talents
+       - gemmes
+     pour produire les stats finales du joueur.
 
    PRINCIPES :
-     - buildPlayerStats = fonction pure (aucun effet de bord)
-     - updateHP / updateShield = logique runtime simple (pas de gameplay)
-     - Ne modifie jamais les stats de base, seulement player.hp / shield
-     - Additive / multiplicative gérées ici uniquement
+     - Le joueur n’a PAS de stats de base (âme = coquille vide)
+     - Toutes les stats viennent de l’équipement + talents + buffs + gemmes
+     - Stats.js = registre unique (source de vérité)
 */
 
 import { Stats } from "../../data/stats.js";
 import { basePlayer } from "../../data/playerBase.js";
 
-// ================================
-// BUILD FINAL PLAYER STATS
-// ================================
 export function buildPlayerStats(player) {
 
-    const stats = createBaseStats();
+    // 1) On part des stats de base du joueur (basePlayer.stats)
+    const stats = structuredClone(basePlayer.stats);
 
-    if (player.weapon) {
-        applyWeapon(stats, player.weapon);
+    // 2) Armure
+    if (player.equipment?.armor) {
+        applySource(stats, player.equipment.armor);
     }
 
-    applyList(stats, player.affixes);
-    applyList(stats, player.talents);
+    // 3) Arme
+    if (player.equipment?.weapon) {
+        applySource(stats, player.equipment.weapon);
+    }
+
+    // 4) Trinkets
+    if (player.trinkets) {
+        for (const t of player.trinkets) {
+            applySource(stats, t);
+        }
+    }
+
+    // 5) Buffs temporaires
     applyList(stats, player.buffs);
+
+    // 6) Talents permanents
+    applyList(stats, player.talents);
+
+    // 7) Gemmes
+    if (player.gems) {
+        for (const g of player.gems) {
+            applySource(stats, g);
+        }
+    }
 
     return stats;
 }
 
-// ================================
-// HP / SHIELD RUNTIME UPDATE
-// ================================
-export function updateHP(player, dt) {
-    if (!player.stats) return;
+function applySource(stats, source) {
+    if (!source) return;
 
-    const regen = player.stats.regenHp ?? 0;
-    if (regen > 0) {
-        player.hp += regen * (dt / 1000);
-        if (player.hp > player.stats.maxHp) {
-            player.hp = player.stats.maxHp;
-        }
-    }
-}
+    const pool = source.stats || source;
+    if (!pool) return;
 
-export function updateShield(player, dt) {
-    if (!player.stats) return;
-
-    const regen = player.stats.regenShield ?? 0;
-    if (regen > 0) {
-        player.shield += regen * (dt / 1000);
-        if (player.shield > player.stats.maxShield) {
-            player.shield = player.stats.maxShield;
-        }
-    }
-}
-
-// ================================
-// INTERNAL HELPERS
-// ================================
-function createBaseStats() {
-
-    const s = {};
-
-    // Initialise toutes les stats à 0
     for (const id in Stats) {
-        s[id] = 0;
-    }
+        if (pool[id] !== undefined) {
+            const def = Stats[id];
+            const value = pool[id];
 
-    // Applique les stats de base du joueur
-    for (const id in basePlayer) {
-        if (s[id] !== undefined) {
-            s[id] = basePlayer[id];
+            if (def.type === "additive") stats[id] += value;
+            else if (def.type === "multiplicative") stats[id] *= (1 + value);
         }
     }
 
-    return s;
+    if (source.affixes) {
+        for (const id in source.affixes) {
+            if (!Stats[id]) continue;
+
+            const def = Stats[id];
+            const value = source.affixes[id];
+
+            if (def.type === "additive") stats[id] += value;
+            else if (def.type === "multiplicative") stats[id] *= (1 + value);
+        }
+    }
 }
 
 function applyList(stats, list) {
-
     if (!list) return;
-
-    for (const item of list) {
-
-        const def = Stats[item.id];
-        if (!def) continue;
-
-        if (def.type === "additive") {
-            stats[item.id] += item.value;
-        }
-
-        if (def.type === "multiplicative") {
-            stats[item.id] *= (1 + item.value);
-        }
-    }
+    for (const item of list) applySource(stats, item);
 }
 
-function applyWeapon(stats, w) {
-
-    const mapping = {
-        attackDamage: "baseDamage",
-        attackSpeed: "attackSpeed",
-        attackRange: "attackRange",
-        projectileSpeed: "projectileSpeed",
-        projectileRange: "projectileRange",
-        projectileCount: "projectileCount",
-        critChance: "critChance",
-        critMultiplier: "critMultiplier"
-    };
-
-    for (const statId in mapping) {
-        const weaponKey = mapping[statId];
-        if (w[weaponKey] !== undefined) {
-            stats[statId] += w[weaponKey];
-        }
-    }
-}

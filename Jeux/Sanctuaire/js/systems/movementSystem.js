@@ -2,14 +2,16 @@
    ROUTE : Jeux/Sanctuaire/js/systems/movementSystem.js
 
    RÔLE :
-     - Système de déplacement générique (player / ennemis / boss)
+     - Gestion du déplacement générique (player / ennemis / boss)
      - Fournit :
-         1) updatePlayerDirection() → lit les inputs configurables
+         1) updatePlayerDirection() → lit les inputs configurés
          2) moveEntity() → applique le déplacement normalisé + dt
      - Ne contient aucune logique gameplay ou IA
 
-   DÉPENDANCES :
-     - core/input.js (pour isActionDown)
+   PRINCIPES :
+     - Le moteur lit EXCLUSIVEMENT entity.runtime.moveSpeed
+     - Aucune stat inventée ici
+     - Déplacement frame-safe (dt)
 */
 
 import { isActionDown } from "../core/input.js";
@@ -19,10 +21,7 @@ import { isActionDown } from "../core/input.js";
 // ================================
 /*
    Lit les touches configurées dans keybinds.js :
-     - move-up
-     - move-down
-     - move-left
-     - move-right
+     - move-up / move-down / move-left / move-right
 
    Met à jour player.dx / player.dy
    (le moteur utilisera ensuite moveEntity() pour appliquer la vitesse)
@@ -32,7 +31,6 @@ export function updatePlayerDirection(player) {
     let dx = 0;
     let dy = 0;
 
-    // Déplacements configurables (ZQSD par défaut)
     if (isActionDown("move-up"))    dy -= 1;
     if (isActionDown("move-down"))  dy += 1;
     if (isActionDown("move-left"))  dx -= 1;
@@ -48,7 +46,7 @@ export function updatePlayerDirection(player) {
 /*
    Applique un déplacement générique :
      - Normalisation de la direction (dx, dy)
-     - Lecture de la vitesse (runtime.speed > speed)
+     - Lecture de la vitesse (runtime.moveSpeed)
      - Application dt (frame-safe)
 */
 export function moveEntity(entity, dx, dy, dt) {
@@ -62,10 +60,10 @@ export function moveEntity(entity, dx, dy, dt) {
         dy /= len;
     }
 
-    // Source unique de vitesse
+    // Source unique de vitesse (runtime.moveSpeed)
     const speed =
-        entity.runtime?.speed ??
-        entity.speed ??
+        entity.runtime?.moveSpeed ??
+        entity.moveSpeed ??
         0;
 
     // Application du mouvement

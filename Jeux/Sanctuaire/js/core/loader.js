@@ -111,6 +111,9 @@ import { initCharacterMenu } from "../UI/menu/characterMenu.js";
 import { initPauseMenu } from "../UI/menu/pauseMenu.js";
 import { initOptionsMenu } from "../UI/menu/optionsMenu.js";
 import { HUD } from "../UI/hud/hudSystem.js";
+import { initLootScreen } from "../UI/loot/lootScreen.js";
+import { initPylonePanel } from "../UI/menu/pylonePanel.js";
+
 
 // ================================
 // WORLD
@@ -135,6 +138,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // UI SCALE GLOBAL
     initUIScale();
+    initPylonePanel();
 
     // ================================
     // UI INIT (ONE SHOT)

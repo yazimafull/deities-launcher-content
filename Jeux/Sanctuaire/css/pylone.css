@@ -248,3 +248,115 @@
     justify-content: flex-end;
     gap: 10px;
 }
+/* =============================== */
+/*        NIVEAU + PIERRE ROW      */
+/* =============================== */
+
+.pylone-row {
+    display: flex;
+    gap: 20px;
+}
+
+.pylone-section.half {
+    width: 50%;
+}
+
+/* =============================== */
+/*         ÉQUIPEMENT GRID         */
+/* =============================== */
+
+.pylone-equip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.pylone-slot {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(10,10,30,0.6);
+    color: #e2d3b5;
+    border-radius: 6px;
+    font-family: 'Cinzel', serif;
+    transition: 0.2s;
+}
+
+.pylone-slot:hover:not(.disabled) {
+    border-color: #d4af37;
+    box-shadow: 0 0 10px rgba(212,175,55,0.4);
+    color: #d4af37;
+}
+
+.pylone-slot.disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+/* ===============================
+   MINI COFFRE (sélecteur d’item)
+================================ */
+
+.item-selector-modal {
+    width: 420px;
+    padding: 20px;
+    background: rgba(20,20,40,0.95);
+    border: 2px solid #4a6fa5;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(74,111,165,0.6);
+    color: #e2d3b5;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.selector-title {
+    font-size: 18px;
+    color: #d4af37;
+    text-align: center;
+}
+
+.selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 40px);
+    gap: 6px;
+    justify-content: center;
+}
+
+.selector-slot {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #4a6fa5;
+    background: rgba(10,10,30,0.6);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selector-slot:hover {
+    border-color: #d4af37;
+    box-shadow: 0 0 8px rgba(212,175,55,0.5);
+}
+
+.selector-slot img {
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+}
+
+/* Tooltip ARPG */
+#tooltip {
+    position: fixed;
+    background: rgba(20,20,40,0.95);
+    border: 1px solid #d4af37;
+    padding: 10px;
+    border-radius: 6px;
+    color: #e2d3b5;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+

@@ -1,22 +1,8 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/systems/biomeSpawner.js
-   ARBORESCENCE :
-     Jeux → Sanctuaire → js → systems → biomeSpawner.js
-
    RÔLE :
      Génération procédurale des mobs d’un biome selon Bestiary, niveau et paramètres du biome.
-     Produit un ensemble cohérent : élites dynamiques + mobs normaux jusqu’à objectiveMax.
-
-   PRINCIPES :
-     - Aucune logique de combat ici : uniquement de la génération.
-     - Exclut toujours le boss du pool.
-     - Utilise Bestiary comme source de vérité (biomes, levelRange, weight, rewards).
-     - Les affixes globaux ne s’appliquent que si affixesAllowed === true.
-     - Les mobs sont créés en (0,0) → position assignée ensuite par le biome.
-
-   DÉPENDANCES :
-     - data/bestiary.js
-     - systems/enemy/enemyFactory.js
+     Produit un ensemble cohérent : élites dynamiques + entourage + mobs normaux.
 */
 
 import { Bestiary } from "../data/bestiary.js";
@@ -30,15 +16,14 @@ export function generateBiomeMobs(biomeId, level, biomeData, affixes = []) {
 
     const { objectiveMax, eliteMin, eliteMax } = biomeData;
 
-    // ================================
-    // 1. Construction du pool de mobs valides
-    // ================================
+    // ============================================================================
+    // 1. Construction du pool de mobs valides pour ce biome
+    // ============================================================================
     const pool = [];
 
     for (const [type, data] of Object.entries(Bestiary)) {
 
         if (type === "boss") continue;
-
         if (!data.biomes.includes(biomeId)) continue;
 
         const minLvl = data.levelRange?.min ?? 1;
@@ -56,9 +41,9 @@ export function generateBiomeMobs(biomeId, level, biomeData, affixes = []) {
     const result = [];
     let totalPoints = 0;
 
-    // ================================
+    // ============================================================================
     // 2. Génération des élites dynamiques
-    // ================================
+    // ============================================================================
     const eliteCount = Math.floor(
         eliteMin + Math.random() * (eliteMax - eliteMin + 1)
     );
@@ -67,29 +52,68 @@ export function generateBiomeMobs(biomeId, level, biomeData, affixes = []) {
 
         const entry = pool[Math.floor(Math.random() * pool.length)];
 
-        // enemyFactory doit recevoir le bestiaryData complet
-        const mob = createEnemy(
+        // Création de l'élite
+        const elite = createEnemy(
             entry.type,
             biomeId,
             level,
             0, 0,
-            entry.data,      // bestiaryData
-            { elite: true }  // flags supplémentaires
+            entry.data,
+            { elite: true }
         );
 
-        if (!mob) continue;
+        if (!elite) continue;
 
+        // Points d’objectif élite
         const basePoints = entry.data.rewards?.objectivePoints ?? 1;
-        mob.objectivePoints = basePoints * 3;
+        elite.objectivePoints = basePoints * 3;
 
-        result.push(mob);
-        totalPoints += mob.objectivePoints;
+        result.push(elite);
+        totalPoints += elite.objectivePoints;
+
+        // ============================================================================
+        // 2B. ENTOURAGE MÉLANGÉ (3 mobs aléatoires du biome)
+        // ============================================================================
+        const entourageCount = 3;
+
+        for (let j = 0; j < entourageCount; j++) {
+
+            // Choisir un type aléatoire dans le pool du biome
+            const rand = pool[Math.floor(Math.random() * pool.length)];
+
+            // Positionner autour de l'élite
+            const angle = Math.random() * Math.PI * 2;
+            const dist = elite.visualSize * 1.8;
+
+            const ex = elite.x + Math.cos(angle) * dist;
+            const ey = elite.y + Math.sin(angle) * dist;
+
+            const mob = createEnemy(
+                rand.type,
+                biomeId,
+                level,
+                ex, ey,
+                rand.data,
+                {}
+            );
+
+            if (!mob) continue;
+
+            mob.objectivePoints = rand.data.rewards?.objectivePoints ?? 1;
+
+            result.push(mob);
+            totalPoints += mob.objectivePoints;
+        }
     }
 
-    // ================================
+    // ============================================================================
     // 3. Génération des mobs normaux jusqu’à objectiveMax
-    // ================================
-    while (totalPoints < objectiveMax) {
+    // ============================================================================
+
+    // 🔥 Multiplicateur de densité (temporaire ou futur affixe)
+    const densityMultiplier = 1.5; // +50% de mobs
+
+    while (totalPoints < objectiveMax * densityMultiplier) {
 
         const entry = pool[Math.floor(Math.random() * pool.length)];
 
@@ -98,8 +122,8 @@ export function generateBiomeMobs(biomeId, level, biomeData, affixes = []) {
             biomeId,
             level,
             0, 0,
-            entry.data,   // bestiaryData
-            {}            // flags
+            entry.data,
+            {}
         );
 
         if (!mob) continue;
@@ -113,6 +137,7 @@ export function generateBiomeMobs(biomeId, level, biomeData, affixes = []) {
         result.push(mob);
         totalPoints += mob.objectivePoints;
     }
+
 
     return result;
 }

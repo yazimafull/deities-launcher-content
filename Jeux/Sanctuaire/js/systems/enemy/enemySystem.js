@@ -2,7 +2,7 @@
    ROUTE : Jeux/Sanctuaire/js/systems/enemy/enemySystem.js
 
    RÔLE :
-     Runtime des ennemis (IA, collisions, mort). 
+     Runtime des ennemis (IA, collisions, mort).
      Ne gère aucune logique de progression (XP, loot, objectif).
      Sur la mort, délègue l’événement à runXP + callbacks externes.
 
@@ -11,10 +11,12 @@
      - Collision mob/mob + mob/player (anti-jitter)
      - Mort = onEnemyKilled(mob, config, player)
      - Aucune stat avancée ici (calculs centralisés ailleurs)
+     - Toutes les valeurs utilisées viennent de mob.runtime (jamais mob.* brut)
 */
 
-
 import { onEnemyKilled } from "../xp/runXP.js";
+import { createEnemy } from "./enemyFactory.js";
+import { Bestiary } from "../../data/bestiary.js";
 
 export const enemies = [];
 
@@ -28,18 +30,23 @@ export function spawnEnemy(mob) {
     mob.spawnX = mob.spawnX ?? mob.x;
     mob.spawnY = mob.spawnY ?? mob.y;
 
-    mob.maxHp = mob.maxHp ?? mob.hp;
-
     mob.dead = false;
     mob.state = "idle";
 
-    mob.speed = mob.speed ?? 80;
+    // === Runtime obligatoire ===
+    // enemyFactory doit avoir généré mob.stats
+    // ici on génère mob.runtime (miroir des stats finales)
+    mob.runtime = {};
+    for (const id in mob.stats) {
+        mob.runtime[id] = mob.stats[id];
+    }
+
+    // === Valeurs fallback ===
+    mob.maxHp = mob.runtime.maxHp ?? mob.hp ?? 10;
+    mob.hp = mob.hp ?? mob.maxHp;
 
     mob.size = mob.size ?? 28;
     mob.visualSize = mob.visualSize ?? mob.size;
-
-    mob.meleeRange = mob.meleeRange ?? 0;
-    mob.attackSpeed = mob.attackSpeed ?? 800;
 
     enemies.push(mob);
 
@@ -57,24 +64,15 @@ export function spawnEnemy(mob) {
 
             const o = offsets[i % offsets.length];
 
-            const ally = {
-                ...structuredClone(mob),
-
-                isElite: false,
-                entourage: 0,
-
-                x: mob.x + o.dx,
-                y: mob.y + o.dy,
-
-                spawnX: mob.x + o.dx,
-                spawnY: mob.y + o.dy,
-
-                hp: mob.maxHp * 0.6,
-                maxHp: mob.maxHp * 0.6,
-
-                state: "idle",
-                dead: false
-            };
+            const ally = createEnemy(
+                mob.type,
+                mob.biome,
+                mob.difficulty ?? 1,
+                mob.x + o.dx,
+                mob.y + o.dy,
+                Bestiary[mob.type],
+                {} // pas élite
+            );
 
             enemies.push(ally);
         }
@@ -113,10 +111,8 @@ function handleMobDeath(mob, config, player) {
 
     mob.dead = true;
 
-    // délègue TOUT à runXP
     onEnemyKilled(mob, config, player);
 
-    // callback externe (objectif, loot…)
     if (typeof config.onMobKilled === "function") {
         config.onMobKilled(mob);
     }
@@ -127,14 +123,17 @@ function handleMobDeath(mob, config, player) {
 // ================================
 function updateMobAI(mob, player, dt) {
 
+    const r = mob.runtime ?? mob;
+
     const dx = player.x - mob.x;
     const dy = player.y - mob.y;
 
     const dist = Math.hypot(dx, dy);
 
-    const aggroRange = mob.aggroRange ?? 280;
+    const aggroRange = r.aggroRange ?? 280;
 
-    const speed = mob.speed * (dt / 1000);
+    // vitesse runtime
+    const speed = (r.moveSpeed ?? 80) * (dt / 1000);
 
     switch (mob.state) {
 
@@ -209,8 +208,7 @@ function resolvePlayerCollision(player) {
 
             const overlap = min - dist;
 
-            const maxPush = 2.5;
-            const push = Math.min(overlap * 0.5, maxPush);
+            const push = overlap;
 
             const nx = dx / dist;
             const ny = dy / dist;
@@ -235,7 +233,7 @@ export function drawEnemies(ctx) {
 
         ctx.globalAlpha = mob.alpha ?? 1;
 
-        // shadow
+        // SHADOW
         ctx.fillStyle = "rgba(0,0,0,0.25)";
         ctx.beginPath();
         ctx.ellipse(
@@ -249,11 +247,8 @@ export function drawEnemies(ctx) {
         );
         ctx.fill();
 
-        // body
-        ctx.fillStyle = mob.state === "chase"
-            ? brighten(mob.color)
-            : mob.color;
-
+        // BODY
+        ctx.fillStyle = mob.color;
         ctx.beginPath();
         ctx.arc(
             mob.x,
@@ -264,14 +259,23 @@ export function drawEnemies(ctx) {
         );
         ctx.fill();
 
-        // elite outline
+        // ELITE RING
         if (mob.isElite) {
-            ctx.strokeStyle = "#ffcc00";
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
+
+            const r = mob.visualSize / 2;
+            const thickness = 6;
+            const outer = r + thickness;
+            const inner = r;
+
+            ctx.beginPath();
+            ctx.arc(mob.x, mob.y, outer, 0, Math.PI * 2);
+            ctx.arc(mob.x, mob.y, inner, 0, Math.PI * 2, true);
+
+            ctx.fillStyle = "rgba(255, 165, 0, 0.9)";
+            ctx.fill();
         }
 
-        // hp bar
+        // HP BAR
         const bw = mob.visualSize * 1.4;
 
         ctx.fillStyle = "rgba(0,0,0,0.55)";
@@ -282,7 +286,7 @@ export function drawEnemies(ctx) {
             5
         );
 
-        ctx.fillStyle = mob.isElite ? "#ffcc00" : "#ff4444";
+        ctx.fillStyle = mob.isElite ? "#ffd700" : "#ff4444";
         ctx.fillRect(
             mob.x - bw / 2,
             mob.y - mob.visualSize / 2 - 10,
@@ -290,30 +294,16 @@ export function drawEnemies(ctx) {
             5
         );
 
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "10px monospace";
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            `${mob.type} E:${mob.isElite ? 1 : 0} P:${mob.objectivePoints} S:${mob.size}`,
+            mob.x,
+            mob.y - (mob.visualSize ?? mob.size) / 2 - 10
+        );
+
         ctx.globalAlpha = 1;
-    }
-}
-
-// ================================
-// COLOR UTIL
-// ================================
-function brighten(hex) {
-
-    if (!hex) return "#884444";
-
-    try {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-
-        const f = v =>
-            Math.min(255, v + 40)
-                .toString(16)
-                .padStart(2, "0");
-
-        return `#${f(r)}${f(g)}${f(b)}`;
-
-    } catch {
-        return "#884444";
     }
 }

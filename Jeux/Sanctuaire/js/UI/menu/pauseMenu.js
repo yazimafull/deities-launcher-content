@@ -8,15 +8,10 @@
    - Fonctionne en GameState.PLAYING et GameState.PAUSED
    - ESC ouvre/ferme le menu pause
    - Retour Sanctuaire passe par un overlay de confirmation
-   - stopRun() + cleanRun() appliqués avant retour au Sanctuaire
 */
 
 import { setState, GameState, getState } from "../../core/state.js";
-import { setScreen, Screens } from "../../core/screenManager.js";
-
-// === AJOUT CLAUDE ===
-import { stopRun } from "../../core/gameLoop.js";
-import { cleanRun } from "../../core/runManager.js";
+import { returnToSanctuary } from "../../core/runManager.js";   // 🔥 NOUVEL IMPORT
 
 let pauseOverlay = null;
 let sanctuaryConfirmOverlay = null;
@@ -103,19 +98,16 @@ export function initPauseMenu() {
     // ================================
     sanctuaryConfirmCancelBtn?.addEventListener("click", () => {
         hideSanctuaryConfirm();
-        // On revient au menu pause
         pauseOverlay.classList.remove("hidden");
     });
 
     // ================================
     // CONFIRMATION : Retour Sanctuaire
-    // === VERSION MODIFIÉE CLAUDE ===
+    // 🔥 VERSION FINALE : utilise la fonction maître
     // ================================
     sanctuaryConfirmOkBtn?.addEventListener("click", () => {
         hideSanctuaryConfirm();
         pauseOverlay.classList.add("hidden");
-        stopRun();
-        cleanRun();
-        setScreen(Screens.SANCTUARY);
+        returnToSanctuary();   // 🔥 LE CŒUR DU SYSTÈME
     });
 }

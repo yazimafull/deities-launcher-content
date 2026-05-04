@@ -20,7 +20,7 @@ export const Biomes = {
         // === AJOUT : paramètres de run ===
         objectiveMax: 50,
         eliteMin: 4,
-        eliteMax: 6,
+        eliteMax: 10,
 
         // Charge le module du biome Forêt
         load: () => import("../world/biome_foret.js"),

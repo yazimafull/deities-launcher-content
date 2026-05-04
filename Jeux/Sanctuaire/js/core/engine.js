@@ -1,49 +1,39 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/core/engine.js
-   ARBORESCENCE :
-     Jeux → Sanctuaire → js → core → engine.js
 
    RÔLE :
-     Boucle centrale du jeu (UPDATE + RENDER), responsable de l’ordre d’exécution
-     et de la cohérence frame-by-frame. Ne contient aucune logique gameplay :
-     délègue tout aux systèmes spécialisés (player, ennemis, projectiles, boss, XP).
-     Gère le mouvement, la caméra, les collisions, le combat, l’XP, le boss et le HUD.
+     Boucle centrale du jeu. Ordonne l’exécution de tous les systèmes frame-by-frame.
+     Ne contient AUCUNE logique gameplay : délègue tout aux systèmes spécialisés.
+
+   RESPONSABILITÉS :
+     - Input → mouvement → caméra
+     - Mise à jour du monde (biome)
+     - Mise à jour ennemis + boss
+     - Combat joueur / mobs
+     - Projectiles + collisions
+     - Régénération HP / Shield
+     - XP de la run
+     - Damage numbers
+     - HUD
+     - Debug
 
    PRINCIPES :
-     - Orchestration stricte : input → mouvement → caméra → systèmes → HUD.
-     - Le moteur ne modifie jamais les stats : il consomme playerRuntime + statsSystem.
-     - Aucune logique métier : chaque fonctionnalité est déléguée à son système dédié.
-     - Le moteur lit les flags du debugSystem (ranges, testWeapon, HUD edit…) mais
-       n’active rien lui-même : il applique uniquement les effets visuels ou runtime.
-
-   DÉPENDANCES :
-     - core : state (PLAYING), cameraSystem, movementSystem
-     - systems : enemySystem, projectileSystem, combatSystem, damageSystem, deathSystem
-     - XP : runXP (gain, seuils, orbes)
-     - boss : bossSystem (spawn, update, render)
-     - player : player.js (runtime), playerStatsSystem (HP/shield), playerRuntimeSystem
-     - UI : HUD (update + draw)
-     - world : biome_foret (update + draw)
-     - debug : debugSystem.js (flags centralisés pour ranges, arme test, HUD edit…)
-
-   NOTES :
-     - L’ordre updatePlayerDirection → moveEntity → updateCamera est essentiel pour
-       éviter le lag visuel et garantir un mouvement fluide.
-     - Le moteur applique l’arme de test via debugFlags.testWeapon, sans logique interne.
-     - Le debug visuel (ranges) est entièrement piloté par debugSystem.js.
-     - Le moteur est strictement déterministe : aucune action n’est déclenchée ici,
-       il ne fait qu’orchestrer et dessiner.
+     - Le moteur consomme player.stats (déjà calculées)
+     - HP/Shield = runtime → régénération uniquement ici
+     - Aucune stat recalculée dans engine
+     - Ordre strict : input → mouvement → caméra → systèmes → HUD
 */
 
-
 import { GameState, getState } from "./state.js";
+import { DebugStats, drawDebugStats } from "../systems/debug/debugStats.js";
 
 import { updateBiomeForet, drawBiomeForet } from "../world/biome_foret.js";
 import { camera, updateCamera } from "../systems/cameraSystem.js";
 
 import { enemies, updateEnemies, drawEnemies } from "../systems/enemy/enemySystem.js";
 import { player } from "../systems/player/player.js";
-import { updateHP, updateShield } from "../systems/player/playerStatsSystem.js";
+
+import { updateHP, updateShield } from "../systems/player/playerRuntimeSystem.js";
 
 import {
     updateProjectiles,
@@ -57,12 +47,13 @@ import {
     drawDamageNumbers
 } from "../systems/damageSystem.js";
 
-import { updateRunXP, runXP, spawnXP } from "../systems/xp/runXP.js";
+import { updateRunXP, runXP, spawnXP, computeXP } from "../systems/xp/runXP.js";
 
 import {
     updateBoss,
     drawBoss,
     drawBossIndicator,
+    drawBossAggroCircle,
     boss,
     spawnBoss
 } from "../systems/enemy/bossSystem.js";
@@ -80,9 +71,10 @@ import {
 
 import { debugFlags } from "../systems/debugSystem.js";
 
-// ================================
+
+// ============================================================================
 // UPDATE LOOP
-// ================================
+// ============================================================================
 export function updateEngine(dt, context) {
 
     if (getState() !== GameState.PLAYING) return;
@@ -97,55 +89,57 @@ export function updateEngine(dt, context) {
     // 3) Caméra après mouvement
     updateCamera(player, context.canvas);
 
-    // 4) Arme de test via debugSystem
+    // 4) Arme de test via debug
     if (player.debugLockWeapon) {
-    player.weapon = player.testWeapon;
+        player.weapon = player.testWeapon;
     }
 
-
-    // 5) Stats
+    // 5) Régénération HP / Shield (runtime pur)
     updateHP(player, dt);
     updateShield(player, dt);
+
+    DebugStats.stats = player.stats;
 
     if (player.hp <= 0) {
         onPlayerDeath();
         return;
     }
 
-    // 6) Monde
+    // 6) Monde (biome)
     updateBiomeForet(dt, player, enemies);
 
     // 7) Ennemis
     updateEnemies(dt, player, context);
+   
 
-    // 8) Combat
+    // 8) Combat joueur / mobs
     updatePlayerCombat(player, enemies, context.cursor, dt);
 
     for (const mob of enemies) {
         if (!mob.dead) updateMobCombat(mob, player, dt);
     }
 
-    // 9) Projectiles
+    // 9) Projectiles + collisions
     updateProjectiles(dt, player, enemies);
 
     handleProjectileCollisions(
-        (p, m) => {
-            const isCrit = Math.random() < (player.critChance || 0);
-
-            damageEnemy(m, {
-                base: p.damage,
-                type: p.element,
-                isCrit
-            });
-
-            if (m.hp <= 0 && !m.dead) {
-                m.dead = true;
-                context.addObjective(m.progressValue || m.objectivePoints || 1);
-                spawnXP(m.x, m.y);
-            }
-        },
         player,
-        enemies
+        enemies,
+        (proj, mob) => {
+
+            // 1. Dégâts
+            damageEnemy(mob, proj.damagePacket);
+
+            // 2. Mort custom + XP + objectifs
+            if (mob.hp <= 0 && !mob.dead) {
+                mob.dead = true;
+
+                context.objective += mob.objectivePoints ?? 1;
+
+                const xpValue = computeXP(mob, context, player.stats);
+                spawnXP(mob.x, mob.y, xpValue);
+            }
+        }
     );
 
     // 10) Boss
@@ -162,31 +156,39 @@ export function updateEngine(dt, context) {
     updateRunXP(player);
     updateDamageNumbers(dt);
 
-    // 12) HUD
+    // 12) HUD (lit les stats finales)
     HUD.update({
         hp: player.hp,
-        maxHp: player.maxHp,
+        maxHp: player.stats?.maxHp ?? 0,
+
         shield: player.shield ?? 0,
-        maxShield: player.maxShield ?? 0,
+        maxShield: player.stats?.maxShield ?? 0,
+
         xp: runXP.xp,
         xpMax: runXP.xpToNext,
+
         objective: context.objective,
         objectiveMax: context.objectiveMax,
         bossSpawned: context.bossSpawned
     });
 }
 
-// ================================
+
+// ============================================================================
 // RENDER LOOP
-// ================================
+// ============================================================================
 export function renderEngine(ctx, canvas, context) {
 
     if (!player) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Monde (background)
     drawBiomeForet(ctx, canvas, player);
 
+    // ============================
+    // ZONE MONDE (avec caméra)
+    // ============================
     ctx.save();
     ctx.translate(-camera.x, -camera.y);
 
@@ -195,12 +197,14 @@ export function renderEngine(ctx, canvas, context) {
 
     if (context.bossSpawned && boss) {
         drawBoss(ctx, camera, canvas);
-        drawBossIndicator(ctx, camera, canvas);
+        drawBossAggroCircle(ctx, camera);
     }
 
     ctx.restore();
 
-    // Player
+    // ============================
+    // Player (monde)
+    // ============================
     ctx.save();
     ctx.translate(-camera.x, -camera.y);
 
@@ -214,14 +218,13 @@ export function renderEngine(ctx, canvas, context) {
 
     ctx.restore();
 
-    // ================================
-    // DEBUG RANGES (R)
-    // ================================
+    // ============================
+    // DEBUG RANGES (monde)
+    // ============================
     if (debugFlags.ranges) {
         ctx.save();
         ctx.translate(-camera.x, -camera.y);
 
-        // Attack range
         ctx.strokeStyle = "rgba(255,0,0,0.5)";
         ctx.beginPath();
         ctx.arc(
@@ -231,10 +234,8 @@ export function renderEngine(ctx, canvas, context) {
             0,
             Math.PI * 2
         );
-
         ctx.stroke();
 
-        // Aggro mobs
         ctx.strokeStyle = "rgba(255,80,80,0.35)";
         for (const e of enemies) {
             if (e.dead) continue;
@@ -246,6 +247,21 @@ export function renderEngine(ctx, canvas, context) {
         ctx.restore();
     }
 
+    // ============================
+    // HUD + Damage numbers (écran)
+    // ============================
     drawDamageNumbers(ctx);
     HUD.draw(ctx, canvas);
+
+    // ============================
+    // Indicateur du boss (écran)
+    // ============================
+    if (context.bossSpawned && boss) {
+        drawBossIndicator(ctx, camera, canvas);
+    }
+
+    // ============================
+    // Debug Stats (écran)
+    // ============================
+    drawDebugStats(ctx, canvas, player);
 }

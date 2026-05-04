@@ -9,7 +9,7 @@ const BestiaryData = {
         biomes: ["forest"],
         levelRange: { min: 1, max: 15 },
         weight: 3,
-        color: "#4a9e4a",
+        color: "#6aff6a",
 
         stats: {
             hp: 30,
@@ -17,11 +17,11 @@ const BestiaryData = {
             speed: 65,
             size: 22,
             aggroRange: 200,
-            attackSpeed: 900,   // ms
-            meleeRange: 6       // petit reach
+            attackCooldownMs: 900,   // renommé (ancien attackSpeed)
+            meleeRange: 6
         },
 
-        rewards: { objectivePoints: 1, baseXP: 5 },
+        rewards: { objectivePoints: 2, baseXP: 50 },
 
         dropHealth: false,
         elite: false,
@@ -33,7 +33,7 @@ const BestiaryData = {
         biomes: ["forest"],
         levelRange: { min: 1, max: 15 },
         weight: 2,
-        color: "#7a6a5a",
+        color: "#3a3f55",
 
         stats: {
             hp: 40,
@@ -41,11 +41,11 @@ const BestiaryData = {
             speed: 110,
             size: 26,
             aggroRange: 300,
-            attackSpeed: 600,   // rapide
+            attackCooldownMs: 600,   // renommé
             meleeRange: 10
         },
 
-        rewards: { objectivePoints: 1, baseXP: 8 },
+        rewards: { objectivePoints: 2, baseXP: 100 },
 
         dropHealth: false,
         elite: false,
@@ -57,7 +57,7 @@ const BestiaryData = {
         biomes: ["forest", "ruines"],
         levelRange: { min: 10, max: 20 },
         weight: 1,
-        color: "#c8c8a0",
+        color: "#e8e2c8",
 
         stats: {
             hp: 60,
@@ -65,11 +65,11 @@ const BestiaryData = {
             speed: 75,
             size: 30,
             aggroRange: 260,
-            attackSpeed: 750,   // moyen
+            attackCooldownMs: 750,   // renommé
             meleeRange: 12
         },
 
-        rewards: { objectivePoints: 3, baseXP: 12 },
+        rewards: { objectivePoints: 1, baseXP: 12 },
 
         dropHealth: false,
         elite: false,
@@ -86,10 +86,10 @@ const BestiaryData = {
         stats: {
             hp: 800,
             damage: 25,
-            speed: 180,
+            speed: 25,
             size: 60,
             aggroRange: 99999,
-            attackSpeed: 1200,  // lent mais violent
+            attackCooldownMs: 1200,  // renommé
             meleeRange: 20
         },
 

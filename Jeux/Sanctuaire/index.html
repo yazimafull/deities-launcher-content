@@ -138,44 +138,66 @@
                         <div class="pylone-label">BIOME</div>
                         <div class="pylone-biome-row">
                             <button class="biome-btn" data-id="foret">Forêt Mourante</button>
-                            <button class="biome-btn" data-id="ruines">Catacombes</button>
-                            <button class="biome-btn" data-id="abysses">Citadelle</button>
+                            <button class="biome-btn" data-id="ruines">Ruines Oubliées</button>
+                            <button class="biome-btn" data-id="abysses">Abysses Profonds</button>
                         </div>
                     </div>
 
+                    <div class="pylone-row">
+
+                        <div class="pylone-section half">
+                            <div class="pylone-label">NIVEAU</div>
+
+                            <div id="levelDropdown" class="pylone-dropdown dropdown small">
+                                <button class="dropdown-toggle">
+                                    <span id="levelLabel">Niveau I</span>
+                                    <span class="dropdown-arrow">▼</span>
+                                </button>
+
+                                <div id="levelMenu" class="dropdown-menu">
+                                    <div class="dropdown-item">Niveau I</div>
+                                    <div class="dropdown-item">Niveau II</div>
+                                    <div class="dropdown-item">Niveau III</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pylone-section half">
+                            <div class="pylone-label">PIERRE D'AFFIXE</div>
+
+                            <div id="affixSlot" class="pylone-slot">
+                                Aucune pierre
+                            </div>
+                        </div>
+
+                    </div> <!-- FIN pylone-row -->
+
+                    <!-- 🔥 ÉQUIPEMENT -->
                     <div class="pylone-section">
-                        <div class="pylone-label">NIVEAU</div>
+                        <div class="pylone-label">ÉQUIPEMENT</div>
 
-                        <div id="levelDropdown" class="pylone-dropdown">
-                            <button class="dropdown-toggle">
-                                <span id="levelLabel">Niveau I</span>
-                                <span class="dropdown-arrow">▼</span>
-                            </button>
+                        <div class="pylone-equip-grid">
 
-                            <div id="levelMenu" class="dropdown-menu">
-                                <div class="dropdown-item">Niveau I</div>
-                                <div class="dropdown-item">Niveau II</div>
-                                <div class="dropdown-item">Niveau III</div>
+                            <div id="weaponSlot" class="pylone-slot">
+                                Arme
                             </div>
+
+                            <div id="armorSlot" class="pylone-slot">
+                                Armure
+                            </div>
+
+                            <div id="ringSlot" class="pylone-slot disabled">
+                                Anneau
+                            </div>
+
+                            <div id="cloakSlot" class="pylone-slot disabled">
+                                Cape
+                            </div>
+
                         </div>
                     </div>
 
-                    <div class="pylone-section">
-                        <div class="pylone-label">PIERRE D'AFFIXE</div>
-
-                        <div class="pylone-affix-box">
-                            <div id="affixSlot" class="pylone-affix-slot">
-                                CLIQUE<br>POUR CHOISIR
-                            </div>
-
-                            <div class="pylone-affix-info">
-                                <div id="affixSummary">Aucune pierre sélectionnée.</div>
-                                <div id="recapAffixList" class="pylone-affix-list"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                </div> <!-- FIN pylone-left -->
 
                 <div class="pylone-recap">
                     <div class="pylone-recap-title">RÉCAPITULATIF</div>
@@ -187,7 +209,8 @@
                     <div id="recapModifiers" class="pylone-recap-modifiers"></div>
                 </div>
 
-            </div>
+            </div> <!-- FIN pylone-content -->
+
 
             <div id="pylone-countdown" class="pylone-countdown hidden">
                 Lancement dans 5s... (Annuler pour stopper)
@@ -200,12 +223,34 @@
 
         </div>
     </div>
+    <!-- =========================
+     MINI COFFRE (sélecteur d’item)
+    ========================= -->
+    <div id="item-selector-overlay" class="overlay hidden">
+        <div class="modal item-selector-modal">
+
+            <h2 class="selector-title">Sélectionner un objet</h2>
+
+            <div id="item-selector-grid" class="selector-grid">
+                <!-- Slots générés en JS -->
+            </div>
+
+            <button id="item-selector-close" class="btn btn-secondary">
+                Fermer
+            </button>
+
+        </div>
+    </div>
+    <!-- =========================
+     TOOLTIP ARPG
+    ========================= -->
+    <div id="tooltip" class="hidden"></div>
 
 </section>
 
 <!-- =========================
      GAME CANVAS
-========================= -->
+ ========================= -->
 <canvas id="game-canvas" class="hidden"></canvas>
 
 <!-- =========================
@@ -248,12 +293,57 @@
     <!-- =========================
          DEATH SCREEN
     ========================= -->
-    <div id="death-screen" class="screen hidden">
-        <div class="modal">
-            <h2>Vous êtes mort</h2>
+    <div id="death-screen" class="death-screen hidden">
+        <div class="death-modal">
+            <h2 class="death-title">Vous êtes mort</h2>
+            <p class="death-msg">Votre run s’achève ici… mais le Sanctuaire vous attend.</p>
             <button class="btn" id="death-back">Retour Sanctuaire</button>
         </div>
     </div>
+
+    <!-- =========================
+         LOOT SCREEN (FIN DE RUN)
+    ========================= -->
+    <div id="loot-screen" class="fullscreen-black hidden">
+
+        <div class="modal loot-modal">
+
+            <h2 class="loot-title">RÉCOMPENSES</h2>
+
+            <!-- XP d'âme -->
+            <div id="loot-soulxp" class="loot-line">
+                <!-- Exemple : XP d'âme gagnée : 120 -->
+            </div>
+
+            <!-- Breakdown (optionnel, vide si non utilisé) -->
+            <div id="loot-breakdown" class="loot-breakdown hidden">
+                <!-- Exemple : Bonus temps : +20% -->
+            </div>
+
+            <!-- Or -->
+            <div id="loot-gold" class="loot-line">
+                <!-- Exemple : Or gagné : 250 -->
+            </div>
+
+            <!-- Items -->
+            <div class="loot-items-block">
+                <div class="loot-items-title">Objets trouvés</div>
+                <div id="loot-items" class="loot-items">
+                    <!-- Exemple : <div class="loot-item rare">Épée rouillée</div> -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions loot-actions">
+                <button id="loot-continue" class="btn btn-cancel">Continuer</button>
+                <button id="loot-return" class="btn btn-primary">Retour Sanctuaire</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
 
     <!-- =========================
          LEVELUP MENU

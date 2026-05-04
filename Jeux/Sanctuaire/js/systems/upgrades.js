@@ -1,21 +1,21 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/systems/upgrades.js
-   ARBORESCENCE :
-     Jeux → Sanctuaire → js → systems → upgrades.js
-
    RÔLE :
-     SYSTEME D’UPGRADES (STYLE HADES)
+     Système d’upgrades (style Hades) : applique des buffs persistants à la run.
+     Ne modifie JAMAIS directement hp/shield/stats runtime.
+     Ajoute uniquement des buffs (Stats Registry) puis déclenche updatePlayerStats().
 
-   PRINCIPLE :
-     - Modifie uniquement le PLAYER STATE
-     - Ajoute des modifiers (buffs)
-     - Peut modifier des flags (element, etc.)
-     - Déclenche rebuild stats via updatePlayerStats()
-     - Ne calcule AUCUNE stat directement
+   EXPORTS :
+     - allUpgrades (liste des upgrades disponibles)
 
    DÉPENDANCES :
-     - player runtime system
-     - playerStatsSystem (via updatePlayerStats)
+     - player (state du joueur)
+     - updatePlayerStats() (rebuild complet des stats finales)
+     - Stats.js (registre central des stats autorisées)
+
+   NOTES :
+     - Toute stat modifiée doit exister dans Stats.js.
+     - Tous les upgrades passent par addBuff() → cohérence totale.
 */
 
 import {
@@ -27,9 +27,11 @@ import {
 // HELPERS
 // ================================
 function addBuff(id, value, source = "upgrade") {
-    player.buffs.push({
-        id,
-        value,
+    player.buffs.
+    
+    
+    ({
+        stats: { [id]: value },
         source
     });
 }
@@ -73,7 +75,7 @@ export const allUpgrades = [
     },
 
     // =========================
-    // OFFENSE MODIFIERS
+    // OFFENSE
     // =========================
     {
         id: "speed_up",
@@ -123,14 +125,41 @@ export const allUpgrades = [
         name: "+20 HP max",
         type: "survival",
         apply() {
+            addBuff("maxHp", 20);
+            updatePlayerStats();
+        }
+    },
 
-            player.maxHp += 20;
-            player.hp += 20;
+    {
+        id: "shield_up",
+        name: "+20 Shield",
+        type: "survival",
+        apply() {
+            addBuff("maxShield", 20);
+            updatePlayerStats();
+        }
+    },
 
-            if (player.hp > player.maxHp) {
-                player.hp = player.maxHp;
-            }
+    // =========================
+    // NOUVEAUX BUFFS
+    // =========================
 
+    {
+        id: "hp_regen_up",
+        name: "+1 HP regen / sec",
+        type: "survival",
+        apply() {
+            addBuff("regenHp", 1);
+            updatePlayerStats();
+        }
+    },
+
+    {
+        id: "shield_regen_up",
+        name: "+1 Shield regen / sec",
+        type: "survival",
+        apply() {
+            addBuff("regenShield", 1);
             updatePlayerStats();
         }
     }

@@ -3,62 +3,94 @@
    RÔLE : Gestion unifiée du combat (joueur + mobs)
    NOTES :
      - Utilise EXCLUSIVEMENT player.runtime (jamais player.* brut)
-     - Compatible avec playerRuntimeSystem + debugSystem
+     - computeOffense() = dégâts du joueur/mob
+     - damageEnemy() / damagePlayer() = application + computeDefense()
 */
 
 import { spawnProjectile } from "./projectileSystem.js";
-import { damageEnemy, damagePlayer } from "./damageSystem.js";
+import { computeOffense, damageEnemy, damagePlayer } from "./damageSystem.js";
 
-// ================================
+// =====================================================
+// COOLDOWN CALCULÉ À PARTIR DES STATS
+// =====================================================
+function computeAttackCooldown(r) {
+
+    // Cooldown brut en millisecondes
+    const baseCd = (r.attackCooldownMs ?? 600);
+
+    // Sécurité anti-mitraillette
+    if (baseCd <= 0) return 0.6; // 600ms par défaut
+
+    // Bonus de cadence
+    const flat = r.attackSpeed ?? 0;
+    const mult = r.attackSpeedMultiplier ?? 0;
+
+    // Cooldown final en millisecondes
+    const finalMs = baseCd / (1 + flat + mult);
+
+    // CombatSystem travaille en SECONDES
+    return finalMs;
+}
+
+
+
+// =====================================================
 // UPDATE COMBAT JOUEUR
-// ================================
+// =====================================================
 export function updatePlayerCombat(player, enemies, cursor, dt) {
 
     if (!player.weapon || player.dead) return;
 
     const r = player.runtime;
     if (!r) return;
+    //console.log("PLAYER RUNTIME:", r);
 
-    // cooldown en ms (stocké sur player, mais basé sur runtime)
-    player.attackCooldown = Math.max(0, (player.attackCooldown ?? 0) - dt);
+    // 🔥 Init du cooldown si jamais il n'a pas encore été posé
+    if (player.attackCooldown == null) {
+        player.attackCooldown = computeAttackCooldown(r);
+    }
+
+    // décrément
+    player.attackCooldown = Math.max(0, player.attackCooldown - dt);
     if (player.attackCooldown > 0) return;
 
-    // ================================
+    const cooldown = computeAttackCooldown(r);
+
     // MELEE
-    // ================================
     if (player.weapon.type === "melee") {
 
-        const target = findNearestEnemyForMelee(player, enemies, r.attackRange);
+        const range = r.attackRange ?? 0;
+        const target = findNearestEnemyForMelee(player, enemies, range);
         if (!target) return;
 
-        performMeleeAttack(player, target, r);
-        player.attackCooldown = r.attackSpeed;
+        performMeleeAttack(player, target);
+        player.attackCooldown = cooldown;
         return;
     }
 
-    // ================================
     // RANGED AUTO
-    // ================================
     if (player.weapon.type === "ranged") {
 
-        const target = findNearestEnemyInRange(player, enemies, r.attackRange);
+        const range = r.attackRange ?? 0;
+        const target = findNearestEnemyInRange(player, enemies, range);
         if (!target) return;
 
-        performRangedAttack(player, { x: target.x, y: target.y }, r);
-
-        player.attackCooldown = r.attackSpeed;
+        performRangedAttack(player, { x: target.x, y: target.y });
+        player.attackCooldown = cooldown;
         return;
     }
 }
 
-// ================================
+
+// =====================================================
 // UPDATE COMBAT MOBS
-// ================================
+// =====================================================
 export function updateMobCombat(mob, player, dt) {
 
     if (mob.dead || player.dead) return;
 
-    const r = mob.runtime ?? mob; // fallback sécurisé
+    const r = mob.runtime ?? mob;
+
     mob.attackCooldown = Math.max(0, (mob.attackCooldown ?? 0) - dt);
     if (mob.attackCooldown > 0) return;
 
@@ -66,9 +98,9 @@ export function updateMobCombat(mob, player, dt) {
     const dy = player.y - mob.y;
     const dist = Math.hypot(dx, dy);
 
-    // ================================
+    const cooldown = computeAttackCooldown(r);
+
     // MELEE
-    // ================================
     if (mob.weapon?.type === "melee" || !mob.weapon) {
 
         const meleeReach =
@@ -76,34 +108,32 @@ export function updateMobCombat(mob, player, dt) {
             (mob.weapon?.meleeRange ?? 0);
 
         if (dist <= meleeReach) {
-            performMeleeAttack(mob, player, r);
-            mob.attackCooldown = r.attackSpeed ?? mob.attackSpeed;
+            performMeleeAttack(mob, player);
+            mob.attackCooldown = cooldown;
         }
 
         return;
     }
 
-    // ================================
     // RANGED
-    // ================================
     if (mob.weapon?.type === "ranged") {
 
         const reach =
             (mob.size / 2 + player.size / 2) +
-            (r.attackRange ?? mob.attackRange);
+            (r.attackRange ?? mob.attackRange ?? 0);
 
         if (dist <= reach) {
-            performRangedAttack(mob, { x: player.x, y: player.y }, r);
-            mob.attackCooldown = r.attackSpeed ?? mob.attackSpeed;
+            performRangedAttack(mob, { x: player.x, y: player.y });
+            mob.attackCooldown = cooldown;
         }
 
         return;
     }
 }
 
-// ================================
+// =====================================================
 // ENNEMI LE PLUS PROCHE DANS LA RANGE
-// ================================
+// =====================================================
 function findNearestEnemyInRange(attacker, enemies, range) {
 
     let best = null;
@@ -127,9 +157,9 @@ function findNearestEnemyInRange(attacker, enemies, range) {
     return best;
 }
 
-// ================================
+// =====================================================
 // MELEE
-// ================================
+// =====================================================
 function findNearestEnemyForMelee(attacker, enemies, range) {
 
     let best = null;
@@ -153,33 +183,39 @@ function findNearestEnemyForMelee(attacker, enemies, range) {
     return best;
 }
 
-// ================================
+// =====================================================
 // ATTAQUE MELEE
-// ================================
-function performMeleeAttack(attacker, target, r) {
+// =====================================================
+function performMeleeAttack(attacker, target) {
 
-    const dmg = r.attackDamage;
+    const r = attacker.runtime ?? attacker;
+
+    const dmgPacket = computeOffense(r);
+
+    // AJOUT MANQUANT : type élémentaire
+    dmgPacket.type = r.element ?? "physical";
 
     if (target.isMob) {
-        damageEnemy(target, { base: dmg, type: r.element });
+        damageEnemy(target, dmgPacket);
     } else {
-        damagePlayer(target, { base: dmg, type: r.element });
+        damagePlayer(target, dmgPacket);
     }
 }
 
-// ================================
+// =====================================================
 // ATTAQUE RANGED
-// ================================
-function performRangedAttack(attacker, cursor, r) {
+// =====================================================
+function performRangedAttack(attacker, cursor) {
     if (!cursor) return;
-    shootProjectileSpread(attacker, cursor, r);
+    shootProjectileSpread(attacker, cursor);
 }
 
-// ================================
+// =====================================================
 // MULTI-PROJECTILES + SPREAD
-// ================================
-function shootProjectileSpread(attacker, cursor, r) {
+// =====================================================
+function shootProjectileSpread(attacker, cursor) {
 
+    const r = attacker.runtime;
     const count = r.projectileCount ?? 1;
     const spread = attacker.weapon.spreadAngle ?? 0;
 
@@ -203,11 +239,8 @@ function shootProjectileSpread(attacker, cursor, r) {
             y: attacker.y,
             vx,
             vy,
-            speed: r.projectileSpeed,
-            range: r.projectileRange,
-            damage: r.attackDamage,
-            piercing: attacker.weapon.piercing,
-            homing: attacker.weapon.homing,
+            speed: r.projectileSpeed ?? 300,
+            range: r.projectileRange ?? 300,
             owner: attacker
         });
     }

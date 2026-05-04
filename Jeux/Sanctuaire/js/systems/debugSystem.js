@@ -12,14 +12,19 @@ import { applyPlayerRuntimeStats } from "./player/playerRuntimeSystem.js";
 const testWeapon = {
     name: "Debug Weapon",
     type: "ranged",
+
     attackRange: 180,
-    damage: 10,
+
+    attackDamage: 10,          // ✔️ utilisé par computeOffense
+    attackCooldownMs: 600,     // ✔️ cadence correcte
+
     projectileSpeed: 600,
     projectileCount: 1,
-    projectileRange: 600,   // 🔥 indispensable
-    attackSpeed: 600,
+    projectileRange: 600,
+
     element: "physical"
 };
+
 
 export const debugFlags = {
     ranges: false,
@@ -63,6 +68,6 @@ document.addEventListener("keydown", (e) => {
     if (k === "l") debugFlags.loot = !debugFlags.loot;
     if (k === "f") debugFlags.fps = !debugFlags.fps;
 
-    console.log("KEY:", k);
-    console.log("WEAPON:", player.weapon);
+    //console.log("KEY:", k);
+    //console.log("WEAPON:", player.weapon);
 });

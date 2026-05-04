@@ -54,25 +54,25 @@ export const Affixes = {
     // 🟩 DÉFENSIFS
     // ============================
 
-    armor: {
-        id: "armor",
-        stat: Stats.armor.id,
+    physicalResistance: {
+        id: "physicalResistance",
+        stat: Stats.physicalResistance.id,
         category: "defense",
-        rollType: "flat",
+        rollType: "percent",
         rarityAllowed: ["white", "blue", "yellow", "purple", "orange", "transcendent"],
         weight: 120,
         tiers: [
-            { tier: 1, min: 3,  max: 6 },
-            { tier: 2, min: 6,  max: 10 },
-            { tier: 3, min: 10, max: 15 },
-            { tier: 4, min: 15, max: 21 },
-            { tier: 5, min: 21, max: 28 },
-            { tier: 6, min: 28, max: 36 },
-            { tier: 7, min: 36, max: 45 },
-            { tier: 8, min: 45, max: 55 },
-            { tier: 9, min: 55, max: 66 }
+            { tier: 1, min: 1, max: 2 },
+            { tier: 2, min: 2, max: 4 },
+            { tier: 3, min: 4, max: 6 },
+            { tier: 4, min: 6, max: 8 },
+            { tier: 5, min: 8, max: 10 },
+            { tier: 6, min: 10, max: 12 },
+            { tier: 7, min: 12, max: 14 },
+            { tier: 8, min: 14, max: 16 },
+            { tier: 9, min: 16, max: 18 }
         ],
-        description: "Augmente l'armure."
+        description: "Réduit les dégâts physiques."
     },
 
     biomeResistance: {
@@ -94,6 +94,115 @@ export const Affixes = {
             { tier: 9, min: 16, max: 18 }
         ],
         description: "Réduit les dégâts du biome."
+    },
+
+    // ============================
+    // 🟩 RÉSISTANCES ÉLÉMENTAIRES
+    // ============================
+
+    fireResistance: {
+        id: "fireResistance",
+        stat: Stats.fireResistance.id,
+        category: "defense",
+        rollType: "percent",
+        rarityAllowed: ["blue", "yellow", "purple", "orange", "transcendent"],
+        weight: 60,
+        tiers: [
+            { tier: 1, min: 1, max: 3 },
+            { tier: 2, min: 3, max: 5 },
+            { tier: 3, min: 5, max: 7 },
+            { tier: 4, min: 7, max: 9 },
+            { tier: 5, min: 9, max: 11 },
+            { tier: 6, min: 11, max: 13 },
+            { tier: 7, min: 13, max: 15 },
+            { tier: 8, min: 15, max: 17 },
+            { tier: 9, min: 17, max: 20 }
+        ],
+        description: "Réduit les dégâts de feu."
+    },
+
+    iceResistance: {
+        id: "iceResistance",
+        stat: Stats.iceResistance.id,
+        category: "defense",
+        rollType: "percent",
+        rarityAllowed: ["blue", "yellow", "purple", "orange", "transcendent"],
+        weight: 60,
+        tiers: [
+            { tier: 1, min: 1, max: 3 },
+            { tier: 2, min: 3, max: 5 },
+            { tier: 3, min: 5, max: 7 },
+            { tier: 4, min: 7, max: 9 },
+            { tier: 5, min: 9, max: 11 },
+            { tier: 6, min: 11, max: 13 },
+            { tier: 7, min: 13, max: 15 },
+            { tier: 8, min: 15, max: 17 },
+            { tier: 9, min: 17, max: 20 }
+        ],
+        description: "Réduit les dégâts de glace."
+    },
+
+    lightningResistance: {
+        id: "lightningResistance",
+        stat: Stats.lightningResistance.id,
+        category: "defense",
+        rollType: "percent",
+        rarityAllowed: ["blue", "yellow", "purple", "orange", "transcendent"],
+        weight: 60,
+        tiers: [
+            { tier: 1, min: 1, max: 3 },
+            { tier: 2, min: 3, max: 5 },
+            { tier: 3, min: 5, max: 7 },
+            { tier: 4, min: 7, max: 9 },
+            { tier: 5, min: 9, max: 11 },
+            { tier: 6, min: 11, max: 13 },
+            { tier: 7, min: 13, max: 15 },
+            { tier: 8, min: 15, max: 17 },
+            { tier: 9, min: 17, max: 20 }
+        ],
+        description: "Réduit les dégâts de foudre."
+    },
+
+    poisonResistance: {
+        id: "poisonResistance",
+        stat: Stats.poisonResistance.id,
+        category: "defense",
+        rollType: "percent",
+        rarityAllowed: ["blue", "yellow", "purple", "orange", "transcendent"],
+        weight: 60,
+        tiers: [
+            { tier: 1, min: 1, max: 3 },
+            { tier: 2, min: 3, max: 5 },
+            { tier: 3, min: 5, max: 7 },
+            { tier: 4, min: 7, max: 9 },
+            { tier: 5, min: 9, max: 11 },
+            { tier: 6, min: 11, max: 13 },
+            { tier: 7, min: 13, max: 15 },
+            { tier: 8, min: 15, max: 17 },
+            { tier: 9, min: 17, max: 20 }
+        ],
+        description: "Réduit les dégâts de poison."
+    },
+
+    shadowResistance: {
+        id: "shadowResistance",
+        stat: Stats.shadowResistance.id,
+        category: "defense",
+        rollType: "percent",
+        rarityAllowed: ["blue", "yellow", "purple", "orange", "transcendent"],
+        weight: 60,
+        tiers: [
+            { tier: 1, min: 1, max: 3 },
+            { tier: 2, min: 3, max: 5 },
+            { tier: 3, min: 5, max: 7 },
+            { tier: 4, min: 7, max: 9 },
+            { tier: 5, min: 9, max: 11 },
+            { tier: 6, min: 11, max: 13 },
+            { tier: 7, min: 13, max: 15 },
+            { tier: 8, min: 15, max: 17 },
+            { tier: 9, min: 17, max: 20 }
+        ],
+        description: "Réduit les dégâts d'ombre."
     },
 
     // ============================
@@ -143,7 +252,7 @@ export const Affixes = {
     },
 
     // ============================
-    // 🟪 TRANSCENDANTS (effets uniques)
+    // 🟪 TRANSCENDANTS
     // ============================
 
     unbreakable: {

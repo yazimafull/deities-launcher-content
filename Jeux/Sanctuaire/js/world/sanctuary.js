@@ -1,21 +1,28 @@
-﻿// Jeux/Sanctuaire/js/world/sanctuary.js
+﻿// ROUTE : js/world/sanctuary.js
 // ============================================================================
-// ROLE : Gestion complète du Sanctuaire (UI, interactions, pylône, panels,
-//        lancement de run, récapitulatif, validation des choix).
+// ROLE : Gestion complète du Sanctuaire (UI, interactions, ouverture des panels,
+//        lancement de run, récapitulatif, chargement persistant).
 //
-// EXPORTS : initSanctuary()
+// EXPORTS : initSanctuary(), resetPyloneTimer()
 //
 // DEPENDANCES :
-// - ../core/main.js → goToMenu
-// - ../core/gameLoop.js → startRun
+//    - core/main.js → goToMenu()
+//    - core/gameLoop.js → startRun()
+//    - core/runManager.js → startRunManager()
+//    - systems/inventorySystem.js → loadInventory()
+//    - systems/currencySystem.js → loadCurrencies()
+//    - UI/menu/coffrePanel.js → openCoffrePanel()
+//    - UI/menu/marchandPanel.js → openMarchandPanel()
+//    - UI/menu/forgePanel.js → openForgePanel()
+//    - UI/menu/pylonePanel.js → openPylonePanel(), resetPyloneTimer()
 //
 // SCREEN : data-screen="sanctuary"
 //
-// NOTES :Si elle ne sont plus à jour , fait en sorte qu'elle le soit
-// - Validation du pylône : biome + niveau obligatoires, affixe optionnel.
-// - Le récap affixe affiche le nom + la liste complète des modificateurs.
-// - Le bouton Lancer est désactivé tant que les prérequis ne sont pas remplis.
-// - 1 zone = 1 handler dédié. Le pylône utilise un overlay séparé.
+// NOTES :
+//    - Le Sanctuaire ne contient plus AUCUNE logique du pylône.
+//    - Chaque zone ouvre un panel dédié (coffre, forge, marchand, pylône).
+//    - Le pylône est désormais un panel autonome dans js/UI/menu/pylonePanel.js.
+//    - Le Sanctuaire gère uniquement : header, zones, navigation, scaling.
 // ============================================================================
 
 
@@ -26,50 +33,19 @@ import { goToMenu } from "../core/main.js";
 import { startRun } from "../core/gameLoop.js";
 import { startRunManager } from "../core/runManager.js";
 
-// ================================
-// DEBUG LOAD
-// ================================
+import { openCoffrePanel } from "../UI/menu/coffrePanel.js";
+import { openMarchandPanel } from "../UI/menu/marchandPanel.js";
+import { openForgePanel } from "../UI/menu/forgePanel.js";
+
+// 🔥 NOUVEAU : pylône extrait dans son propre panel
+import { openPylonePanel, resetPyloneTimer } from "../UI/menu/pylonePanel.js";
+
+// 🔥 Chargement persistant
+import { loadInventory } from "../systems/inventorySystem.js";
+import { loadCurrencies } from "../systems/currencySystem.js";
+
 console.log("🔥 sanctuary.js LOADED");
 
-// ================================
-// CONSTANTES
-// ================================
-const PANEL_TITLES = {
-    coffre: "Coffre du Sanctuaire",
-    forge: "Forge Sacrée",
-    marchand: "Marchand des Ombres",
-    grimoire: "Grimoire Ancien"
-};
-
-const STONES = [
-    {
-        name: "Pierre de Fureur",
-        affixes: [
-            { text: "+15% dégâts ennemis", type: "malus" }
-        ]
-    },
-    {
-        name: "Pierre du Néant Instable",
-        affixes: [
-            { text: "+20% or trouvé", type: "bonus" },
-            { text: "+12% vitesse d’attaque ennemie", type: "malus" },
-            { text: "+8% XP gagnée", type: "bonus" },
-            { text: "+25% dégâts de poison ennemis", type: "malus" },
-            { text: "+10% chances de loot rare", type: "bonus" },
-            { text: "-5% résistance du joueur", type: "malus" },
-            { text: "+18% dégâts de feu ennemis", type: "malus" },
-            { text: "+6% vitesse de déplacement", type: "bonus" },
-            { text: "-10% régénération de vie", type: "malus" }
-        ]
-    }
-];
-
-// ================================
-// STATE
-// ================================
-let countdownInterval = null;
-let choicesLocked = false;
-let selectedStone = null;
 
 // ================================
 // HELPERS SAFE DOM
@@ -81,30 +57,6 @@ function setText(id, value) {
     if (el) el.textContent = value;
 }
 
-function setHTML(id, value) {
-    const el = $(id);
-    if (el) el.innerHTML = value;
-}
-
-function setPointer(el, value) {
-    if (el) el.style.pointerEvents = value;
-}
-
-function setDisabled(el, value) {
-    if (el) el.disabled = value;
-}
-
-// ================================
-// VALIDATION LANCEMENT RUN
-// ================================
-function updateLaunchButtonState() {
-    const biome = document.querySelector(".biome-btn.active");
-    const level = $("levelLabel")?.textContent?.trim();
-
-    const canLaunch = biome && level && level !== "Aucun";
-
-    setDisabled($("pylone-launch"), !canLaunch);
-}
 
 // ================================
 // INIT SANCTUARY
@@ -112,11 +64,15 @@ function updateLaunchButtonState() {
 export function initSanctuary() {
     console.log("🔥 initSanctuary EXECUTED");
 
+    // Chargement inventaire + monnaies persistantes
+    loadInventory();
+    loadCurrencies();
+
     initHeader();
     initZones();
-    initPylone();
     scaleSanctuary();
 }
+
 
 // ================================
 // HEADER PERSONNAGE
@@ -137,6 +93,7 @@ function initHeader() {
     }
 }
 
+
 // ================================
 // ZONES DU SANCTUAIRE
 // ================================
@@ -144,9 +101,9 @@ function initZones() {
 
     const PANELS = {
         pylone: openPylonePanel,
-        forge: () => console.log("[Sanctuary] Forge : WIP"),
-        marchand: () => console.log("[Sanctuary] Marchand : WIP"),
-        coffre: () => console.log("[Sanctuary] Coffre : WIP"),
+        forge: openForgePanel,
+        marchand: openMarchandPanel,
+        coffre: openCoffrePanel,
         grimoire: () => console.log("[Sanctuary] Grimoire : WIP")
     };
 
@@ -164,222 +121,12 @@ function initZones() {
     });
 }
 
-// ================================
-// PANEL PYLÔNE
-// ================================
-function openPylonePanel() {
-    $("pylone-overlay")?.classList.remove("hidden");
-    updateLaunchButtonState();
-}
-
-function initPylone() {
-
-    // CANCEL
-    $("pylone-cancel")?.addEventListener("click", () => {
-        if (countdownInterval) {
-            clearLaunchTimer();
-            return;
-        }
-        $("pylone-overlay")?.classList.add("hidden");
-    });
-
-    // BIOMES
-    document.querySelectorAll(".biome-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (choicesLocked) return;
-            document.querySelectorAll(".biome-btn").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            updateRecap();
-            updateLaunchButtonState();
-        });
-    });
-
-    // DROPDOWN
-    const dropdown = $("levelDropdown");
-    const menu = $("levelMenu");
-    const levelLabel = $("levelLabel");
-
-    dropdown?.querySelector(".dropdown-toggle")?.addEventListener("click", () => {
-        if (choicesLocked) return;
-        menu?.classList.toggle("open");
-    });
-
-    menu?.addEventListener("click", (e) => {
-        if (choicesLocked) return;
-
-        const item = e.target.closest(".dropdown-item");
-        if (!item || !levelLabel) return;
-
-        levelLabel.textContent = item.textContent.trim();
-        updateRecap();
-        updateLaunchButtonState();
-        menu.classList.remove("open");
-    });
-
-    document.addEventListener("click", (e) => {
-        if (!dropdown?.contains(e.target)) {
-            menu?.classList.remove("open");
-        }
-    });
-
-    // AFFIX
-    $("affixSlot")?.addEventListener("click", () => {
-        if (choicesLocked) return;
-        selectedStone = selectedStone === STONES[0] ? STONES[1] : STONES[0];
-        updateAffixDisplay();
-        updateLaunchButtonState();
-    });
-
-    // LAUNCH
-    $("pylone-launch")?.addEventListener("click", startLaunchCountdown);
-}
 
 // ================================
-// RECAP
+// RESET PYLÔNE (appelé par le panel)
 // ================================
-function updateRecap() {
-    const biome = document.querySelector(".biome-btn.active")?.textContent?.trim() || "Aucun";
-    const level = $("levelLabel")?.textContent?.trim() || "Aucun";
+export { resetPyloneTimer };
 
-    setText("recapBiome", `Biome : ${biome}`);
-    setText("recapLevel", `Niveau : ${level.replace("Niveau ", "")}`);
-}
-
-// ================================
-// AFFIX DISPLAY
-// ================================
-function updateAffixDisplay() {
-
-    const slot = $("affixSlot");
-    if (!slot) return;
-
-    if (selectedStone) {
-        slot.classList.add("has-affix");
-        slot.textContent = "🜄";
-
-        // Centre
-        setText("affixSummary", selectedStone.name);
-
-        // Récap colonne droite
-        setText("recapAffix", `Affixe : ${selectedStone.name}`);
-        setHTML(
-            "recapAffixList",
-            selectedStone.affixes
-                .map(a => `<div class="${a.type}">• ${a.text}</div>`)
-                .join("")
-        );
-
-    } else {
-        slot.classList.remove("has-affix");
-        slot.innerHTML = "CLIQUE<br>POUR CHOISIR";
-
-        setText("affixSummary", "Aucune pierre sélectionnée.");
-        setText("recapAffix", "Affixe : Aucun");
-        setHTML("recapAffixList", "");
-    }
-}
-
-// ================================
-// LOCK / UNLOCK
-// ================================
-function lockChoices() {
-    choicesLocked = true;
-
-    document.querySelectorAll(".biome-btn").forEach(b => b.style.pointerEvents = "none");
-
-    setPointer($("levelDropdown"), "none");
-    setPointer($("affixSlot"), "none");
-    setDisabled($("pylone-launch"), true);
-}
-
-function unlockChoices() {
-    choicesLocked = false;
-
-    document.querySelectorAll(".biome-btn").forEach(b => b.style.pointerEvents = "auto");
-
-    setPointer($("levelDropdown"), "auto");
-    setPointer($("affixSlot"), "auto");
-    setDisabled($("pylone-launch"), false);
-}
-
-// ================================
-// COUNTDOWN
-// ================================
-function startLaunchCountdown() {
-
-    const countdown = $("pylone-countdown");
-    const btn = $("pylone-launch");
-
-    if (!countdown || !btn) return;
-
-    let seconds = 5;
-
-    countdown.classList.remove("hidden");
-    countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
-    btn.disabled = true;
-
-    lockChoices();
-
-    countdownInterval = setInterval(() => {
-
-        seconds--;
-
-        if (seconds <= 0) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-            launchRun();
-        } else {
-            countdown.textContent = `Lancement dans ${seconds}s... (Annuler pour stopper)`;
-        }
-
-    }, 1000);
-}
-
-// ================================
-// CANCEL
-// ================================
-function clearLaunchTimer() {
-
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-
-    $("pylone-countdown")?.classList.add("hidden");
-
-    setDisabled($("pylone-launch"), false);
-
-    unlockChoices();
-}
-
-// ================================
-// LAUNCH RUN
-// ================================
-function launchRun() {
-
-    // 🔥 NOUVELLE VERSION : on lit l’ID technique, pas le texte UI
-    const biomeId = document.querySelector(".biome-btn.active")?.dataset.id || "foret";
-
-    const levelText = $("levelLabel")?.textContent || "";
-    const difficulte = levelText.replace("Niveau ", "") || "I";
-    const affixName = selectedStone?.name || null;
-
-    const activeCharacter = sessionStorage.getItem("activeCharacter");
-
-    const config = {
-        character: activeCharacter ? JSON.parse(activeCharacter) : null,
-        biomeId,          // 🔥 remplacé
-        difficulte,
-        affix: affixName
-    };
-
-    $("pylone-overlay")?.classList.add("hidden");
-
-    document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
-
-    // 🔥 NOUVELLE VERSION : on passe par le runManager
-    startRunManager(config);
-}
 
 // ================================
 // SCALE
@@ -404,4 +151,3 @@ function scaleSanctuary() {
 
 window.addEventListener("resize", scaleSanctuary);
 window.addEventListener("load", scaleSanctuary);
-
