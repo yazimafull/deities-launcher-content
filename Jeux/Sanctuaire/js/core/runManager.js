@@ -77,7 +77,7 @@ export function launchRunFromPylone(config) {
 
     const runConfig = {
         biomeId: config.biomeId,
-        difficulte: config.level,
+        difficulte: config.difficulte,
         affixes: config.affixes || [],
         modifiers: config.modifiers || [],
         weapon: config.weapon,
@@ -269,8 +269,8 @@ export function cleanRun() {
     player.x = 0;
     player.y = 0;
 
-    if (player.baseRuntime) Object.assign(player.runtime, player.baseRuntime);
-    if (player.baseStats) Object.assign(player.stats, player.baseStats);
+    //if (player.baseRuntime) Object.assign(player.runtime, player.baseRuntime);
+    //if (player.baseStats) Object.assign(player.stats, player.baseStats);
 
     if (!player.weapon?.isDivine) player.weapon = null;
     if (!player.armorItem?.isDivine) player.armorItem = null;
@@ -310,11 +310,7 @@ export function returnToSanctuary() {
     setScreen(Screens.SANCTUARY);
 
     player.gold += runReward.gold;
-    player.inventory.
-    
-    
-    
-    (...runReward.items);
+    player.inventory.push(...runReward.items);
     player.soulXP += runReward.soulXP;
 
     runReward.gold = 0;
@@ -351,6 +347,13 @@ window.addEventListener("boss:dead", () => {
     runReward.items = items;
     runReward.soulXP = soulXP;
 
+    // 🔥 Correction : sauvegarde pour continuer la run
+    window.lastRunConfig = structuredClone(lastRunConfig);
+
+    // 🔥 Correction : pause + affichage loot
+    document.getElementById("loot-screen")?.classList.remove("hidden");
+    window.dispatchEvent(new CustomEvent("game:pause"));
+
     openLootScreen({
         gold,
         items,
@@ -360,3 +363,4 @@ window.addEventListener("boss:dead", () => {
         levelLootBonus
     });
 });
+

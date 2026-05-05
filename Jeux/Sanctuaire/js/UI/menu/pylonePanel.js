@@ -43,6 +43,39 @@ function setDisabled(el, value) {
 }
 
 // ================================
+// TOOLTIP BUILDER
+// ================================
+function buildTooltip(item) {
+    let html = `<div style="color:#d4af37; margin-bottom:4px;">${item.name}</div>`;
+
+    if (item.stats) {
+        for (const [k, v] of Object.entries(item.stats)) {
+            html += `<div class="stat">• ${k}: ${v}</div>`;
+        }
+    }
+
+    if (item.affixes) {
+        for (const [k, v] of Object.entries(item.affixes)) {
+            html += `<div class="affix">• ${k}: +${v}</div>`;
+        }
+    }
+
+    return html;
+}
+
+function showTooltip(item, x, y) {
+    const box = $("tooltip");
+    box.innerHTML = buildTooltip(item);
+    box.style.left = x + 15 + "px";
+    box.style.top = y + 15 + "px";
+    box.classList.remove("hidden");
+}
+
+function hideTooltip() {
+    $("tooltip").classList.add("hidden");
+}
+
+// ================================
 // VALIDATION LANCEMENT RUN
 // ================================
 function updateLaunchButtonState() {
@@ -58,15 +91,13 @@ function updateLaunchButtonState() {
 }
 
 // ================================
-// OUVERTURE PANEL (RESET + UI)
+// OUVERTURE PANEL
 // ================================
 export function openPylonePanel() {
 
     resetPyloneTimer();
 
-    // ============================
-    // RESET ÉQUIPEMENT RUNTIME
-    // ============================
+    // Reset équipement runtime
     player.equipment.weapon = null;
     player.equipment.armor = null;
     player.equipment.trinkets = [];
@@ -75,18 +106,11 @@ export function openPylonePanel() {
     player.hp = player.stats.maxHp;
     player.shield = player.stats.maxShield;
 
-    // Reset du loadout interne du pylône
+    // Reset loadout
     loadout.weapon = null;
     loadout.armor = null;
     loadout.stone = null;
 
-    // HP / Shield corrects
-    player.hp = player.stats.maxHp;
-    player.shield = player.stats.maxShield;
-
-    // ============================
-    // AFFICHAGE PANEL + UI
-    // ============================
     $("pylone-overlay")?.classList.remove("hidden");
 
     refreshEquipmentSlots();
@@ -99,9 +123,7 @@ export function openPylonePanel() {
 // INIT PANEL
 // ================================
 export function initPylonePanel() {
-    console.log("[PYLONE] initPylonePanel appelé");
 
-    // CANCEL
     $("pylone-cancel")?.addEventListener("click", () => {
         if (countdownInterval) {
             clearLaunchTimer();
@@ -225,46 +247,35 @@ function closeItemSelector() {
 $("item-selector-close")?.addEventListener("click", closeItemSelector);
 
 // ================================
-// TOOLTIP
-// ================================
-function showTooltip(item, x, y) {
-    const box = $("tooltip");
-
-    const statsHTML = item.stats
-        ? Object.entries(item.stats)
-            .map(([key, value]) => `<div class="stat">• ${key}: ${value}</div>`)
-            .join("")
-        : "";
-
-    const affixesHTML = item.affixes
-        ? Object.entries(item.affixes)
-            .map(([key, value]) => `<div class="affix">• ${key} +${value}</div>`)
-            .join("")
-        : "";
-
-    box.innerHTML = `
-        <div style="color:#d4af37; margin-bottom:4px;">${item.name}</div>
-        ${statsHTML}
-        ${affixesHTML}
-    `;
-
-    box.style.left = x + 15 + "px";
-    box.style.top = y + 15 + "px";
-    box.classList.remove("hidden");
-}
-
-function hideTooltip() {
-    $("tooltip").classList.add("hidden");
-}
-window.showTooltip = showTooltip;
-window.hideTooltip = hideTooltip;
-
-// ================================
 // REFRESH SLOTS
 // ================================
 function refreshEquipmentSlots() {
-    $("weaponSlot").textContent = loadout.weapon ? loadout.weapon.name : "Arme";
-    $("armorSlot").textContent = loadout.armor ? loadout.armor.name : "Armure";
+
+    const w = loadout.weapon;
+    const a = loadout.armor;
+
+    const wSlot = $("weaponSlot");
+    const aSlot = $("armorSlot");
+
+    wSlot.textContent = w ? w.name : "Arme";
+    aSlot.textContent = a ? a.name : "Armure";
+
+    // Tooltip custom
+    wSlot.onmouseenter = () => {
+        if (w) {
+            const rect = wSlot.getBoundingClientRect();
+            showTooltip(w, rect.right, rect.top);
+        }
+    };
+    wSlot.onmouseleave = hideTooltip;
+
+    aSlot.onmouseenter = () => {
+        if (a) {
+            const rect = aSlot.getBoundingClientRect();
+            showTooltip(a, rect.right, rect.top);
+        }
+    };
+    aSlot.onmouseleave = hideTooltip;
 }
 
 function refreshAffixSlot() {
@@ -288,6 +299,27 @@ function updateRecap() {
     setText("recapBiome", `Biome : ${biome}`);
     setText("recapLevel", `Niveau : ${level.replace("Niveau ", "")}`);
 
+    // Arme
+    if (loadout.weapon) {
+        setHTML("recapWeapon", `
+            <div style="color:#d4af37">${loadout.weapon.name}</div>
+            ${formatStats(loadout.weapon)}
+        `);
+    } else {
+        setText("recapWeapon", "Aucune arme");
+    }
+
+    // Armure
+    if (loadout.armor) {
+        setHTML("recapArmor", `
+            <div style="color:#d4af37">${loadout.armor.name}</div>
+            ${formatStats(loadout.armor)}
+        `);
+    } else {
+        setText("recapArmor", "Aucune armure");
+    }
+
+    // Pierre
     if (loadout.stone) {
         setText("recapAffix", `Affixe : ${loadout.stone.name}`);
 
@@ -301,6 +333,24 @@ function updateRecap() {
         setText("recapAffix", "Affixe : Aucun");
         setHTML("recapModifiers", "");
     }
+}
+
+function formatStats(item) {
+    let html = "";
+
+    if (item.stats) {
+        for (const [k, v] of Object.entries(item.stats)) {
+            html += `<div class="stat">• ${k}: ${v}</div>`;
+        }
+    }
+
+    if (item.affixes) {
+        for (const [k, v] of Object.entries(item.affixes)) {
+            html += `<div class="affix">• ${k}: +${v}</div>`;
+        }
+    }
+
+    return html;
 }
 
 // ================================
@@ -364,8 +414,13 @@ function launchRun() {
     $("pylone-overlay")?.classList.add("hidden");
     document.querySelector('[data-screen="sanctuary"]')?.classList.add("hidden");
 
-    player.weapon = loadout.weapon;
-    player.armorItem = loadout.armor;
+    // ÉQUIPEMENT RUNTIME
+    player.equipment.weapon = loadout.weapon;
+    player.activeElement = loadout.weapon?.element ?? "physical";
+    player.equipment.armor = loadout.armor;
+
+    updatePlayerStats();
+    applyPlayerRuntimeStats(player);
 
     startRunManager(config);
 }

@@ -7,6 +7,7 @@
 */
 
 import { getKey } from "./keybinds.js";
+import { DebugStats } from "../systems/debug/debugStats.js"; // adapte le chemin si besoin
 
 
 // ================================
@@ -21,12 +22,18 @@ export const mouseButtons = Object.create(null);
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
 
-function onKeyDown(e) {
-    keys[e.key.toLowerCase()] = true;
-}
-
 function onKeyUp(e) {
     keys[e.key.toLowerCase()] = false;
+}
+
+function onKeyDown(e) {
+    const key = e.key.toLowerCase();
+    keys[key] = true;
+
+    // Toggle panneau debug (C)
+    if (key === "c") {
+        DebugStats.enabled = !DebugStats.enabled;
+    }
 }
 
 // ================================

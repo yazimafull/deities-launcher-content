@@ -60,6 +60,7 @@ export function craftItem(recipeId) {
         id: crypto.randomUUID(),
         name: recipe.name,
         type: recipe.result.type,
+        element: recipe.result.element,
         slot: recipe.result.slot,
         stats: { ...recipe.result.stats },
         affixes: { ...recipe.result.affixes }

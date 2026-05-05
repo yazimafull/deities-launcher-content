@@ -12,7 +12,6 @@
 
 import { basePlayer as player } from "../data/playerBase.js";
 
-
 // ===============================
 // SAUVEGARDE INVENTAIRE
 // ===============================
@@ -23,7 +22,6 @@ function saveInventory() {
         console.warn("[Inventory] Impossible de sauvegarder l'inventaire", e);
     }
 }
-
 
 // ===============================
 // CHARGEMENT INVENTAIRE
@@ -39,7 +37,6 @@ export function loadInventory() {
     }
 }
 
-
 // ===============================
 // AJOUTER UN OBJET AU COFFRE
 // ===============================
@@ -52,10 +49,7 @@ export function addToInventory(item) {
         if (existing) {
             existing.quantity += item.quantity;
         } else {
-            player.inventory.
-            
-            
-            ({ ...item });
+            player.inventory.push({ ...item });
         }
 
         saveInventory();
@@ -66,8 +60,6 @@ export function addToInventory(item) {
     player.inventory.push({ ...item });
     saveInventory();
 }
-
-
 
 // ===============================
 // RETIRER UN OBJET DU COFFRE
@@ -102,18 +94,21 @@ export function getInventoryQuantity(itemId) {
     const entry = player.inventory.find(i => i.id === itemId);
     return entry?.quantity ?? 0;
 }
+
 // ===============================
 // COMPTEUR (alias plus lisible pour la Forge)
 // ===============================
 export function countItem(itemId) {
     return getInventoryQuantity(itemId);
 }
+
 // ===============================
 // SUPPRESSION (alias Forge)
 // ===============================
 export function removeItem(itemId, qty = 1) {
     return removeFromInventory(itemId, qty);
 }
+
 // ===============================
 // CONSOMMER UNE INSTANCE PRÉCISE
 // ===============================
@@ -136,6 +131,7 @@ export function consumeItemInstance(instance) {
 export function addItemToInventory(item) {
     return addToInventory(item);
 }
+
 // ===============================
 // OBTENIR L'INVENTAIRE ENTIER (lecture seule)
 // ===============================

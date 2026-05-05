@@ -78,10 +78,10 @@ function refreshPanel() {
         `Or disponible : ${getCurrency("gold")}`;
 
     const itemsForSale = [
-        { id: "iron_fragment", name: "Fragment de fer", type: "material", quantity: 1, price: 0 },
-        { id: "wood_piece", name: "Morceau de bois", type: "material", quantity: 1, price: 3 },
-        { id: "mystic_shard", name: "Éclat mystique", type: "material", quantity: 1, price: 12 },
-        { id: "gold_pouch_small", name: "Petit sac d'or", givesGold: 20, price: 0 }
+        { id: "iron_fragment", name: "Fragment de fer", type: "material", quantity: 10, price: 0 },
+        { id: "wood_piece", name: "Morceau de bois", type: "material", quantity: 10, price: 3 },
+        { id: "mystic_shard", name: "Éclat mystique", type: "material", quantity: 10, price: 12 },
+        { id: "gold_pouch_small", name: "Petit sac d'or", givesGold: 30, price: 0 }
     ];
 
     itemsForSale.forEach(item => {

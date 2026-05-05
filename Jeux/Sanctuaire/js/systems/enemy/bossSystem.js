@@ -365,8 +365,3 @@ export function drawBossIndicator(ctx, camera, canvas) {
 
     ctx.restore();
 }
-
-
-
-
-

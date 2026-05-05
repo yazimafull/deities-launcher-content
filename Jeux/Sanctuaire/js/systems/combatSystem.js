@@ -9,6 +9,8 @@
 
 import { spawnProjectile } from "./projectileSystem.js";
 import { computeOffense, damageEnemy, damagePlayer } from "./damageSystem.js";
+import { applyElementalEffects } from "./effects/index.js";
+
 
 // =====================================================
 // COOLDOWN CALCULÉ À PARTIR DES STATS
@@ -190,17 +192,23 @@ function performMeleeAttack(attacker, target) {
 
     const r = attacker.runtime ?? attacker;
 
-    const dmgPacket = computeOffense(r);
+    // 1) Dégâts bruts
+    let dmgPacket = computeOffense(r);
 
-    // AJOUT MANQUANT : type élémentaire
+    // 2) Type élémentaire
     dmgPacket.type = r.element ?? "physical";
 
+    // 3) Effets élémentaires (DOT, slow, chain, poison…)
+    dmgPacket = applyElementalEffects(r, dmgPacket);
+
+    // 4) Application des dégâts
     if (target.isMob) {
         damageEnemy(target, dmgPacket);
     } else {
         damagePlayer(target, dmgPacket);
     }
 }
+
 
 // =====================================================
 // ATTAQUE RANGED
@@ -241,7 +249,7 @@ function shootProjectileSpread(attacker, cursor) {
             vy,
             speed: r.projectileSpeed ?? 300,
             range: r.projectileRange ?? 300,
-            owner: attacker
+            owner: attacker.runtime ?? attacker
         });
     }
 }

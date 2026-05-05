@@ -2,19 +2,29 @@
    ROUTE : Jeux/Sanctuaire/js/systems/player/playerStatsSystem.js
 
    RÔLE :
-     Fusionner TOUTES les sources de stats :
-       - arme
-       - armure
-       - trinkets
-       - buffs
-       - talents
-       - gemmes
-     pour produire les stats finales du joueur.
+     Fusionner TOUTES les sources de stats du joueur pour produire
+     player.stats final, utilisé par :
+       - damageSystem (offense + defense)
+       - regenSystem (HP / Shield)
+       - movementSystem (moveSpeed)
+       - skillSystem (spirit / energy)
+       - UI (fiche de stats)
+
+   SOURCES DE STATS :
+     - basePlayer.stats (stats de départ du personnage)
+     - arme (weapon.stats + affixes)
+     - armure (armor.stats + affixes)
+     - trinkets (stats + affixes)
+     - buffs temporaires
+     - talents permanents
+     - gemmes (stats uniquement)
+     - affixes (tous les items)
 
    PRINCIPES :
-     - Le joueur n’a PAS de stats de base (âme = coquille vide)
-     - Toutes les stats viennent de l’équipement + talents + buffs + gemmes
      - Stats.js = registre unique (source de vérité)
+     - additive → stats[id] += value
+     - multiplicative → stats[id] *= (1 + value)
+     - Aucune stat fantôme : si une stat n’existe pas dans Stats.js, elle est ignorée
 */
 
 import { Stats } from "../../data/stats.js";
@@ -22,7 +32,7 @@ import { basePlayer } from "../../data/playerBase.js";
 
 export function buildPlayerStats(player) {
 
-    // 1) On part des stats de base du joueur (basePlayer.stats)
+    // 1) Base : clone propre des stats du joueur
     const stats = structuredClone(basePlayer.stats);
 
     // 2) Armure
@@ -48,7 +58,7 @@ export function buildPlayerStats(player) {
     // 6) Talents permanents
     applyList(stats, player.talents);
 
-    // 7) Gemmes
+    // 7) Gemmes (stats uniquement)
     if (player.gems) {
         for (const g of player.gems) {
             applySource(stats, g);
@@ -58,22 +68,34 @@ export function buildPlayerStats(player) {
     return stats;
 }
 
+/*
+   applySource :
+     - lit source.stats (ou source directement si déjà plat)
+     - applique additive / multiplicative selon Stats.js
+     - applique aussi les affixes (source.affixes)
+*/
 function applySource(stats, source) {
     if (!source) return;
 
     const pool = source.stats || source;
     if (!pool) return;
 
+    // Stats principales
     for (const id in Stats) {
         if (pool[id] !== undefined) {
             const def = Stats[id];
             const value = pool[id];
 
-            if (def.type === "additive") stats[id] += value;
-            else if (def.type === "multiplicative") stats[id] *= (1 + value);
+            if (def.type === "additive") {
+                stats[id] += value;
+            }
+            else if (def.type === "multiplicative") {
+                stats[id] *= (1 + value);
+            }
         }
     }
 
+    // Affixes secondaires
     if (source.affixes) {
         for (const id in source.affixes) {
             if (!Stats[id]) continue;
@@ -81,14 +103,22 @@ function applySource(stats, source) {
             const def = Stats[id];
             const value = source.affixes[id];
 
-            if (def.type === "additive") stats[id] += value;
-            else if (def.type === "multiplicative") stats[id] *= (1 + value);
+            if (def.type === "additive") {
+                stats[id] += value;
+            }
+            else if (def.type === "multiplicative") {
+                stats[id] *= (1 + value);
+            }
         }
     }
 }
 
+/*
+   applyList :
+     - applique une liste d’objets (buffs, talents)
+     - chaque item est traité comme une source
+*/
 function applyList(stats, list) {
     if (!list) return;
     for (const item of list) applySource(stats, item);
 }
-

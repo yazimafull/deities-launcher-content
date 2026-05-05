@@ -9,11 +9,6 @@
        - DOT : gestion des dégâts sur la durée
        - BIOME : dégâts pulsés
        - Damage Numbers : affichage
-
-   PRINCIPES :
-     - Toutes les valeurs offensives viennent de runtime
-     - computeOffense accepte runtime OU entity
-     - Aucun calcul de dégâts ailleurs dans le jeu
 */
 
 import { camera } from "./cameraSystem.js";
@@ -21,9 +16,9 @@ import { onPlayerDeath } from "../systems/deathSystem.js";
 
 export let dmgNumbers = [];
 
-// ============================================================================
-// DAMAGE NUMBERS
-// ============================================================================
+/* ============================================================================
+   DAMAGE NUMBERS
+============================================================================ */
 export function updateDamageNumbers(dt) {
 
     for (let i = dmgNumbers.length - 1; i >= 0; i--) {
@@ -44,37 +39,63 @@ export function drawDamageNumbers(ctx) {
     for (let n of dmgNumbers) {
 
         ctx.save();
-
         ctx.globalAlpha = n.alpha;
-        ctx.font = n.isCrit ? "bold 20px Cinzel" : "16px Cinzel";
         ctx.textAlign = "center";
 
-        ctx.fillStyle = n.isPlayer ? "#ff4444" : "#ffcc88";
+        // Taille critique (inchangée)
+        ctx.font = n.isCrit ? "bold 20px Cinzel" : "16px Cinzel";
 
-        const screenX = n.x - camera.x;
-        const screenY = n.y - camera.y;
+        // Couleur selon élément
+        let color = "#ffffff"; // physique
+        switch (n.type) {
+            case "fire":      color = "#ff6633"; break;
+            case "lightning": color = "#ffff55"; break;
+            case "ice":       color = "#66ccff"; break;
+            case "shadow":    color = "#cc66ff"; break;
+            case "poison":    color = "#66ff66"; break;
+        }
 
-        ctx.fillText(n.value, screenX, screenY);
+        const sx = n.x - camera.x;
+        const sy = n.y - camera.y;
+
+        // Dégâts subis par le joueur → contour rouge vif + couleur élémentaire
+        if (n.isPlayer) {
+            ctx.strokeStyle = "#ff0000";
+            ctx.lineWidth = 3;
+            ctx.strokeText(n.value, sx, sy);
+            ctx.fillStyle = color;
+        } else {
+            ctx.fillStyle = color;
+        }
+
+        ctx.fillText(n.value, sx, sy);
 
         ctx.restore();
     }
 }
 
-export function spawnDamageNumber(x, y, value, isCrit = false, isPlayer = false) {
-
+export function spawnDamageNumber(
+    x,
+    y,
+    value,
+    isCrit = false,
+    isPlayer = false,
+    type = "physical"
+) {
     dmgNumbers.push({
         x,
         y,
-        value,
+        value: typeof value === "number" ? value.toFixed(1) : value,
         isCrit,
         isPlayer,
+        type,
         alpha: 1
     });
 }
 
-// ============================================================================
-// DOT SYSTEM
-// ============================================================================
+/* ============================================================================
+   DOT SYSTEM
+============================================================================ */
 export function updateDots(dt, entity) {
 
     if (!entity?.dots) return;
@@ -114,64 +135,64 @@ export function applyDot(entity, dotConfig) {
     });
 }
 
-// ============================================================================
-// OFFENSIVE DAMAGE BUILDER
-// ============================================================================
-export function computeOffense(source) {
+/* ============================================================================
+   OFFENSIVE DAMAGE BUILDER
+============================================================================ */
+export function computeOffense(source, skill = {}) {
+    const s = source.stats ?? source;   // sécurité
+    const type = skill.element ?? source.activeElement ?? source.element ?? "physical";
 
-    const r = source.runtime ?? source;
+    // 1. Base universelle
+    const base = s.damage ?? 0;
 
-    // 1. Base damage = arme + stats
-    const base = (r.weaponDamage ?? 0) + (r.attackDamage ?? 0);
+    // 2. Bonus élémentaire (physicalDamage, fireDamage, etc.)
+    const elementBonus = s[`${type}Damage`] ?? 0;
 
-    // 2. Multiplicateurs
-    let dmg = base * (1 + (r.attackDamageMultiplier ?? 0));
+    // 3. Coefficient du skill
+    let dmg = (base + elementBonus) * (skill.coefficient ?? 1);
 
-    // 3. Élémentaire
-    dmg += (r.elementalDamage ?? 0) * (1 + (r.elementalDamageMultiplier ?? 0));
+    // 4. Multiplicateurs élémentaires
+    const elemMult = s[`${type}DamageMultiplier`] ?? 0;
+    dmg *= (1 + elemMult);
 
-    // 4. Crit
-    const critChance = r.critChance ?? 0;
-    const critMult   = (r.critMultiplier ?? 1) * (1 + (r.critMultiplierMultiplier ?? 0));
+    // 5. Multiplicateur global
+    dmg *= (1 + (s.damageMultiplier ?? 0));
+
+    // 6. Critique
+    const critChance = s.critChance ?? 0;
+    const critMult = (s.critMultiplier ?? 1.5) * (1 + (s.critMultiplierMultiplier ?? 0));
 
     const isCrit = Math.random() < critChance;
     if (isCrit) dmg *= critMult;
 
     return {
-        value: dmg,          // pas de floor ici
+        value: dmg,
         isCrit,
-        type: r.element ?? "physical"
+        type
     };
 }
 
 
-
-// ============================================================================
-// DEFENSIVE DAMAGE REDUCTION
-// ============================================================================
+/* ============================================================================
+   DEFENSIVE DAMAGE REDUCTION
+============================================================================ */
 export function computeDefense(target, dmgPacket) {
-
-    let dmg = dmgPacket.value;
+    const s = target.stats;
     const type = dmgPacket.type ?? "physical";
 
-    // 1. Résistance dynamique selon le type
-    const resId = type + "Resistance"; // ex: "fireResistance"
-    let res = target.stats?.[resId] ?? 0;
+    // Résistance élémentaire
+    let res = s[`${type}Resistance`] ?? 0;
 
-    // 2. Clamp (-90% à +100%)
-    if (res < -0.9) res = -0.9;
-    if (res > 1.0) res = 1.0;
+    // Clamp entre -90% et +100%
+    res = Math.max(-0.9, Math.min(1.0, res));
 
-    // 3. Application
-    dmg *= (1 - res);
-
-    return Math.floor(dmg);
+    return dmgPacket.value * (1 - res);
 }
 
 
-// ============================================================================
-// DAMAGE TO ENEMY
-// ============================================================================
+/* ============================================================================
+   DAMAGE TO ENEMY
+============================================================================ */
 export function damageEnemy(mob, dmgPacket) {
 
     if (!mob || mob.dead) return;
@@ -180,12 +201,10 @@ export function damageEnemy(mob, dmgPacket) {
 
     mob.hp = Math.max(0, mob.hp - finalDamage);
 
-    // === BOSS : reset anti-kite ===
     if (mob.isBoss) {
         mob.lastHitTime = performance.now();
     }
 
-    // === Force aggro si touché en idle ===
     if (mob.state === "idle") mob.state = "chase";
 
     spawnDamageNumber(
@@ -193,25 +212,23 @@ export function damageEnemy(mob, dmgPacket) {
         mob.y,
         finalDamage,
         dmgPacket.isCrit,
-        false
+        false,
+        dmgPacket.type
     );
 
     if (dmgPacket.dot) {
         applyDot(mob, dmgPacket.dot);
     }
 
-    // === MORT DU BOSS UNIQUEMENT ===
     if (mob.hp <= 0 && mob.isBoss) {
         mob.dead = true;
         window.dispatchEvent(new CustomEvent("boss:dead"));
     }
-
-    
 }
 
-// ============================================================================
-// DAMAGE TO PLAYER
-// ============================================================================
+/* ============================================================================
+   DAMAGE TO PLAYER — VERSION PROPRE
+============================================================================ */
 export function damagePlayer(player, dmgPacket) {
 
     if (!player) return;
@@ -223,7 +240,10 @@ export function damagePlayer(player, dmgPacket) {
         dodgePenalty: 0
     };
 
-    // === DODGE ===
+
+    /* -----------------------------------------
+       DODGE
+    ----------------------------------------- */
     if (weaponProfile.canDodge) {
 
         const dodgeChance =
@@ -236,7 +256,9 @@ export function damagePlayer(player, dmgPacket) {
         }
     }
 
-    // === PARRY ===
+    /* -----------------------------------------
+       PARRY
+    ----------------------------------------- */
     if (weaponProfile.canParry) {
 
         const parryChance = player.stats?.parryChance ?? 0;
@@ -252,7 +274,9 @@ export function damagePlayer(player, dmgPacket) {
         }
     }
 
-    // === BLOCK ===
+    /* -----------------------------------------
+       BLOCK
+    ----------------------------------------- */
     if (weaponProfile.canBlock) {
 
         const blockChance = player.stats?.blockChance ?? 0;
@@ -268,50 +292,81 @@ export function damagePlayer(player, dmgPacket) {
         }
     }
 
-    // === RESISTANCES ===
+    /* -----------------------------------------
+       SHIELD + HP DAMAGE (avec shieldEfficiency)
+    ----------------------------------------- */
+
+    let absorbed = 0;
     let damage = computeDefense(player, dmgPacket);
 
-    // === SHIELD ===
-    if (player.shield > 0) {
+    // Le biome ignore le shield
+    const canUseShield = dmgPacket.type !== "biome";
 
-        const absorbed = Math.min(player.shield, damage);
+    if (player.shield > 0 && canUseShield) {
 
-        player.shield -= absorbed;
+        absorbed = Math.min(player.shield, damage);
+
+        // Nom de la stat : shieldEfficiencyFire, shieldEfficiencyPhysical, etc.
+        const key = `shieldEfficiency${capitalize(dmgPacket.type)}`;
+        
+
+        // fallback propre si la stat n'existe pas
+        let eff = player.stats[key];
+        if (eff === undefined) eff = 0;
+
+        // Le shield consomme moins selon l’efficacité
+        const shieldCost = absorbed * (1 - eff);
+
+        player.shield -= shieldCost;
         damage -= absorbed;
-
-        if (absorbed > 0) {
-            spawnDamageNumber(player.x, player.y, absorbed, false, true);
-        }
     }
 
-    // === HP DAMAGE ===
+    const totalDamage = absorbed + damage;
+
+    /* -----------------------------------------
+       DAMAGE NUMBERS
+    ----------------------------------------- */
+    if (totalDamage > 0) {
+        spawnDamageNumber(
+            player.x,
+            player.y,
+            totalDamage,
+            dmgPacket.isCrit,
+            true,
+            dmgPacket.type
+        );
+    }
+
+    /* -----------------------------------------
+       APPLY DAMAGE TO HP
+    ----------------------------------------- */
     if (damage > 0) {
 
         player.hp = Math.max(0, player.hp - damage);
 
-        spawnDamageNumber(
-            player.x,
-            player.y,
-            damage,
-            dmgPacket.isCrit,
-            true
-        );
-
-        // === MORT DU JOUEUR ===
         if (player.hp <= 0) {
             onPlayerDeath();
             return;
         }
     }
 
+    /* -----------------------------------------
+       APPLY DOT
+    ----------------------------------------- */
     if (dmgPacket.dot) {
         applyDot(player, dmgPacket.dot);
     }
 }
 
-// ============================================================================
-// BIOME DAMAGE
-// ============================================================================
+/* Utilitaire */
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
+/* ============================================================================
+   BIOME DAMAGE
+============================================================================ */
 let biomeTickTimer = 0;
 
 export function applyBiomeDamage(dt, difficulty, player) {

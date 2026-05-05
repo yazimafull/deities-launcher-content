@@ -1,22 +1,8 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/systems/debug/debugStats.js
    RÔLE :
-     Affiche toutes les statistiques finales du joueur (player.stats + runtime)
+     Affiche toutes les statistiques finales du joueur (player.stats)
      pour vérifier les resets, les multiplicateurs, les valeurs anormales.
-     Lecture seule : ne modifie jamais le gameplay.
-
-   EXPORTS :
-     - DebugStats (objet runtime)
-     - drawDebugStats(ctx, canvas, player)
-
-   DÉPENDANCES :
-     - player.stats (source unique des stats finales)
-     - engine.js (appel du rendu debug)
-
-   NOTES :
-     - Affichage fixe en haut-gauche pour lisibilité.
-     - Toutes les valeurs sont arrondies à 2 décimales.
-     - Catégories : offense / defense / utility / meta.
 */
 
 export const DebugStats = {
@@ -29,100 +15,147 @@ export function drawDebugStats(ctx, canvas, player) {
     if (!DebugStats.enabled) return;
 
     const s = DebugStats.stats;
-    const x = 20;
-    const y = 20;
 
     ctx.save();
 
+    // Fond large pour 3 colonnes
     ctx.fillStyle = "rgba(0,0,0,0.65)";
-    ctx.fillRect(x, y, 300, canvas.height - 40);
+    ctx.fillRect(20, 20, canvas.width - 40, canvas.height - 40);
 
     ctx.fillStyle = "white";
     ctx.font = "13px monospace";
 
-    let line = 0;
-    const write = (label, value) => {
+    // Colonnes
+    const colX = [40, 260, 480];
+    const colY = 40;
+    const lineHeight = 18;
+
+    let L1 = 0, L2 = 0, L3 = 0;
+
+    const write = (col, line, label, value) => {
         ctx.fillText(
             `${label}: ${Number(value).toFixed(2)}`,
-            x + 10,
-            y + 20 + line * 18
+            colX[col],
+            colY + line * lineHeight
         );
-        line++;
     };
 
     // ============================
-    // OFFENSE
+    // OFFENSE (colonne 1)
     // ============================
-    ctx.fillText("=== OFFENSE ===", x + 10, y + 20 + line * 18); line++;
+    write(0, L1++, "=== OFFENSE ===", 0);
+ 
+    write(0, L1++, "Damage", s.damage);
+    write(0, L1++, "Damage Mult", s.damageMultiplier);
 
-    write("Attack Damage", s.attackDamage);
-    write("Attack Speed", s.attackSpeed);
-    write("Attack Range", s.attackRange);
+    write(0, L1++, "Physical Damage", s.physicalDamage);
+    write(0, L1++, "Fire Damage", s.fireDamage);
+    write(0, L1++, "Ice Damage", s.iceDamage);
+    write(0, L1++, "Lightning Damage", s.lightningDamage);
+    write(0, L1++, "Poison Damage", s.poisonDamage);
+    write(0, L1++, "Shadow Damage", s.shadowDamage);
 
-    write("Projectile Speed", s.projectileSpeed);
-    write("Projectile Range", s.projectileRange);
-    write("Projectile Count", s.projectileCount);
+    write(0, L1++, "Physical Damage Mult", s.physicalDamageMultiplier);
+    write(0, L1++, "Fire Damage Mult", s.fireDamageMultiplier);
+    write(0, L1++, "Ice Damage Mult", s.iceDamageMultiplier);
+    write(0, L1++, "Lightning Damage Mult", s.lightningDamageMultiplier);
+    write(0, L1++, "Poison Damage Mult", s.poisonDamageMultiplier);
+    write(0, L1++, "Shadow Damage Mult", s.shadowDamageMultiplier);
 
-    write("Crit Chance", s.critChance);
-    write("Crit Multiplier", s.critMultiplier);
+    write(0, L1++, "Crit Chance", s.critChance);
+    write(0, L1++, "Crit Chance Mult", s.critChanceMultiplier);
 
-    write("DOT Damage", s.dotDamage);
-    write("DOT Duration", s.dotDuration);
+    write(0, L1++, "Crit Multiplier", s.critMultiplier);
+    write(0, L1++, "Crit Multiplier Mult", s.critMultiplierMultiplier);
 
-    write("Elemental Damage", s.elementalDamage);
+    write(0, L1++, "Projectile Speed", s.projectileSpeed);
+    write(0, L1++, "Projectile Speed Mult", s.projectileSpeedMultiplier);
 
-    // ============================
-    // DEFENSE
-    // ============================
-    ctx.fillText("=== DEFENSE ===", x + 10, y + 20 + line * 18); line++;
+    write(0, L1++, "Projectile Range", s.projectileRange);
+    write(0, L1++, "Projectile Range Mult", s.projectileRangeMultiplier);
 
-    write("Max HP", s.maxHp);
-    write("Max Shield", s.maxShield);
-    write("Regen HP", s.regenHp);
-    write("Regen Shield", s.regenShield);
+    write(0, L1++, "Projectile Count", s.projectileCount);
+    write(0, L1++, "Projectile Count Mult", s.projectileCountMultiplier);
 
-    write("Block Chance", s.blockChance);
-    write("Block Power", s.blockPower);
+    write(0, L1++, "DOT Damage", s.dotDamage);
+    write(0, L1++, "DOT Damage Mult", s.dotDamageMultiplier);
 
-    write("Dodge Chance", s.dodgeChance);
+    write(0, L1++, "DOT Duration", s.dotDuration);
+    write(0, L1++, "DOT Duration Mult", s.dotDurationMultiplier);
 
-    write("Physical Res", s.physicalResistance);
-    write("Fire Res", s.fireResistance);
-    write("Ice Res", s.iceResistance);
-    write("Lightning Res", s.lightningResistance);
-    write("Poison Res", s.poisonResistance);
-    write("Shadow Res", s.shadowResistance);
+    write(0, L1++, "Attack Speed", s.attackSpeed);
+    write(0, L1++, "Attack Speed Mult", s.attackSpeedMultiplier);
 
-    write("Biome Resistance", s.biomeResistance);
+    write(0, L1++, "Attack Range", s.attackRange);
+    write(0, L1++, "Attack Range Mult", s.attackRangeMultiplier);
 
-    // ============================
-    // UTILITY
-    // ============================
-    ctx.fillText("=== UTILITY ===", x + 10, y + 20 + line * 18); line++;
-
-    write("Move Speed", s.moveSpeed);
-    write("Pickup Range", s.pickupRange);
-
-    write("Cooldown Reduction", s.cooldownReduction);
-
-    write("Projectile Speed", s.projectileSpeed);
-    write("Projectile Range", s.projectileRange);
-
-    write("Energy Max", s.energyMax);
-    write("Energy Cost", s.energyCost);
-
-    write("Spirit Cost", s.spiritCost);
 
     // ============================
-    // META
+    // DEFENSE (colonne 2)
     // ============================
-    ctx.fillText("=== META ===", x + 10, y + 20 + line * 18); line++;
+    write(1, L2++, "=== DEFENSE ===", 0);
 
-    write("XP Gain %", s.xpGain);
-    write("Currency Gain %", s.currencyGain);
+    write(1, L2++, "Max HP", s.maxHp);
+    write(1, L2++, "Max HP Mult", s.maxHpMultiplier);
 
-    write("Loot Quantity", s.lootQuantity);
-    write("Loot Quality", s.lootQuality);
+    write(1, L2++, "Regen HP", s.regenHp);
+    write(1, L2++, "Regen HP Mult", s.regenHpMultiplier);
+
+    write(1, L2++, "Max Shield", s.maxShield);
+    write(1, L2++, "Max Shield Mult", s.maxShieldMultiplier);
+
+    write(1, L2++, "Regen Shield", s.regenShield);
+    write(1, L2++, "Regen Shield Mult", s.regenShieldMultiplier);
+
+    write(1, L2++, "Dodge Chance", s.dodgeChance);
+    write(1, L2++, "Parry Chance", s.parryChance);
+    write(1, L2++, "Block Chance", s.blockChance);
+    write(1, L2++, "Block Power", s.blockPower);
+
+    write(1, L2++, "Physical Res", s.physicalResistance);
+    write(1, L2++, "Fire Res", s.fireResistance);
+    write(1, L2++, "Ice Res", s.iceResistance);
+    write(1, L2++, "Lightning Res", s.lightningResistance);
+    write(1, L2++, "Poison Res", s.poisonResistance);
+    write(1, L2++, "Shadow Res", s.shadowResistance);
+
+    write(1, L2++, "Shield Eff Physical", s.shieldEfficiencyPhysical);
+    write(1, L2++, "Shield Eff Fire", s.shieldEfficiencyFire);
+    write(1, L2++, "Shield Eff Ice", s.shieldEfficiencyIce);
+    write(1, L2++, "Shield Eff Lightning", s.shieldEfficiencyLightning);
+    write(1, L2++, "Shield Eff Poison", s.shieldEfficiencyPoison);
+    write(1, L2++, "Shield Eff Shadow", s.shieldEfficiencyShadow);
+
+
+    // ============================
+    // UTILITY + META (colonne 3)
+    // ============================
+    write(2, L3++, "=== UTILITY ===", 0);
+
+    write(2, L3++, "Move Speed", s.moveSpeed);
+    write(2, L3++, "Move Speed Mult", s.moveSpeedMultiplier);
+
+    write(2, L3++, "Pickup Range", s.pickupRange);
+
+    write(2, L3++, "Loot Quantity", s.lootQuantity);
+    write(2, L3++, "Loot Quality", s.lootQuality);
+
+    write(2, L3++, "Currency Gain", s.currencyGain);
+    write(2, L3++, "XP Gain", s.xpGain);
+
+    write(2, L3++, "=== META ===", 0);
+
+    write(2, L3++, "Spirit Max", s.spiritMax);
+    write(2, L3++, "Spirit Regen", s.spiritRegen);
+    write(2, L3++, "Spirit Cost Reduction", s.spiritCostReduction);
+
+    write(2, L3++, "Energy Max", s.energyMax);
+    write(2, L3++, "Energy Regen", s.energyRegen);
+
+    write(2, L3++, "=== WEAPON Element ===", 0);
+    // ⭐ AJOUT : afficher l’élément actuel de l’arme (runtime)
+    write(2, L3++, "Element", player.runtime?.element ?? "physical");
+
 
     ctx.restore();
 }

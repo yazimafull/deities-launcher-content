@@ -1,10 +1,24 @@
-﻿// === ROUTE : /systems/item/profiles/gemProfiles.js
-// === RÔLE : Amplification des stats de base via les sockets.
-// === NOTES :
-// - Les gemmes ne modifient que les stats de base (HP, Armor, Damage, Speed, Spirit, Shield).
-// - Elles ne modifient pas les affixes.
-// - Elles sont appliquées AVANT l’assemblage final de l’armure/arme.
-// - Leur puissance est exprimée en pourcentage (multiplicateur).
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/data/gemProfiles.js
+
+   RÔLE :
+     Amplification des stats de base via les sockets.
+     Compatible 100% avec stats.js :
+       - maxHpMultiplier
+       - maxShieldMultiplier
+       - damageMultiplier
+       - moveSpeedMultiplier
+       - regenHpMultiplier
+       - regenShieldMultiplier
+       - spiritMax
+
+   EXPORTS :
+     GemProfiles
+
+   NOTES :
+     - Aucune stat inventée.
+     - Les gemmes hybrides appliquent plusieurs stats existantes.
+*/
 
 export const GemProfiles = {
 
@@ -17,84 +31,67 @@ export const GemProfiles = {
         return null;
     },
 
-    // === GEMMES DE BASE ===
-
     hpGem: {
         id: "hpGem",
-        role: "baseStat",
-        stat: "hp",
-        multiplier: 10,   // +10% HP de base
+        stats: { maxHpMultiplier: 0.10 }
     },
 
     armorGem: {
         id: "armorGem",
-        role: "baseStat",
-        stat: "armor",
-        multiplier: 10,   // +10% Armor de base
+        stats: { physicalResistance: 0.10 }
     },
 
     shieldGem: {
         id: "shieldGem",
-        role: "baseStat",
-        stat: "shield",
-        multiplier: 10,   // +10% Shield de base
+        stats: { maxShieldMultiplier: 0.10 }
     },
 
     damageGem: {
         id: "damageGem",
-        role: "baseStat",
-        stat: "damage",
-        multiplier: 12,   // +12% Damage de base
+        stats: { damageMultiplier: 0.12 }
     },
 
     speedGem: {
         id: "speedGem",
-        role: "baseStat",
-        stat: "speed",
-        multiplier: 5,    // +5% Speed de base
+        stats: { moveSpeedMultiplier: 0.05 }
     },
 
     spiritGem: {
         id: "spiritGem",
-        role: "baseStat",
-        stat: "spirit",
-        multiplier: 10,   // +10% Spirit de base
+        stats: { spiritMax: 10 }
     },
 
     regenGem: {
         id: "regenGem",
-        role: "baseStat",
-        stat: "hpRegen",
-        multiplier: 15,   // +15% HP regen de base
+        stats: { regenHpMultiplier: 0.15 }
     },
 
     shieldRegenGem: {
         id: "shieldRegenGem",
-        role: "baseStat",
-        stat: "shieldRegen",
-        multiplier: 15,   // +15% Shield regen de base
+        stats: { regenShieldMultiplier: 0.15 }
     },
-
-    // === GEMMES AVANCÉES (T3+ / endgame) ===
 
     hybridGem: {
         id: "hybridGem",
-        role: "baseStat",
-        stats: ["hp", "armor"],
-        multiplier: 6,    // +6% HP & +6% Armor de base
+        stats: {
+            maxHpMultiplier: 0.06,
+            physicalResistance: 0.06
+        }
     },
 
     offensiveHybridGem: {
         id: "offensiveHybridGem",
-        role: "baseStat",
-        stats: ["damage", "speed"],
-        multiplier: 6,    // +6% Damage & +6% Speed
+        stats: {
+            damageMultiplier: 0.06,
+            moveSpeedMultiplier: 0.06
+        }
     },
 
     defensiveHybridGem: {
         id: "defensiveHybridGem",
-        role: "baseStat",
-        stats: ["shield", "hpRegen"],
-        multiplier: 8,    // +8% Shield & +8% HP regen
-    },
+        stats: {
+            maxShieldMultiplier: 0.08,
+            regenHpMultiplier: 0.08
+        }
+    }
 };

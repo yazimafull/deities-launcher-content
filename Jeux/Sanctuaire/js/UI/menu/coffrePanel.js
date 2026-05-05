@@ -23,31 +23,25 @@ function buildTooltip(item) {
     let lines = [];
 
     // Nom
-    lines.
-    
-    
-    (item.name);
+    lines.push(item.name);
 
     // Stats
     if (item.stats) {
         for (const [key, value] of Object.entries(item.stats)) {
-            lines.
-            
-            
-            (formatStat(key, value));
+            lines.push(formatStat(key, value));
         }
     }
 
     // Affixes
     if (item.affixes) {
         for (const [key, value] of Object.entries(item.affixes)) {
-            lines.
-            (formatAffix(key, value));
+            lines.push(formatAffix(key, value));
         }
     }
 
     return lines.join("\n");
 }
+
 
 function formatStat(key, value) {
     const v = formatValue(value);

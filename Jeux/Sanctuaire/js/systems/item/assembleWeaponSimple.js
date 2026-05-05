@@ -1,7 +1,9 @@
 ﻿/*
    ROUTE : /systems/item/assembleWeaponSimple.js
-   RÔLE : Fusionner 2 à 3 pièces d’arme pour créer une arme craftée simple.
-   EXPORTS : assembleWeaponSimple
+   RÔLE :
+     Fusionner 2 à 3 pièces d’arme pour créer une arme craftée simple.
+   EXPORTS :
+     assembleWeaponSimple
 */
 
 export function assembleWeaponSimple(parts) {
@@ -9,9 +11,9 @@ export function assembleWeaponSimple(parts) {
     // === 1) Structure de l’arme finale ===
     const finalWeapon = {
         id: "crafted_weapon_" + crypto.randomUUID(),
-        type: "weapon",             // type global (catégorie)
-        slot: "weapon",             // slot unique
-        weaponType: "crafted",      // profil interne
+        type: "weapon",
+        slot: "weapon",
+        weaponType: "crafted",
         name: "Arme assemblée",
         icon: "icons/weapon_crafted.png",
 
@@ -20,14 +22,19 @@ export function assembleWeaponSimple(parts) {
 
         tier: 1,
         quality: "white",
-        source: "forge"
+        source: "forge",
+
+        // ⭐ Ajout : élément par défaut
+        element: "physical"
     };
 
     // === 2) Fusion des pièces ===
     for (const part of parts) {
         if (!part) continue;
 
-        // Stats
+        // -----------------------------
+        // FUSION DES STATS
+        // -----------------------------
         if (part.stats) {
             for (const stat in part.stats) {
                 finalWeapon.stats[stat] =
@@ -35,7 +42,9 @@ export function assembleWeaponSimple(parts) {
             }
         }
 
-        // Affixes
+        // -----------------------------
+        // FUSION DES AFFIXES
+        // -----------------------------
         if (part.affixes) {
             for (const affix in part.affixes) {
                 finalWeapon.affixes[affix] =
@@ -43,18 +52,31 @@ export function assembleWeaponSimple(parts) {
             }
         }
 
-        // Tier = max
+        // -----------------------------
+        // TIER = MAX
+        // -----------------------------
         if (part.tier) {
             finalWeapon.tier = Math.max(finalWeapon.tier, part.tier);
         }
 
-        // Qualité = bottleneck
+        // -----------------------------
+        // QUALITÉ = BOTTLENECK
+        // -----------------------------
         if (part.quality) {
             const order = ["white", "blue", "yellow", "purple", "orange"];
             if (order.indexOf(part.quality) < order.indexOf(finalWeapon.quality)) {
                 finalWeapon.quality = part.quality;
             }
         }
+        // -----------------------------
+        // ⭐ EXTRACTION DE L’ÉLÉMENT (UNIQUEMENT BLADE / TIP)
+        // -----------------------------
+        if (part.slot === "blade" || part.slot === "tip") {
+            if (part.element) {
+                finalWeapon.element = part.element;
+            }
+        }
+
     }
 
     // ============================================================
@@ -62,14 +84,16 @@ export function assembleWeaponSimple(parts) {
     // ============================================================
     const slots = parts.map(p => p.slot);
 
-    // ARC = frame + string + tip
-    if (slots.includes("frame") && slots.includes("string") && slots.includes("blade")) {
-        finalWeapon.weaponType = "bow";   // ton type interne
-        finalWeapon.type = "ranged";      // ⭐ OBLIGATOIRE pour le combatSystem
+    if (
+        slots.includes("frame") &&
+        slots.includes("string") &&
+        (slots.includes("blade") || slots.includes("tip"))
+    ) {
+        finalWeapon.weaponType = "bow";
+        finalWeapon.type = "ranged";
         finalWeapon.name = "Arc assemblé";
+        finalWeapon.icon = "icons/weapon_bow.png";
     }
-
-    // (plus tard : épée, hache, bâton, fusil, etc.)
 
     console.log("DEBUG ARME FINALE :", JSON.stringify(finalWeapon, null, 2));
 

@@ -1,70 +1,83 @@
-﻿// === ROUTE : /systems/item/profiles/itemProfiles.js
-// === RÔLE : Router central des profils d’items.
-// === EXPORTS : ItemProfiles
-// === NOTES :
-// - Chaque type d’item a son fichier de profils dédié.
-// - Ce fichier ne contient AUCUNE règle spécifique.
-// - Il délègue aux bons profils selon item.type.
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/systems/item/profiles/itemProfiles.js
 
-/*import { WeaponProfiles } from "./weaponProfiles.js";
+   RÔLE :
+     Router central des profils d’items.
+     Délègue automatiquement vers :
+       - weaponProfiles
+       - armorProfiles
+       - trinketProfiles
+       - gemProfiles (si un jour tu veux les router aussi)
+
+   PRINCIPES :
+     - AUCUNE logique métier ici.
+     - Ce fichier ne fait que rediriger vers le bon profil.
+     - Toute la logique est dans les fichiers dédiés.
+*/
+
+import { WeaponProfiles } from "./weaponProfiles.js";
 import { ArmorProfiles } from "./armorProfiles.js";
-import { TalismanProfiles } from "./talismanProfiles.js";
 import { TrinketProfiles } from "./trinketProfiles.js";
-//import { AffixStoneProfiles } from "./affixStoneProfiles.js";
+// import { TalismanProfiles } from "./talismanProfiles.js"; // pas utilisé actuellement
+// import { GemProfiles } from "./gemProfiles.js";           // optionnel si tu veux router les gemmes
 
 export const ItemProfiles = {
 
-    // Profil d’un item seul
+    /*
+       Profil d’un item seul
+       - item.type détermine quel fichier de profils est utilisé
+    */
     resolve(item) {
         switch (item.type) {
-            case "weapon": return WeaponProfiles.single(item);
-            case "armor": return ArmorProfiles.single(item);
-            case "talisman": return TalismanProfiles.single(item);
-            case "trinket": return TrinketProfiles.single(item);
-            //case "affixStone": return AffixStoneProfiles.single(item);
+
+            case "weapon":
+                return WeaponProfiles.single(item);
+
+            case "armor":
+                return ArmorProfiles.single(item);
+
+            case "trinket":
+                return TrinketProfiles.single(item);
+
+            // case "talisman":
+            //     return TalismanProfiles.single(item);
+
+            // case "gem":
+            //     return GemProfiles.single(item);
+
             default:
                 console.warn("Type d’item inconnu :", item.type);
                 return null;
         }
     },
 
-    // Profil d’une combinaison de deux items
+    /*
+       Profil d’une combinaison de deux items
+       - Seules les armes peuvent se combiner dans ton système actuel
+    */
     resolveCombined(itemA, itemB) {
-        // Les armes se combinent entre elles
+
+        // Armes → combinaison autorisée
         if (itemA.type === "weapon" && itemB.type === "weapon") {
             return WeaponProfiles.combined(itemA, itemB);
         }
 
-        // Les talismans peuvent se combiner entre eux (si tu veux)
-        if (itemA.type === "talisman" && itemB.type === "talisman") {
-            return TalismanProfiles.combined(itemA, itemB);
-        }
-
-        // Les pierres d’affixes peuvent se combiner avec n’importe quoi
-        /*if (itemA.type === "affixStone" || itemB.type === "affixStone") {
-            return AffixStoneProfiles.apply(itemA, itemB);
-        }
-
-        // Les trinkets (ring/amulette) ne se combinent pas entre eux
+        // Trinkets → jamais combinables
         if (itemA.type === "trinket" || itemB.type === "trinket") {
             return null;
         }
 
-        // Les armures ne se combinent pas entre elles
+        // Armures → jamais combinables
         if (itemA.type === "armor" || itemB.type === "armor") {
             return null;
         }
 
+        // Talismans (si un jour tu les actives)
+        // if (itemA.type === "talisman" && itemB.type === "talisman") {
+        //     return TalismanProfiles.combined(itemA, itemB);
+        // }
+
         console.warn("Combinaison non gérée :", itemA.type, itemB.type);
         return null;
     }
-};*/
-
-
-// === ITEM PROFILES TEMPORAIREMENT DÉSACTIVÉ ===
-// Ce fichier sera réactivé quand les profils d’items seront créés.
-
-export const ItemProfiles = {
-    resolve() { return null; },
-    resolveCombined() { return null; }
 };

@@ -62,6 +62,9 @@ import "../systems/combatSystem.js";
 import "../systems/damageSystem.js";
 import "../systems/deathSystem.js";
 
+//EFFECTS
+import "../systems/effects/index.js";
+
 // XP
 import "../systems/xp/runXP.js";
 import "../systems/xp/soulXP.js";

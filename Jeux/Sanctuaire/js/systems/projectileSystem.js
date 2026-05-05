@@ -1,14 +1,10 @@
 ﻿/*
    ROUTE : systems/projectileSystem.js
    RÔLE : Gestion des projectiles (spawn, update, collisions, draw)
-   NOTES :
-     - Compatible combatSystem (multi-shot, spread)
-     - Supporte : range, piercing, homing
-     - owner = joueur ou mob
-     - Les dégâts sont calculés via computeOffense() + computeDefense()
 */
 
 import { computeOffense, damageEnemy, damagePlayer } from "./damageSystem.js";
+import { applyElementalEffects } from "./effects/index.js";
 
 export const projectiles = [];
 
@@ -31,25 +27,31 @@ export function spawnProjectile(data) {
     if (x === undefined || y === undefined) return;
     if (vx === undefined || vy === undefined) return;
 
-    // ================================
-    // CALCUL DES DÉGÂTS AU SPAWN
-    // ================================
     let damagePacket = null;
+    let r = null;
 
     if (owner) {
+        r = owner.runtime ?? owner;
 
-        // Joueur ou mob → même système
-        const r = owner.runtime ?? owner;
-
+        // 1) Dégâts bruts
         damagePacket = computeOffense(r);
-
-        // Ajout du type élémentaire (important pour computeDefense)
         damagePacket.type = r.element ?? "physical";
+
+        // 2) Couleur par défaut selon élément
+        switch (damagePacket.type) {
+            case "fire":      damagePacket.projectileColor = "#ff6633"; break;
+            case "ice":       damagePacket.projectileColor = "#66ccff"; break;
+            case "lightning": damagePacket.projectileColor = "#ffff55"; break;
+            case "shadow":    damagePacket.projectileColor = "#cc66ff"; break;
+            case "poison":    damagePacket.projectileColor = "#66ff66"; break;
+            default:          damagePacket.projectileColor = "#ffe566"; break;
+        }
+
+        // 3) Effets élémentaires (DOT, slow, chain, poison…)
+        damagePacket = applyElementalEffects(r, damagePacket);
     }
 
-    projectiles.
-    
-    ({
+    projectiles.push({
         x,
         y,
         vx,
@@ -59,9 +61,10 @@ export function spawnProjectile(data) {
         size,
         piercing,
         homing,
-        owner,
+        owner: r,
         traveled: 0,
-        damagePacket
+        damagePacket,
+        color: damagePacket?.projectileColor ?? "#ffe566"
     });
 }
 
@@ -122,7 +125,6 @@ export function updateProjectiles(dt, player, enemies) {
 // ================================
 // COLLISIONS
 // ================================
-// 🔥 Ajout : onHit (callback optionnel) pour laisser l'engine gérer mort/XP/objectifs
 export function handleProjectileCollisions(player, enemies, onHit) {
 
     for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -147,10 +149,8 @@ export function handleProjectileCollisions(player, enemies, onHit) {
                 if (dist < minDist) {
 
                     if (onHit) {
-                        // L'engine décide quoi faire : dégâts, XP, objectifs, etc.
                         onHit(p, m);
                     } else {
-                        // Fallback : comportement par défaut (juste dégâts)
                         damageEnemy(m, p.damagePacket);
                     }
 
@@ -191,9 +191,10 @@ export function handleProjectileCollisions(player, enemies, onHit) {
 // ================================
 export function drawProjectiles(ctx) {
 
-    ctx.fillStyle = "#ffe566";
-
     for (const p of projectiles) {
+
+        ctx.fillStyle = p.color ?? "#ffe566";
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
         ctx.fill();

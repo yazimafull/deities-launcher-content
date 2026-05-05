@@ -99,10 +99,7 @@ function generateTrees() {
                 y > MAP_ROWS - BORDER_SIZE;
 
             if (border || Math.random() < 0.15) {
-                trees.
-                
-                
-                ({
+                trees.push({
                     x: x * TILE_SIZE + rand(4, TILE_SIZE - 4),
                     y: y * TILE_SIZE + rand(4, TILE_SIZE - 4),
                     r: rand(14, 32),
@@ -112,7 +109,7 @@ function generateTrees() {
             }
         }
     }
-}
+}    
 
 // ================================
 // UPDATE (FADE UNIQUEMENT)

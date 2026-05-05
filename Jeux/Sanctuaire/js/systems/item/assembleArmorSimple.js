@@ -1,13 +1,14 @@
 ﻿/*
    ROUTE : /systems/item/assembleArmorSimple.js
-   RÔLE : Fusionner plusieurs pièces d’armure en une armure craftée simple.
-   EXPORTS : assembleArmorSimple
-   DÉPENDANCES : Aucune directe (reçoit des pièces déjà formatées).
+   RÔLE :
+     Fusionner plusieurs pièces d’armure en une armure craftée simple.
+   EXPORTS :
+     assembleArmorSimple
    NOTES :
      - Stats et affixes fusionnés sous forme d’objets (cohérent avec tout le jeu).
      - Produit un item final compatible pylône / inventaire / tooltip.
-     - Tier = max des pièces, qualité = bottleneck.
-     - Le slot final est "armor" (armure complète).
+     - Tier = max des pièces.
+     - Qualité = bottleneck (white < blue < yellow < purple < orange).
 */
 
 export function assembleArmorSimple(pieces) {
@@ -15,17 +16,17 @@ export function assembleArmorSimple(pieces) {
     // === 1) Structure de l’armure finale ===
     const finalArmor = {
         id: "crafted_armor_" + crypto.randomUUID(),
-        type: "armor",              // ✔ type global
-        slot: "armor",              // ✔ armure complète (pas helmet/chest/etc.)
-        armorType: "crafted",       // ✔ utile plus tard pour les profils
+        type: "armor",
+        slot: "armor",          // armure complète
+        armorType: "crafted",
         name: "Armure assemblée",
         icon: "icons/armor_crafted.png",
 
-        stats: {},                  // ✔ fusion des stats
-        affixes: {},                // ✔ fusion des affixes
+        stats: {},              // fusion additive
+        affixes: {},            // fusion additive
 
-        tier: 1,                    // ✔ max des pièces
-        quality: "white",           // ✔ bottleneck
+        tier: 1,
+        quality: "white",
         source: "forge"
     };
 
@@ -62,7 +63,6 @@ export function assembleArmorSimple(pieces) {
 
         /* -----------------------------
            QUALITÉ = BOTTLENECK
-           (white < blue < yellow < purple < orange)
         ------------------------------ */
         if (piece.quality) {
             const order = ["white", "blue", "yellow", "purple", "orange"];
@@ -71,7 +71,9 @@ export function assembleArmorSimple(pieces) {
             }
         }
     }
+
+    // === DEBUG OPTIONNEL ===
     console.log("DEBUG ARMURE FINALE :", JSON.stringify(finalArmor, null, 2));
-    // === 3) Retour de l’armure finale ===
+
     return finalArmor;
 }

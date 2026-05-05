@@ -72,6 +72,7 @@ export function initPlayer(x, y, character = null) {
     if (character) {
         Object.assign(player, character);
     }
+    player.activeElement = null; // fire / ice / lightning / physical
 
     // 1) Calcul des stats finales
     updatePlayerStats();
@@ -108,6 +109,9 @@ export function resetPlayer() {
     player.equipment.armor = null;
     player.equipment.trinkets = [];
 
+    // Élément actif par défaut
+    player.activeElement = "physical";
+
     // Reset sources runtime
     player.trinkets = [];
     player.buffs = [];
@@ -124,6 +128,7 @@ export function resetPlayer() {
     player.hp = player.stats.maxHp;
     player.shield = player.stats.maxShield;
 }
+
 
 // ================================
 // CALCUL DES STATS FINALES

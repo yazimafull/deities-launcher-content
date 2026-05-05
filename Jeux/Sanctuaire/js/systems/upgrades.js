@@ -5,36 +5,28 @@
      Ne modifie JAMAIS directement hp/shield/stats runtime.
      Ajoute uniquement des buffs (Stats Registry) puis déclenche updatePlayerStats().
 
-   EXPORTS :
-     - allUpgrades (liste des upgrades disponibles)
-
-   DÉPENDANCES :
-     - player (state du joueur)
-     - updatePlayerStats() (rebuild complet des stats finales)
-     - Stats.js (registre central des stats autorisées)
-
-   NOTES :
-     - Toute stat modifiée doit exister dans Stats.js.
-     - Tous les upgrades passent par addBuff() → cohérence totale.
+   IMPORTANT :
+     - Le moteur lit l’élément depuis player.equipment.weapon.element
+       → donc les upgrades élémentaires doivent modifier l’arme, PAS player.element.
 */
 
 import {
     player,
     updatePlayerStats
 } from "./player/player.js";
+import { applyPlayerRuntimeStats } from "./player/playerRuntimeSystem.js";
+
 
 // ================================
 // HELPERS
 // ================================
 function addBuff(id, value, source = "upgrade") {
-    player.buffs.
-    
-    
-    ({
+    player.buffs.push({
         stats: { [id]: value },
         source
     });
 }
+
 
 // ================================
 // UPGRADES LIST
@@ -49,8 +41,16 @@ export const allUpgrades = [
         name: "Feu - brûlure",
         type: "element",
         apply() {
-            player.element = "fire";
+
+            // 🔥 CORRECTION :
+            // Avant : player.element = "fire"; (inutile, jamais lu par le moteur)
+            // Maintenant : on modifie l’ARME, car le runtime lit weapon.element.
+            if (player.equipment?.weapon) {
+                player.equipment.weapon.element = "fire";
+            }
+
             updatePlayerStats();
+            applyPlayerRuntimeStats(player);
         }
     },
 
@@ -59,8 +59,14 @@ export const allUpgrades = [
         name: "Glace - ralentissement",
         type: "element",
         apply() {
-            player.element = "ice";
+
+            // ❄️ Même correction que Fire
+            if (player.equipment?.weapon) {
+                player.equipment.weapon.element = "ice";
+            }
+
             updatePlayerStats();
+            applyPlayerRuntimeStats(player);
         }
     },
 
@@ -69,8 +75,14 @@ export const allUpgrades = [
         name: "Foudre - surcharge",
         type: "element",
         apply() {
-            player.element = "lightning";
+
+            // ⚡ Même correction que Fire
+            if (player.equipment?.weapon) {
+                player.equipment.weapon.element = "lightning";
+            }
+
             updatePlayerStats();
+            applyPlayerRuntimeStats(player);
         }
     },
 
@@ -82,17 +94,17 @@ export const allUpgrades = [
         name: "+20% vitesse",
         type: "stat",
         apply() {
-            addBuff("moveSpeed", 0.20);
+            addBuff("moveSpeed", 20);
             updatePlayerStats();
         }
     },
 
     {
         id: "damage_up",
-        name: "+20% dégâts",
+        name: "+2 dégâts",
         type: "stat",
         apply() {
-            addBuff("attackDamage", 0.20);
+            addBuff("damage", 2);
             updatePlayerStats();
         }
     },

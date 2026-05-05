@@ -12,13 +12,21 @@
    NOTES :
      - Les recettes produisent des “pièces” (weaponPiece, armorPiece)
        qui seront ensuite assemblées via l’Assembleur.
-     - Les stats définies ici sont des valeurs brutes ajoutées à l’item crafté.
+     - Les stats définies ici doivent correspondre à stats.js.
 */
 
 export const ForgeRecipes = {
 
     /* ======================================================
-       ARMES (3 pièces : blade, hilt, core)
+       ARMES (3 pièces : blade, frame, string)
+       Stats autorisées :
+         - damage
+         - attackSpeed
+         - attackRange
+         - projectileSpeed
+         - projectileRange
+         - projectileCount
+         - critChance
     ====================================================== */
 
     basicSword: {
@@ -31,10 +39,11 @@ export const ForgeRecipes = {
         result: {
             type: "weaponPiece",
             slot: "blade",
-            affixes: { critChance: 0.05 },
+            element: "physical",
+            affixes: { critChance: 1 }, // +1% crit
             stats: {
-                attackDamage: 6,
-                attackSpeed: 0.05
+                damage: 6,
+                attackSpeed: 0.05 // +5% vitesse d’attaque
             }
         }
     },
@@ -49,11 +58,12 @@ export const ForgeRecipes = {
         result: {
             type: "weaponPiece",
             slot: "blade",
-            affixes: { critChance: 0.05 },
+            element: "ice",
+            affixes: { critChance: 2 }, // +2% crit
             stats: {
-                attackDamage: 10,
-                critChance: 0.05,
-                element: "arcane"
+                damage: 10,
+                attackSpeed: 0.05, // +5%
+                attackRange: 20    // +20 portée
             }
         }
     },
@@ -68,14 +78,13 @@ export const ForgeRecipes = {
         result: {
             type: "weaponPiece",
             slot: "frame",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                attackRange: 120,
-                projectileRange: 300
+                attackRange: 120,     // portée d’attaque
+                projectileRange: 300  // portée du projectile
             }
         }
     },
-
 
     arcString: {
         id: "arcString",
@@ -86,26 +95,27 @@ export const ForgeRecipes = {
         result: {
             type: "weaponPiece",
             slot: "string",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                attackSpeed: 0.10,
-                projectileSpeed: 350
+                attackSpeed: 0.10,    // +10% vitesse d’attaque
+                projectileSpeed: 350  // vitesse du projectile
             }
         }
     },
 
     arcTip: {
         id: "arcTip",
-        name: "Embout d’arc",
+        name: "Embout d’arc",        
         cost: [
             { id: "iron_fragment", qty: 2 }
         ],
         result: {
             type: "weaponPiece",
             slot: "blade",
-            affixes: { critChance: 0.05 },
+            element: "fire",
+            affixes: {},
             stats: {
-                attackDamage: 4,
+                damage: 4,
                 projectileCount: 1
             }
         }
@@ -114,6 +124,14 @@ export const ForgeRecipes = {
 
     /* ======================================================
        ARMURES (6 pièces : helmet, chest, gloves, boots, pants, shoulders)
+       Stats autorisées :
+         - maxHp
+         - maxShield
+         - regenHp
+         - regenShield
+         - moveSpeed
+         - resistances (physical/fire/ice/lightning/poison/shadow)
+         - dodgeChance / parryChance / blockChance / blockPower
     ====================================================== */
 
     armor_helmet: {
@@ -124,13 +142,12 @@ export const ForgeRecipes = {
             { id: "wood_piece", qty: 1 }
         ],
         result: {
-            id: "armor_helmet",
             type: "armorPiece",
             slot: "helmet",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                armor: 3,
-                maxHp: 20
+                maxHp: 20,
+                physicalResistance: 0.02 // +2%
             }
         }
     },
@@ -143,13 +160,13 @@ export const ForgeRecipes = {
             { id: "wood_piece", qty: 2 }
         ],
         result: {
-            id: "armor_chest",
             type: "armorPiece",
             slot: "chest",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                armor: 6,
-                maxHp: 40
+                maxHp: 40,
+                moveSpeed: 20, 
+                physicalResistance: 0.04
             }
         }
     },
@@ -162,20 +179,16 @@ export const ForgeRecipes = {
             { id: "wood_piece", qty: 2 }
         ],
         result: {
-            id: "armor_legs",
             type: "armorPiece",
             slot: "pants",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                armor: 4,
-                maxHp: 30
+                maxHp: 30,
+                moveSpeed: 20,
+                physicalResistance: 0.03
             }
         }
     },
-
-    /* ======================================================
-       NOUVEAU : BOTTES AVEC MOVE SPEED
-    ====================================================== */
 
     armor_boots: {
         id: "armor_boots",
@@ -185,22 +198,17 @@ export const ForgeRecipes = {
             { id: "wood_piece", qty: 1 }
         ],
         result: {
-            id: "armor_boots",
             type: "armorPiece",
             slot: "boots",
-            affixes: { critChance: 0.05 },
+            affixes: {},
             stats: {
-                armor: 2,
                 maxHp: 10,
-                moveSpeed: 120   // ⭐ vitesse de déplacement
+                moveSpeed: 40
             }
         }
     },
 
-    /* ======================================================
-       TU PEUX AJOUTER PLUS TARD :
-       armor_gloves, armor_shoulders
-    ====================================================== */
-
+    // Tu pourras ajouter :
+    // armor_gloves
+    // armor_shoulders
 };
-

@@ -1,11 +1,18 @@
 ﻿/*
-   ROUTE : playerRuntimeSystem.js
+   ROUTE : Jeux/Sanctuaire/js/systems/player/playerRuntimeSystem.js
+
    RÔLE :
-     - Copier player.stats → player.runtime
-     - Appliquer HP / Shield runtime
-     - Définir l’élément de l’arme
-     - Régénération HP / Shield
-     - AUCUNE logique de dégâts
+     Convertir les stats finales (player.stats) en valeurs runtime prêtes pour le moteur :
+       - HP / Shield runtime (max, regen, clamp)
+       - Copie 1:1 de toutes les stats dans player.runtime
+       - Définition de l’élément d’arme (physical par défaut)
+       - Régénération HP / Shield frame-by-frame
+
+   PRINCIPES :
+     - AUCUNE logique de dégâts ici
+     - AUCUNE modification des stats finales
+     - Runtime = valeurs prêtes à l’usage immédiat par le moteur
+     - player.stats = source de vérité (calculé par playerStatsSystem)
 */
 
 export function applyPlayerRuntimeStats(player) {
@@ -36,18 +43,21 @@ export function applyPlayerRuntimeStats(player) {
     }
 
     // ============================
-    // TYPE ÉLÉMENTAIRE DE L’ARME
+    // TYPE ÉLÉMENTAIRE DE L’ARME / JOUEUR
     // ============================
     const w = player.equipment?.weapon;
 
+    // priorité : arme → élément actif → physical
     if (w && w.element) {
         r.element = w.element;
+    } else if (player.activeElement) {
+        r.element = player.activeElement;
     } else {
         r.element = "physical";
     }
+
+
 }
-
-
 
 // ================================
 // HP REGEN

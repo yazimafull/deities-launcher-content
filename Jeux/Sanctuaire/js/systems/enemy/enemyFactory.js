@@ -143,36 +143,58 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
         hp: mob.hp,
         maxHp: mob.maxHp,
 
-        // Dégâts
-        attackDamage: mob.damage,
+        // === Offense ===
+        damage: mob.damage, // utilisé par computeOffense
+        critChance: base.stats.critChance ?? 0,
+        critMultiplier: base.stats.critMultiplier ?? 1.5,
 
-        // Cooldown d’attaque
+        // Dégâts élémentaires
+        physicalDamage: base.stats.physicalDamage ?? 0,
+        fireDamage: base.stats.fireDamage ?? 0,
+        iceDamage: base.stats.iceDamage ?? 0,
+        lightningDamage: base.stats.lightningDamage ?? 0,
+        poisonDamage: base.stats.poisonDamage ?? 0,
+        shadowDamage: base.stats.shadowDamage ?? 0,
+
+        // Multiplicateurs élémentaires
+        physicalDamageMultiplier: base.stats.physicalDamageMultiplier ?? 0,
+        fireDamageMultiplier: base.stats.fireDamageMultiplier ?? 0,
+        iceDamageMultiplier: base.stats.iceDamageMultiplier ?? 0,
+        lightningDamageMultiplier: base.stats.lightningDamageMultiplier ?? 0,
+        poisonDamageMultiplier: base.stats.poisonDamageMultiplier ?? 0,
+        shadowDamageMultiplier: base.stats.shadowDamageMultiplier ?? 0,
+
+        // === Défense ===
+        physicalResistance: base.stats.physicalResistance ?? 0,
+        fireResistance: base.stats.fireResistance ?? 0,
+        iceResistance: base.stats.iceResistance ?? 0,
+        lightningResistance: base.stats.lightningResistance ?? 0,
+        poisonResistance: base.stats.poisonResistance ?? 0,
+        shadowResistance: base.stats.shadowResistance ?? 0,
+
+        // === Élément du mob ===
+        element: base.element ?? "physical",
+
+        // === Combat ===
         attackCooldownMs: base.stats.attackCooldownMs ?? range.damageCd,
-
-        // Portée melee
         meleeRange: mob.meleeRange,
-
-        // Portée d’aggro
         aggroRange: mob.aggroRange,
 
-        // Vitesse
+        // === Mouvement ===
         moveSpeed: mob.speed,
 
-        // Taille
+        // === Taille ===
         size: mob.size,
 
-        // Ranged (si jamais un mob en a)
+        // === Ranged (si un mob en a) ===
         projectileSpeed: base.stats.projectileSpeed ?? 0,
         projectileRange: base.stats.projectileRange ?? 0,
 
-        // Cadence
+        // === Cadence ===
         attackSpeed: base.stats.attackSpeed ?? 0,
-        attackSpeedMultiplier: base.stats.attackSpeedMultiplier ?? 0,
-
-        // Élémentaire
-        elementalDamage: base.stats.elementalDamage ?? 0,
-        elementalDamageMultiplier: base.stats.elementalDamageMultiplier ?? 0
+        attackSpeedMultiplier: base.stats.attackSpeedMultiplier ?? 0
     };
+
 
     return mob;
 }

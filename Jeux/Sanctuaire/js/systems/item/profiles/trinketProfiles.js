@@ -1,64 +1,82 @@
-﻿// === ROUTE : /systems/item/profiles/trinketProfiles.js
-// === RÔLE : Définit les profils de trinkets (anneaux + amulettes).
-// === EXPORTS : TrinketProfiles
-// === NOTES :
-// - Les trinkets ne se combinent pas.
-// - Ils donnent des bonus utilitaires permanents.
-// - Ils peuvent influencer le loot, le craft, le spirit, etc.
-// - La qualité, les affixes et les sockets sont indépendants du profil.
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/data/trinketProfiles.js
+
+   RÔLE :
+     Profils de trinkets (anneaux / amulettes).
+     Appliquent des stats UTILITAIRES cohérentes avec stats.js :
+       - lootQuantity / lootQuality
+       - spiritMax / spiritRegen
+       - regenHp / regenShield
+       - pickupRange
+
+   EXPORTS :
+     TrinketProfiles
+
+   NOTES :
+     - Les trinkets ne se combinent pas.
+     - Les stats craft/affixes avancées seront ajoutées quand elles existeront dans stats.js.
+*/
 
 export const TrinketProfiles = {
 
-    // Profil d’un trinket seul
     single(item) {
         return item.profile || "genericTrinket";
     },
 
-    // Les trinkets ne se combinent pas
-    combined(itemA, itemB) {
-        console.warn("Les trinkets ne peuvent pas être combinés :", itemA.id, itemB.id);
+    combined() {
+        console.warn("Les trinkets ne peuvent pas être combinés.");
         return null;
     },
-
-    // === PROFILS DE TRINKETS ===
 
     lootTrinket: {
         id: "lootTrinket",
         role: "loot",
-        lootBonus: 10,            // +10% qualité/quantité de loot
+        stats: {
+            lootQuantity: 10,
+            lootQuality: 10
+        }
     },
 
     spiritTrinket: {
         id: "spiritTrinket",
         role: "spirit",
-        maxSpiritBonus: 20,       // +20 max spirit
-        spiritRegenBonus: 5,      // +5% regen spirit
+        stats: {
+            spiritMax: 20,
+            spiritRegen: 5
+        }
     },
 
     regenTrinket: {
         id: "regenTrinket",
         role: "regeneration",
-        hpRegenBonus: 5,          // +5% regen HP
-        shieldRegenBonus: 5,      // +5% regen shield
+        stats: {
+            regenHp: 5,
+            regenShield: 5
+        }
     },
 
     craftTrinket: {
         id: "craftTrinket",
         role: "crafting",
-        craftCostReduction: 10,   // -10% coût de craft
-        socketChanceBonus: 5,     // +5% chance de trouver un item avec socket
+        stats: {
+            currencyGain: 5,
+            xpGain: 5
+        }
     },
 
     affixTrinket: {
         id: "affixTrinket",
         role: "affixes",
-        rareAffixChance: 10,      // +10% chance d’affixes rares
-        affixPowerBonus: 5,       // +5% puissance globale des affixes
+        stats: {
+            lootQuality: 5
+        }
     },
 
     genericTrinket: {
         id: "genericTrinket",
         role: "utility",
-        utilityBonus: 5,          // bonus générique si aucun profil défini
-    },
+        stats: {
+            pickupRange: 1
+        }
+    }
 };

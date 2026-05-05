@@ -130,7 +130,6 @@ function createPanel() {
     overlay.appendChild(panel);
     document.body.appendChild(overlay);
 }
-
 /* ======================================================
    UI ASSEMBLAGE
 ====================================================== */
@@ -166,10 +165,7 @@ function createAssemblyUI() {
 
     WEAPON_SLOT_TYPES.forEach(type => {
         const slot = createSlot(type);
-        weaponSlots.
-        
-        
-        (slot);
+        weaponSlots.push(slot);
         weaponGrid.appendChild(slot);
     });
 
@@ -189,10 +185,7 @@ function createAssemblyUI() {
 
     ARMOR_SLOT_TYPES.forEach(type => {
         const slot = createSlot(type);
-        armorSlots.
-        
-        
-        (slot);
+        armorSlots.push(slot);
         armorGrid.appendChild(slot);
     });
 
@@ -234,11 +227,6 @@ function createAssemblyUI() {
     container.appendChild(rightCol);
     assembleSection.appendChild(container);
 }
-
-
-
-
-
 /* ======================================================
    SLOT
 ====================================================== */
@@ -264,7 +252,6 @@ function createSlot(slotType) {
 
     return slot;
 }
-
 
 /* ======================================================
    SÉLECTEUR D’ITEMS
@@ -311,7 +298,7 @@ function openForgeItemSelector(targetSlot) {
 
             document.body.removeChild(selectorOverlay);
 
-            updateAssemblySummary(); // 🔥 mise à jour au bon endroit
+            updateAssemblySummary();
         };
 
         selector.appendChild(row);
@@ -364,7 +351,6 @@ function assembleItems() {
         updateSlotVisual(s, null);
     });
 
-    // Mise à jour du récap dynamique
     updateAssemblySummary();
 }
 
@@ -433,7 +419,6 @@ function refreshPanel() {
         row.style.display = "flex";
         row.style.flexDirection = "column";
 
-        // Tooltip propre
         row.onmouseenter = () => {
             const stats = Object.entries(recipe.result.stats)
                 .map(([k, v]) => formatStat(k, v))
@@ -442,13 +427,11 @@ function refreshPanel() {
             row.title = stats || "Aucune statistique";
         };
 
-        // Nom
         const label = document.createElement("div");
         label.textContent = recipe.name;
         label.style.fontSize = "18px";
         row.appendChild(label);
 
-        // Coût
         const costDiv = document.createElement("div");
         costDiv.style.marginBottom = "8px";
 
@@ -462,7 +445,6 @@ function refreshPanel() {
 
         row.appendChild(costDiv);
 
-        // Bouton forger
         const craftBtn = document.createElement("button");
         craftBtn.textContent = "Forger";
         craftBtn.classList.add("btn");
@@ -502,4 +484,3 @@ export function openForgePanel() {
 export function closeForgePanel() {
     if (overlay) overlay.style.display = "none";
 }
-

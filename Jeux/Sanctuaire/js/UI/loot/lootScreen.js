@@ -17,32 +17,31 @@ let breakdownContainer;
 let btnContinue;
 let btnReturn;
 
+// ============================================================================
+// INITIALISATION
+// ============================================================================
 export function initLootScreen() {
 
-    // Récupération des éléments DOM
-    lootScreen        = document.getElementById("loot-screen");
-    soulXPLine        = document.getElementById("loot-soulxp");
-    goldLine          = document.getElementById("loot-gold");
-    itemsContainer    = document.getElementById("loot-items");
-    breakdownContainer= document.getElementById("loot-breakdown");
+    lootScreen         = document.getElementById("loot-screen");
+    soulXPLine         = document.getElementById("loot-soulxp");
+    goldLine           = document.getElementById("loot-gold");
+    itemsContainer     = document.getElementById("loot-items");
+    breakdownContainer = document.getElementById("loot-breakdown");
 
-    btnContinue       = document.getElementById("loot-continue");
-    btnReturn         = document.getElementById("loot-return");
+    btnContinue        = document.getElementById("loot-continue");
+    btnReturn          = document.getElementById("loot-return");
 
     if (!lootScreen) {
         console.error("❌ loot-screen introuvable dans le DOM");
         return;
     }
 
-    // ========================================================================
-    // BOUTON : CONTINUER LA RUN (niveau suivant)
-    // ========================================================================
+    // CONTINUER LA RUN
     btnContinue?.addEventListener("click", () => {
 
         lootScreen.classList.add("hidden");
         window.dispatchEvent(new CustomEvent("game:resume"));
 
-        // Si on a une config de run précédente → on enchaîne
         if (window.lastRunConfig) {
             const nextConfig = structuredClone(window.lastRunConfig);
             nextConfig.difficulty = (nextConfig.difficulty ?? 1) + 1;
@@ -50,9 +49,7 @@ export function initLootScreen() {
         }
     });
 
-    // ========================================================================
-    // BOUTON : RETOUR SANCTUAIRE (validation + retour)
-    // ========================================================================
+    // RETOUR SANCTUAIRE
     btnReturn?.addEventListener("click", () => {
         lootScreen.classList.add("hidden");
         returnToSanctuary();
@@ -63,16 +60,6 @@ export function initLootScreen() {
 
 // ============================================================================
 // OUVERTURE DU PANNEAU DE LOOT
-//   - rewards est fourni par runManager.boss:dead
-//   - structure attendue :
-//       {
-//         gold,
-//         items,
-//         soulXP,
-//         difficulty,
-//         runChain,
-//         levelLootBonus
-//       }
 // ============================================================================
 export function openLootScreen(rewards) {
 
@@ -87,31 +74,20 @@ export function openLootScreen(rewards) {
         levelLootBonus = 0
     } = rewards || {};
 
-    // =========================================================================
-    // 1) XP D’ÂME
-    // =========================================================================
+    // XP D’ÂME
     soulXPLine.textContent = `XP d'âme gagnée : ${soulXP}`;
 
-    // =========================================================================
-    // 2) OR
-    // =========================================================================
+    // OR
     goldLine.textContent = `Or gagné : ${gold}`;
 
-    // =========================================================================
-    // 3) BREAKDOWN / INFOS DE RUN
-    // =========================================================================
-    if (breakdownContainer) {
-        breakdownContainer.innerHTML = `
-            <div class="break-line">Difficulté : ${difficulty}</div>
-            <div class="break-line">Enchaînement de runs : x${runChain}</div>
-            <div class="break-line">Bonus de niveau (timer) : +${levelLootBonus}%</div>
-        `;
-        breakdownContainer.classList.remove("hidden");
-    }
+    // BREAKDOWN
+    breakdownContainer.innerHTML = `
+        <div class="break-line">Difficulté : ${difficulty}</div>
+        <div class="break-line">Enchaînement de runs : x${runChain}</div>
+        <div class="break-line">Bonus de niveau (timer) : +${levelLootBonus}%</div>
+    `;
 
-    // =========================================================================
-    // 4) ITEMS
-    // =========================================================================
+    // ITEMS
     itemsContainer.innerHTML = "";
 
     if (items.length > 0) {
@@ -125,9 +101,7 @@ export function openLootScreen(rewards) {
         itemsContainer.textContent = "Aucun objet trouvé.";
     }
 
-    // =========================================================================
-    // 5) AFFICHAGE DU PANNEAU + PAUSE
-    // =========================================================================
+    // AFFICHAGE + PAUSE
     lootScreen.classList.remove("hidden");
     window.dispatchEvent(new CustomEvent("game:pause"));
 

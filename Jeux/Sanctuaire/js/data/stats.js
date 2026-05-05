@@ -18,123 +18,119 @@ export const Stats = {
     // 🟥 OFFENSIF
     // ============================
 
-    attackDamage: { id: "attackDamage", category: "offense", type: "additive", description: "Dégâts universels." },
-    attackDamageMultiplier: { id: "attackDamageMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de dégâts." },
+    // Base universelle (ex-attackDamage)
+    damage: { id: "damage", category: "offense", type: "additive", description: "Dégâts universels." },
+    damageMultiplier: { id: "damageMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de dégâts." },
 
-    attackSpeed: { id: "attackSpeed", category: "offense", type: "additive", description: "Vitesse d'attaque (flat)." },
-    attackSpeedMultiplier: { id: "attackSpeedMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de vitesse d'attaque." },
+    // Dégâts élémentaires séparés
+    physicalDamage: { id: "physicalDamage", category: "offense", type: "additive", description: "Dégâts physiques." },
+    fireDamage: { id: "fireDamage", category: "offense", type: "additive", description: "Dégâts de feu." },
+    iceDamage: { id: "iceDamage", category: "offense", type: "additive", description: "Dégâts de glace." },
+    lightningDamage: { id: "lightningDamage", category: "offense", type: "additive", description: "Dégâts de foudre." },
+    shadowDamage: { id: "shadowDamage", category: "offense", type: "additive", description: "Dégâts d'ombre." },
+    poisonDamage: { id: "poisonDamage", category: "offense", type: "additive", description: "Dégâts de poison." },
 
-    attackRange: { id: "attackRange", category: "offense", type: "additive", description: "Portée d'attaque." },
-    attackRangeMultiplier: { id: "attackRangeMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de portée." },
+    physicalDamageMultiplier: { id: "physicalDamageMultiplier", category: "offense", type: "multiplicative" },
+    fireDamageMultiplier: { id: "fireDamageMultiplier", category: "offense", type: "multiplicative" },
+    iceDamageMultiplier: { id: "iceDamageMultiplier", category: "offense", type: "multiplicative" },
+    lightningDamageMultiplier: { id: "lightningDamageMultiplier", category: "offense", type: "multiplicative" },
+    shadowDamageMultiplier: { id: "shadowDamageMultiplier", category: "offense", type: "multiplicative" },
+    poisonDamageMultiplier: { id: "poisonDamageMultiplier", category: "offense", type: "multiplicative" },
 
-    projectileSpeed: { id: "projectileSpeed", category: "offense", type: "additive", description: "Vitesse des projectiles." },
-    projectileSpeedMultiplier: { id: "projectileSpeedMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de vitesse des projectiles." },
-
-    projectileRange: { id: "projectileRange", category: "offense", type: "additive", description: "Portée des projectiles." },
-    projectileRangeMultiplier: { id: "projectileRangeMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de portée des projectiles." },
-
-    projectileCount: { id: "projectileCount", category: "offense", type: "additive", description: "Nombre de projectiles." },
-    projectileCountMultiplier: { id: "projectileCountMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de projectiles." },
-
+    // Critiques
     critChance: { id: "critChance", category: "offense", type: "additive", description: "Chance de critique." },
-    critChanceMultiplier: { id: "critChanceMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de chance de critique." },
+    critChanceMultiplier: { id: "critChanceMultiplier", category: "offense", type: "multiplicative" },
 
     critMultiplier: { id: "critMultiplier", category: "offense", type: "additive", description: "Multiplicateur critique de base." },
-    critMultiplierMultiplier: { id: "critMultiplierMultiplier", category: "offense", type: "multiplicative", description: "Bonus % au multiplicateur critique." },
+    critMultiplierMultiplier: { id: "critMultiplierMultiplier", category: "offense", type: "multiplicative" },
 
-    elementalDamage: { id: "elementalDamage", category: "offense", type: "additive", description: "Dégâts élémentaires." },
-    elementalDamageMultiplier: { id: "elementalDamageMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de dégâts élémentaires." },
+    // Projectiles
+    projectileSpeed: { id: "projectileSpeed", category: "offense", type: "additive" },
+    projectileSpeedMultiplier: { id: "projectileSpeedMultiplier", category: "offense", type: "multiplicative" },
 
-    dotDamage: { id: "dotDamage", category: "offense", type: "additive", description: "Dégâts sur la durée." },
-    dotDamageMultiplier: { id: "dotDamageMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de dégâts sur la durée." },
+    projectileRange: { id: "projectileRange", category: "offense", type: "additive" },
+    projectileRangeMultiplier: { id: "projectileRangeMultiplier", category: "offense", type: "multiplicative" },
 
-    dotDuration: { id: "dotDuration", category: "offense", type: "additive", description: "Durée des DOT." },
-    dotDurationMultiplier: { id: "dotDurationMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de durée des DOT." },
+    projectileCount: { id: "projectileCount", category: "offense", type: "additive" },
+    projectileCountMultiplier: { id: "projectileCountMultiplier", category: "offense", type: "multiplicative" },
+
+    // DOT
+    dotDamage: { id: "dotDamage", category: "offense", type: "additive" },
+    dotDamageMultiplier: { id: "dotDamageMultiplier", category: "offense", type: "multiplicative" },
+
+    dotDuration: { id: "dotDuration", category: "offense", type: "additive" },
+    dotDurationMultiplier: { id: "dotDurationMultiplier", category: "offense", type: "multiplicative" },
+
+
+    attackSpeed: { id: "attackSpeed", category: "offense", type: "additive" },
+    attackSpeedMultiplier: { id: "attackSpeedMultiplier", category: "offense", type: "multiplicative" },
+
+    attackRange: { id: "attackRange", category: "offense", type: "additive" },
+    attackRangeMultiplier: { id: "attackRangeMultiplier", category: "offense", type: "multiplicative" },
 
 
     // ============================
     // 🟩 DÉFENSIF
     // ============================
 
-    maxHp: { id: "maxHp", category: "defense", type: "additive", description: "PV max." },
-    maxHpMultiplier: { id: "maxHpMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de PV max." },
+    maxHp: { id: "maxHp", category: "defense", type: "additive" },
+    maxHpMultiplier: { id: "maxHpMultiplier", category: "defense", type: "multiplicative" },
 
-    regenHp: { id: "regenHp", category: "defense", type: "additive", description: "Régénération de vie." },
-    regenHpMultiplier: { id: "regenHpMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de régénération de vie." },
+    regenHp: { id: "regenHp", category: "defense", type: "additive" },
+    regenHpMultiplier: { id: "regenHpMultiplier", category: "defense", type: "multiplicative" },
 
-    maxShield: { id: "maxShield", category: "defense", type: "additive", description: "Bouclier max." },
-    maxShieldMultiplier: { id: "maxShieldMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de bouclier max." },
+    maxShield: { id: "maxShield", category: "defense", type: "additive" },
+    maxShieldMultiplier: { id: "maxShieldMultiplier", category: "defense", type: "multiplicative" },
 
-    regenShield: { id: "regenShield", category: "defense", type: "additive", description: "Régénération du bouclier." },
-    regenShieldMultiplier: { id: "regenShieldMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de régénération du bouclier." },
+    regenShield: { id: "regenShield", category: "defense", type: "additive" },
+    regenShieldMultiplier: { id: "regenShieldMultiplier", category: "defense", type: "multiplicative" },
 
-    dodgeChance: { id: "dodgeChance", category: "defense", type: "additive", description: "Esquive." },
-    dodgeChanceMultiplier: { id: "dodgeChanceMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur d'esquive." },
+    dodgeChance: { id: "dodgeChance", category: "defense", type: "additive" },
+    parryChance: { id: "parryChance", category: "defense", type: "additive" },
+    blockChance: { id: "blockChance", category: "defense", type: "additive" },
+    blockPower: { id: "blockPower", category: "defense", type: "additive" },
 
-    blockChance: { id: "blockChance", category: "defense", type: "additive", description: "Blocage." },
-    blockChanceMultiplier: { id: "blockChanceMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de blocage." },
-
-    blockPower: { id: "blockPower", category: "defense", type: "additive", description: "Puissance de blocage." },
-    blockPowerMultiplier: { id: "blockPowerMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de puissance de blocage." },
-
-    biomeResistance: { id: "biomeResistance", category: "defense", type: "additive", description: "Résistance au biome." },
-    biomeResistanceMultiplier: { id: "biomeResistanceMultiplier", category: "defense", type: "multiplicative", description: "Multiplicateur de résistance au biome." },
-
+    // Résistances élémentaires
     physicalResistance: { id: "physicalResistance", category: "defense", type: "additive" },
-    physicalResistanceMultiplier: { id: "physicalResistanceMultiplier", category: "defense", type: "multiplicative" },
-
     fireResistance: { id: "fireResistance", category: "defense", type: "additive" },
-    fireResistanceMultiplier: { id: "fireResistanceMultiplier", category: "defense", type: "multiplicative" },
-
     iceResistance: { id: "iceResistance", category: "defense", type: "additive" },
-    iceResistanceMultiplier: { id: "iceResistanceMultiplier", category: "defense", type: "multiplicative" },
-
     lightningResistance: { id: "lightningResistance", category: "defense", type: "additive" },
-    lightningResistanceMultiplier: { id: "lightningResistanceMultiplier", category: "defense", type: "multiplicative" },
-
     poisonResistance: { id: "poisonResistance", category: "defense", type: "additive" },
-    poisonResistanceMultiplier: { id: "poisonResistanceMultiplier", category: "defense", type: "multiplicative" },
-
     shadowResistance: { id: "shadowResistance", category: "defense", type: "additive" },
-    shadowResistanceMultiplier: { id: "shadowResistanceMultiplier", category: "defense", type: "multiplicative" },
+
+    // Shield efficiency par type
+    shieldEfficiencyPhysical: { id: "shieldEfficiencyPhysical", category: "defense", type: "additive" },
+    shieldEfficiencyFire: { id: "shieldEfficiencyFire", category: "defense", type: "additive" },
+    shieldEfficiencyIce: { id: "shieldEfficiencyIce", category: "defense", type: "additive" },
+    shieldEfficiencyLightning: { id: "shieldEfficiencyLightning", category: "defense", type: "additive" },
+    shieldEfficiencyPoison: { id: "shieldEfficiencyPoison", category: "defense", type: "additive" },
+    shieldEfficiencyShadow: { id: "shieldEfficiencyShadow", category: "defense", type: "additive" },
 
 
     // ============================
     // 🟦 UTILITAIRE
     // ============================
 
-    moveSpeed: { id: "moveSpeed", category: "utility", type: "additive", description: "Vitesse de déplacement." },
-    moveSpeedMultiplier: { id: "moveSpeedMultiplier", category: "utility", type: "multiplicative", description: "Multiplicateur de vitesse." },
+    moveSpeed: { id: "moveSpeed", category: "utility", type: "additive" },
+    moveSpeedMultiplier: { id: "moveSpeedMultiplier", category: "utility", type: "multiplicative" },
 
     lootQuantity: { id: "lootQuantity", category: "utility", type: "additive" },
-    lootQuantityMultiplier: { id: "lootQuantityMultiplier", category: "utility", type: "multiplicative" },
-
     lootQuality: { id: "lootQuality", category: "utility", type: "additive" },
-    lootQualityMultiplier: { id: "lootQualityMultiplier", category: "utility", type: "multiplicative" },
 
     currencyGain: { id: "currencyGain", category: "utility", type: "additive" },
-    currencyGainMultiplier: { id: "currencyGainMultiplier", category: "utility", type: "multiplicative" },
-
-    cooldownReduction: { id: "cooldownReduction", category: "utility", type: "additive" },
-    cooldownReductionMultiplier: { id: "cooldownReductionMultiplier", category: "utility", type: "multiplicative" },
-
     xpGain: { id: "xpGain", category: "utility", type: "additive" },
-    xpGainMultiplier: { id: "xpGainMultiplier", category: "utility", type: "multiplicative" },
 
     pickupRange: { id: "pickupRange", category: "utility", type: "additive" },
-    pickupRangeMultiplier: { id: "pickupRangeMultiplier", category: "utility", type: "multiplicative" },
 
 
     // ============================
     // 🟪 MÉTA
     // ============================
 
-    spiritCost: { id: "spiritCost", category: "meta", type: "additive" },
-    spiritCostMultiplier: { id: "spiritCostMultiplier", category: "meta", type: "multiplicative" },
+    spiritMax: { id: "spiritMax", category: "meta", type: "additive" },
+    spiritRegen: { id: "spiritRegen", category: "meta", type: "additive" },
+    spiritCostReduction: { id: "spiritCostReduction", category: "meta", type: "additive" },
 
     energyMax: { id: "energyMax", category: "meta", type: "additive" },
-    energyMaxMultiplier: { id: "energyMaxMultiplier", category: "meta", type: "multiplicative" },
-
-    energyCost: { id: "energyCost", category: "meta", type: "additive" },
-    energyCostMultiplier: { id: "energyCostMultiplier", category: "meta", type: "multiplicative" },
+    energyRegen: { id: "energyRegen", category: "meta", type: "additive" },
 };
