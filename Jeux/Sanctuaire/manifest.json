@@ -1,9 +1,9 @@
 {
-    "version": "1777866169516",
+    "version": "1777943480864",
     "files": [
         {
             "path": "arbo.txt",
-            "sha256": "02402ebbd8d97f17a1d229f14cf70d4ddd046d4257bb62fe39fafa5380c12b46"
+            "sha256": "b6d094b688f111d602242a70056f882abfcfc77d46cc0723f215357ff4ca9430"
         },
         {
             "path": "arborescence.txt",
@@ -51,7 +51,7 @@
         },
         {
             "path": "js/UI/loot/lootScreen.js",
-            "sha256": "3bb5dfeac00e70e33566a458076f12926215d5b96d1162daf4a7e261b1a574c2"
+            "sha256": "da7b1726510c2af1c4617697e67295bfe97191b20bab263410920bbe8be76bea"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
@@ -59,7 +59,7 @@
         },
         {
             "path": "js/UI/menu/coffrePanel.js",
-            "sha256": "73f77664cc38313b0c3ffa3c535a50f50e22a10334b5409cc61bc81ed9a6a0f7"
+            "sha256": "f507a52edad34e93941375a71732fad8b879a49e0f89da42cdcf777e6daff185"
         },
         {
             "path": "js/UI/menu/confirmPopup.js",
@@ -67,11 +67,11 @@
         },
         {
             "path": "js/UI/menu/forgePanel.js",
-            "sha256": "74e22e7d52570f43e7ff4f1ab0673bcc98c15053ddf89d24cf0e6e4b8e3679c1"
+            "sha256": "6d03c3e35a16d25fae5bc8669c069f610a0e22549a86b5a167cad453b8c2bfe7"
         },
         {
             "path": "js/UI/menu/marchandPanel.js",
-            "sha256": "37fa0af77547831ee0c40994c0458346281de21889715da344cd9dda084cdd78"
+            "sha256": "f95a4cf6efa11b9efac47c53894bb6a3b4859c5f00135ae898d162f8076e1f80"
         },
         {
             "path": "js/UI/menu/optionsMenu.js",
@@ -83,7 +83,7 @@
         },
         {
             "path": "js/UI/menu/pylonePanel.js",
-            "sha256": "8fe570bf023fa0716492b59e735f743c1f77af521446b07ca86c9c5f58f1dc28"
+            "sha256": "c1f21c0e9d241da6a9ead2fc0ae25ddf574801b08ddb0c0f748b86ea9877c2f5"
         },
         {
             "path": "js/core/engine.js",
@@ -95,7 +95,7 @@
         },
         {
             "path": "js/core/input.js",
-            "sha256": "58e0e95690a78e10695a34c8203698bfd0f9505e3d5a6f8c07fa5ddbf48b3860"
+            "sha256": "77d4cff1cc30a2b9604d696288b4c8e78f4572340fea02b90cccda756537bcb4"
         },
         {
             "path": "js/core/keybinds.js",
@@ -103,7 +103,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "38a30b221206ebc63e6aab60f922e8ed15704a1dca50b97562adddef7dd27221"
+            "sha256": "465f5b70d8cfd4bf5e53c537832c491a4d2c7f87d35689462bde87be1d8dbfea"
         },
         {
             "path": "js/core/main.js",
@@ -111,7 +111,7 @@
         },
         {
             "path": "js/core/runManager.js",
-            "sha256": "2b32573211f421d10a61c91a6e8bec64fae18f8d7778aeeae9ddaff932a19f8f"
+            "sha256": "44f488bb2cc98cb227f4aaac212f0fd5efc2b56871847eba2c7f7dbb56d54ae7"
         },
         {
             "path": "js/core/screenManager.js",
@@ -131,11 +131,11 @@
         },
         {
             "path": "js/data/affixes.js",
-            "sha256": "e1e8f09937ec79f0a719205fd79f2245437bf0800f89c2f355c63f75568597c4"
+            "sha256": "7b6df9aca530731a0b51ef49799d413441284b1d209cfdf502bc4e1ed26ce037"
         },
         {
             "path": "js/data/bestiary.js",
-            "sha256": "21d98a27447e2a2a7d935a584afcd7686bd03ebc7d3c97425ba88f18c2f4482e"
+            "sha256": "26bfa479e746a608fee2f53ae39514dee4f5ec1075fbffbd855ab5753f171f35"
         },
         {
             "path": "js/data/biomes.js",
@@ -143,11 +143,15 @@
         },
         {
             "path": "js/data/playerBase.js",
-            "sha256": "bce46dadf04952fb80b49a31f2d372bf25e1659fccb1480bd355ead893799ba9"
+            "sha256": "c55f427768e097d5943d0859e533e65189ce0942a1f94595c38d8a1868c03f51"
+        },
+        {
+            "path": "js/data/skillProfiles.js",
+            "sha256": "2f5dbd287cf76e842180b5ae585a815b2b8602ace1a5bdb7e85afa69db215e3c"
         },
         {
             "path": "js/data/stats.js",
-            "sha256": "e55d9a9853b10bd8c6affb82a0a78f24939052e0b2dc62ee353968734c130af2"
+            "sha256": "c729acb719587e3d24569b42082f739b79b63a5a5c0c4a1e7792d489e30b896b"
         },
         {
             "path": "js/data/weaponData.js",
@@ -163,7 +167,7 @@
         },
         {
             "path": "js/systems/combatSystem.js",
-            "sha256": "dd22d295891ae001f1910d847d7c2d0f8394709f4ed120e4ed6c8c1709a6ae31"
+            "sha256": "193d3319049107e9f7cc7f1451f9898de815d49e8400bea54a335d9384dabb25"
         },
         {
             "path": "js/systems/currencySystem.js",
@@ -171,7 +175,7 @@
         },
         {
             "path": "js/systems/damageSystem.js",
-            "sha256": "030e78587cd73a5a1ea7ebbc45da824bcb9ffbf2b3a78548533290105ba4e390"
+            "sha256": "b273da89fbba2c14a77f9aeccb40a16d118839a792466f387d4c60c9dc25079a"
         },
         {
             "path": "js/systems/deathSystem.js",
@@ -179,15 +183,43 @@
         },
         {
             "path": "js/systems/debug/debugStats.js",
-            "sha256": "30a583c164899438c754b0ccbe9427a2e952dd9fa62cace1b77c505c1bd11e5f"
+            "sha256": "c291ceb9964b92502002d84726165f9b9866ce521fc0874399ead7859f300402"
         },
         {
             "path": "js/systems/debugSystem.js",
             "sha256": "8c3a6381809833da752a6afb9c45ac4071d8c3182fd15e4e3489e77ee77f6c60"
         },
         {
+            "path": "js/systems/effects/Nouveau document RTF - Copie (4).rtf",
+            "sha256": "0d6afb7e939f0936f40afdc759b5a354ea5427ec250a47e7b904ab1ea800a01d"
+        },
+        {
+            "path": "js/systems/effects/fire.js",
+            "sha256": "530ade7b8af03622e08fe74936a859b1ca616aeeaba40b752da8c76ab0ba97de"
+        },
+        {
+            "path": "js/systems/effects/ice.js",
+            "sha256": "d092ca7a838c67aba7bbdd417e9e0d2d289e5435b91212de90ce661301bbe7ff"
+        },
+        {
+            "path": "js/systems/effects/index.js",
+            "sha256": "6072c39bd216b1db96ba9c0954f56248581b9b80efd4d151e42bf8136c1f89f1"
+        },
+        {
+            "path": "js/systems/effects/lightning.js",
+            "sha256": "2078f107db06686bb74a378d8ba0138daa349a00de8050bd14c6543d83fca7fa"
+        },
+        {
+            "path": "js/systems/effects/poison.js",
+            "sha256": "3c89237db869b043dc69efe68fec3bc1f2693f182bcb7ce31388b6b1290de1da"
+        },
+        {
+            "path": "js/systems/effects/shadow.js",
+            "sha256": "6b1dc772eff9b7bee411ef6c105fb58cd7b9022e7116ceede031dd7e85874bae"
+        },
+        {
             "path": "js/systems/enemy/bossSystem.js",
-            "sha256": "a2740312312a37bf9ca8e2af1c9ab648726ff5265669dbda6998e46e0cf6f0e0"
+            "sha256": "d1c3ad986e381dbc37058d9e872199b6ed7781b93f8cfa8ab486c2384650c755"
         },
         {
             "path": "js/systems/enemy/enemyAI.js",
@@ -203,7 +235,7 @@
         },
         {
             "path": "js/systems/enemy/enemyFactory.js",
-            "sha256": "9603ebaa3e86e6cd54094039d8131719d77055e35221e848b77e934d8d283663"
+            "sha256": "ce1d4c479b0e71a1beafe57fd021348f2334c0e02fd55f8951b5903c42032000"
         },
         {
             "path": "js/systems/enemy/enemyRender.js",
@@ -215,15 +247,15 @@
         },
         {
             "path": "js/systems/forge/forgeRecipes.js",
-            "sha256": "078d7839618f82d967dffce8388d79551e821fdc60e596a91b9057669ac312bc"
+            "sha256": "317dea5691af53fb43d5e62f114371ac3328e7fa3836e6055076c4b4db10b231"
         },
         {
             "path": "js/systems/forge/forgeSystem.js",
-            "sha256": "e0515ee1e03893aafd1332367f6a019b9698c77fe59a2bcc03e5eb9edfeaa1a0"
+            "sha256": "c0c229f8c50945d7a1deb82f904aafbd2a1a1e8cc182c0ca8a794b3362f2062a"
         },
         {
             "path": "js/systems/inventorySystem.js",
-            "sha256": "9ae2b5da64c4902c1a4af07ca4231de115355cd06105e7a74bb6bd2456985d0c"
+            "sha256": "29b7caba2036f18a73a6f44f40fd4f753e6e3dc42d6d6400ce38186d30c40392"
         },
         {
             "path": "js/systems/item/assembleArmor.js",
@@ -231,7 +263,7 @@
         },
         {
             "path": "js/systems/item/assembleArmorSimple.js",
-            "sha256": "b06220e23408a7ae28485b2a498248a0addeb7550df749c09d430d0ad01cdbb0"
+            "sha256": "0c02c177d9f9f0714546b94ebedfd98a8713a995443cc1366e28600d9c0e4761"
         },
         {
             "path": "js/systems/item/assembleWeapon.js",
@@ -239,7 +271,7 @@
         },
         {
             "path": "js/systems/item/assembleWeaponSimple.js",
-            "sha256": "2efae8cb820b15c8eec3cee47787b262f86a7266a8f5b9e7c63feb2c03f6ba59"
+            "sha256": "41a11df04edaf8dbe24ab4afebbbee680bdacb92e3c066aa85ce786398d7796a"
         },
         {
             "path": "js/systems/item/canCombine.js",
@@ -259,7 +291,7 @@
         },
         {
             "path": "js/systems/item/lootSystem.js",
-            "sha256": "f8b8ff0ddbf1561d3b150f973e115bd4cca4a27b216dda37acd8966db8129bcc"
+            "sha256": "bdae7bed18ce2fbf3d270259cf7c99f50037e669a39b8b35b8f2c0a5e7630553"
         },
         {
             "path": "js/systems/item/merchantLevels.js",
@@ -275,15 +307,15 @@
         },
         {
             "path": "js/systems/item/profiles/armorProfiles.js",
-            "sha256": "f09bfb67536d4eb43e55415215ca8218d2a53e8838b662484121438b0b962913"
+            "sha256": "d1993b850d62b9a9b46637eaf0adb44d971c9e2538b573ec45318747d089c723"
         },
         {
             "path": "js/systems/item/profiles/gemProfiles.js",
-            "sha256": "6dc443eeaa8c62451066f89df43f3ed2a31bda955fb2fc86383bcdb983598a8c"
+            "sha256": "db35a11a1bb5d989659442f203ff83feb1ffceb43938895c407765317f60698a"
         },
         {
             "path": "js/systems/item/profiles/itemProfiles.js",
-            "sha256": "ef464726176c53e7c7a0fbe9c8508086422155f897108dbf25bb5290e547344f"
+            "sha256": "d7b1d99125e3de9993d4ff93f01a4225f9d823bc030ba1a3e76afa1a81d11d6f"
         },
         {
             "path": "js/systems/item/profiles/talismanProfiles.js",
@@ -291,7 +323,7 @@
         },
         {
             "path": "js/systems/item/profiles/trinketProfiles.js",
-            "sha256": "68a88784d17543c029464b7b302ad6918fa069bf16ab05d46315fe60587fd696"
+            "sha256": "4ef24813566fcdfe0d56a4c91d3272c302ebc862687703e3d73a776d1e17c112"
         },
         {
             "path": "js/systems/item/profiles/weaponProfiles.js",
@@ -311,7 +343,7 @@
         },
         {
             "path": "js/systems/player/player.js",
-            "sha256": "b56db5d5468ecc70818f79bddcfbe7f6dff0fde06a841283dab51952932dc770"
+            "sha256": "a54f447ad4ae36f66bcec776dd8d36d78741ee4ff83224e2e42271af87708df7"
         },
         {
             "path": "js/systems/player/playerRenderSystem.js",
@@ -319,15 +351,15 @@
         },
         {
             "path": "js/systems/player/playerRuntimeSystem.js",
-            "sha256": "da770d8856b5123a6374dc6486fdbf65c2b2616bd7f2bcdd660392de60017921"
+            "sha256": "a9ab877fc157c6820807ba2f2a3bd1d32924e35f1687d4dffcad330a249a2ddf"
         },
         {
             "path": "js/systems/player/playerStatsSystem.js",
-            "sha256": "e88087b560368e5d466c87e96e5752267c55d24b967439355eec76720f509bc3"
+            "sha256": "0ed1c775e5b390a2074c1752704a8834e72d0006f36d8017e085a909de230d84"
         },
         {
             "path": "js/systems/projectileSystem.js",
-            "sha256": "5563e1cf7983dcba50991b248244ad187d10abed74f0b787fa9157ef12f05fd5"
+            "sha256": "f69d7f06d79731a2e5dba6e9aae82cb3a6cfa8fdf519268c2fe9e81d5efb245b"
         },
         {
             "path": "js/systems/upgradePanel.js",
@@ -335,7 +367,7 @@
         },
         {
             "path": "js/systems/upgrades.js",
-            "sha256": "d697190967a3d950a6be26910b2c70a1cff84b9085a83202ce293b088e11fbc4"
+            "sha256": "af39301572fa2fca13c2a039404417a769b9f42013eacebdfe7027621837c1fa"
         },
         {
             "path": "js/systems/xp/jobXP.js",
@@ -359,7 +391,7 @@
         },
         {
             "path": "js/world/biome_foret.js",
-            "sha256": "a09e2c718b9acef02c8f9c701e8e4250d1ca9f6c7b3b6843d2b97debdff6cb33"
+            "sha256": "7bd31f12a5ef5ff53b47de5cf366b46b936a547c1cc602fbb086de160b035d3f"
         },
         {
             "path": "js/world/biome_wip.js",
