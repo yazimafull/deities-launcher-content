@@ -151,6 +151,8 @@ window.addEventListener("DOMContentLoaded", () => {
         initCharacterMenu();
         initPauseMenu();
         initOptionsMenu();
+        initLootScreen();
+
 
         UI_INITIALIZED = true;
 

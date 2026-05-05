@@ -8,6 +8,7 @@
 // ============================================================================
 
 import { returnToSanctuary, startRunManager } from "../../core/runManager.js";
+import { setState, GameState } from "../../core/state.js";
 
 let lootScreen;
 let soulXPLine;
@@ -40,7 +41,7 @@ export function initLootScreen() {
     btnContinue?.addEventListener("click", () => {
 
         lootScreen.classList.add("hidden");
-        window.dispatchEvent(new CustomEvent("game:resume"));
+        setState(GameState.PLAYING);
 
         if (window.lastRunConfig) {
             const nextConfig = structuredClone(window.lastRunConfig);
@@ -86,7 +87,7 @@ export function openLootScreen(rewards) {
         <div class="break-line">Enchaînement de runs : x${runChain}</div>
         <div class="break-line">Bonus de niveau (timer) : +${levelLootBonus}%</div>
     `;
-
+    breakdownContainer.classList.remove("hidden");
     // ITEMS
     itemsContainer.innerHTML = "";
 
@@ -103,7 +104,7 @@ export function openLootScreen(rewards) {
 
     // AFFICHAGE + PAUSE
     lootScreen.classList.remove("hidden");
-    window.dispatchEvent(new CustomEvent("game:pause"));
+    setState(GameState.PAUSED);
 
     console.log("📦 Loot affiché :", rewards);
 }

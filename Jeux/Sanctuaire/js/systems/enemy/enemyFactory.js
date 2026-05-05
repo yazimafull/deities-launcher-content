@@ -43,6 +43,11 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
     const isBoss  = type === "boss";
 
     // ================================
+    // TAILLE DE BASE (source unique)
+    // ================================
+    const baseSize = base.stats.size ?? 28;
+
+    // ================================
     // MOB DE BASE
     // ================================
     const mob = {
@@ -64,8 +69,8 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
         speed,
         attackDamage: damage,
 
-        size: base.stats.size,
-        visualSize: base.stats.size,
+        size: baseSize,
+        visualSize: baseSize,
 
         color: base.color ?? "#884444",
 
@@ -122,7 +127,7 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
 
         mob.speed *= 1.1;
 
-        mob.visualSize = mob.size * 1.25;
+        mob.visualSize = baseSize * 1.25;
         mob.size = mob.visualSize;
 
         mob.meleeRange += 6;
@@ -144,7 +149,7 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
         maxHp: mob.maxHp,
 
         // === Offense ===
-        damage: mob.damage, // utilisé par computeOffense
+        damage: mob.damage,
         critChance: base.stats.critChance ?? 0,
         critMultiplier: base.stats.critMultiplier ?? 1.5,
 
@@ -194,7 +199,6 @@ export function createEnemy(type, biome, difficulty, x, y, bestiaryData, flags =
         attackSpeed: base.stats.attackSpeed ?? 0,
         attackSpeedMultiplier: base.stats.attackSpeedMultiplier ?? 0
     };
-
 
     return mob;
 }

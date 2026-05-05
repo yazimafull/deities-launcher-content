@@ -2,16 +2,15 @@
    ROUTE : Jeux/Sanctuaire/js/systems/enemy/enemySystem.js
 
    RÔLE :
-     Runtime des ennemis (IA, collisions, mort).
-     Ne gère aucune logique de progression (XP, loot, objectif).
-     Sur la mort, délègue l’événement à runXP + callbacks externes.
+     Gestion runtime des ennemis (MOBS UNIQUEMENT).
+     Le boss est dans enemies[] pour collisions & projectiles,
+     mais son IA + dessin sont gérés par bossSystem.
 
    PRINCIPES :
-     - IA simple idle/chase
-     - Collision mob/mob + mob/player (anti-jitter)
-     - Mort = onEnemyKilled(mob, config, player)
-     - Aucune stat avancée ici (calculs centralisés ailleurs)
-     - Toutes les valeurs utilisées viennent de mob.runtime (jamais mob.* brut)
+     - IA simple idle/chase pour les mobs
+     - Collisions mob/mob + mob/player
+     - Mort des mobs (le boss est exclu)
+     - Aucune stat avancée ici
 */
 
 import { onEnemyKilled } from "../xp/runXP.js";
@@ -19,6 +18,7 @@ import { createEnemy } from "./enemyFactory.js";
 import { Bestiary } from "../../data/bestiary.js";
 
 export const enemies = [];
+window.enemies = enemies;
 
 // ================================
 // SPAWN
@@ -33,20 +33,18 @@ export function spawnEnemy(mob) {
     mob.dead = false;
     mob.state = "idle";
 
-    // === Runtime obligatoire ===
-    // enemyFactory doit avoir généré mob.stats
-    // ici on génère mob.runtime (miroir des stats finales)
+    // === Runtime miroir des stats ===
     mob.runtime = {};
     for (const id in mob.stats) {
         mob.runtime[id] = mob.stats[id];
     }
 
-    // === Valeurs fallback ===
-    mob.maxHp = mob.runtime.maxHp ?? mob.hp ?? 10;
+    // === HP ===
+    mob.maxHp = mob.runtime.maxHp ?? mob.stats.maxHp ?? mob.hp ?? 10;
     mob.hp = mob.hp ?? mob.maxHp;
 
-    mob.size = mob.size ?? 28;
-    mob.visualSize = mob.visualSize ?? mob.size;
+    mob.size = mob.stats.size;
+    mob.visualSize = mob.stats.size;
 
     enemies.push(mob);
 
@@ -71,7 +69,7 @@ export function spawnEnemy(mob) {
                 mob.x + o.dx,
                 mob.y + o.dy,
                 Bestiary[mob.type],
-                {} // pas élite
+                {}
             );
 
             enemies.push(ally);
@@ -88,16 +86,17 @@ export function updateEnemies(dt, player, config) {
 
         const mob = enemies[i];
 
-        // mort
-        if (mob.hp <= 0 && !mob.dead) {
-
+        // === MORT DES MOBS UNIQUEMENT ===
+        if (!mob.isBoss && mob.hp <= 0 && !mob.dead) {
             handleMobDeath(mob, config, player);
-
             enemies.splice(i, 1);
             continue;
         }
 
-        updateMobAI(mob, player, dt);
+        // === IA MOBS UNIQUEMENT ===
+        if (!mob.isBoss) {
+            updateMobAI(mob, player, dt);
+        }
     }
 
     resolveMobCollisions();
@@ -105,7 +104,7 @@ export function updateEnemies(dt, player, config) {
 }
 
 // ================================
-// ENEMY DEATH
+// ENEMY DEATH (MOBS UNIQUEMENT)
 // ================================
 function handleMobDeath(mob, config, player) {
 
@@ -132,7 +131,6 @@ function updateMobAI(mob, player, dt) {
 
     const aggroRange = r.aggroRange ?? 280;
 
-    // vitesse runtime
     const speed = (r.moveSpeed ?? 80) * (dt / 1000);
 
     switch (mob.state) {
@@ -161,6 +159,8 @@ function resolveMobCollisions() {
 
             const a = enemies[i];
             const b = enemies[j];
+
+            if (!a || !b || a.dead || b.dead) continue;
 
             const dx = b.x - a.x;
             const dy = b.y - a.y;
@@ -208,28 +208,29 @@ function resolvePlayerCollision(player) {
 
             const overlap = min - dist;
 
-            const push = overlap;
-
             const nx = dx / dist;
             const ny = dy / dist;
 
-            mob.x += nx * push;
-            mob.y += ny * push;
+            mob.x += nx * overlap;
+            mob.y += ny * overlap;
 
-            player.x -= nx * push;
-            player.y -= ny * push;
+            player.x -= nx * overlap;
+            player.y -= ny * overlap;
         }
     }
 }
 
 // ================================
-// DRAW
+// DRAW (MOBS UNIQUEMENT)
 // ================================
 export function drawEnemies(ctx) {
 
     for (const mob of enemies) {
 
         if (mob.dead) continue;
+
+        // 🔥 IGNORE LE BOSS
+        if (mob.isBoss) continue;
 
         ctx.globalAlpha = mob.alpha ?? 1;
 
@@ -292,16 +293,6 @@ export function drawEnemies(ctx) {
             mob.y - mob.visualSize / 2 - 10,
             bw * Math.max(0, mob.hp / mob.maxHp),
             5
-        );
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "10px monospace";
-        ctx.textAlign = "center";
-
-        ctx.fillText(
-            `${mob.type} E:${mob.isElite ? 1 : 0} P:${mob.objectivePoints} S:${mob.size}`,
-            mob.x,
-            mob.y - (mob.visualSize ?? mob.size) / 2 - 10
         );
 
         ctx.globalAlpha = 1;

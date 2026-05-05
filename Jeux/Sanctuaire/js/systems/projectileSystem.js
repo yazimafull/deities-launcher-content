@@ -1,10 +1,17 @@
 ﻿/*
    ROUTE : systems/projectileSystem.js
    RÔLE : Gestion des projectiles (spawn, update, collisions, draw)
+
+   NORMALISATION :
+     ✔ projectiles du joueur touchent mobs + boss
+     ✔ projectiles des mobs touchent le joueur
+     ✔ suppression de l'import boss (inutile)
+     ✔ computeOffense utilise owner.stats
 */
 
 import { computeOffense, damageEnemy, damagePlayer } from "./damageSystem.js";
 import { applyElementalEffects } from "./effects/index.js";
+import { onEnemyKilled } from "./xp/runXP.js";
 
 export const projectiles = [];
 
@@ -28,16 +35,25 @@ export function spawnProjectile(data) {
     if (vx === undefined || vy === undefined) return;
 
     let damagePacket = null;
-    let r = null;
 
     if (owner) {
-        r = owner.runtime ?? owner;
 
-        // 1) Dégâts bruts
-        damagePacket = computeOffense(r);
-        damagePacket.type = r.element ?? "physical";
+        // 🔥 Normalisation : on utilise owner.stats
+        // 🔥 Toujours utiliser runtime si dispo
+        const s = owner.runtime ?? owner.stats ?? owner;
 
-        // 2) Couleur par défaut selon élément
+        // Dégâts basés sur runtime
+        damagePacket = computeOffense(s);
+
+        // Élément basé sur runtime > stats > fallback
+        damagePacket.type =
+            s.element ??
+            owner.runtime?.element ??
+            owner.element ??
+            "physical";
+
+
+        // Couleur selon élément
         switch (damagePacket.type) {
             case "fire":      damagePacket.projectileColor = "#ff6633"; break;
             case "ice":       damagePacket.projectileColor = "#66ccff"; break;
@@ -47,8 +63,8 @@ export function spawnProjectile(data) {
             default:          damagePacket.projectileColor = "#ffe566"; break;
         }
 
-        // 3) Effets élémentaires (DOT, slow, chain, poison…)
-        damagePacket = applyElementalEffects(r, damagePacket);
+        // Effets élémentaires
+        damagePacket = applyElementalEffects(s, damagePacket);
     }
 
     projectiles.push({
@@ -61,7 +77,7 @@ export function spawnProjectile(data) {
         size,
         piercing,
         homing,
-        owner: r,
+        owner,
         traveled: 0,
         damagePacket,
         color: damagePacket?.projectileColor ?? "#ffe566"
@@ -80,9 +96,9 @@ export function updateProjectiles(dt, player, enemies) {
         // HOMING
         if (p.homing && p.owner) {
 
-            const target = p.owner.isMob
-                ? player
-                : findNearestEnemy(p, enemies);
+            const target = p.owner === player
+                ? findNearestEnemy(p, enemies)
+                : player;
 
             if (target) {
                 const dx = target.x - p.x;
@@ -115,7 +131,6 @@ export function updateProjectiles(dt, player, enemies) {
 
         p.traveled += Math.hypot(dx, dy);
 
-        // FIN DE VIE
         if (p.traveled >= p.range) {
             projectiles.splice(i, 1);
         }
@@ -132,8 +147,8 @@ export function handleProjectileCollisions(player, enemies, onHit) {
         const p = projectiles[i];
         let removed = false;
 
-        // PROJECTILE JOUEUR → MOBS
-        if (p.owner && !p.owner.isMob) {
+        // PROJECTILE JOUEUR → ENNEMIS
+        if (p.owner === player) {
 
             for (let j = enemies.length - 1; j >= 0; j--) {
 
@@ -148,10 +163,21 @@ export function handleProjectileCollisions(player, enemies, onHit) {
 
                 if (dist < minDist) {
 
-                    if (onHit) {
-                        onHit(p, m);
-                    } else {
-                        damageEnemy(m, p.damagePacket);
+                    const wasAlive = !m.dead;
+
+                    if (onHit) onHit(p, m);
+                    else damageEnemy(m, p.damagePacket);
+
+                    // 🔥 Si le mob vient de mourir → XP + objectif
+                    if (wasAlive && m.dead) {
+
+                        // Objectif
+                        if (typeof window.gameContext?.onMobKilled === "function") {
+                            window.gameContext.onMobKilled(m);
+                        }
+
+                        // XP drop
+                        onEnemyKilled(m, window.gameContext, player);
                     }
 
                     if (!p.piercing) {
@@ -163,9 +189,10 @@ export function handleProjectileCollisions(player, enemies, onHit) {
             }
         }
 
+
         if (removed) continue;
 
-        // PROJECTILE MOB → JOUEUR
+        // PROJECTILE MOB/BOSS → JOUEUR
         if (p.owner && p.owner.isMob) {
 
             const dx = player.x - p.x;
@@ -183,6 +210,7 @@ export function handleProjectileCollisions(player, enemies, onHit) {
                 }
             }
         }
+
     }
 }
 
@@ -211,6 +239,7 @@ function findNearestEnemy(p, enemies) {
 
     for (const m of enemies) {
         if (!m || m.dead) continue;
+        if (m === p.owner) continue; // 🔥 évite auto‑ciblage
 
         const dx = m.x - p.x;
         const dy = m.y - p.y;
@@ -224,3 +253,4 @@ function findNearestEnemy(p, enemies) {
 
     return best;
 }
+

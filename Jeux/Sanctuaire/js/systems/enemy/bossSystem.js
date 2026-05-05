@@ -1,13 +1,20 @@
-﻿// ROUTE : Jeux/Sanctuaire/js/systems/enemy/bossSystem.js
-// ============================================================================
-// BOSS PROPRE : stats → runtime → computeOffense → damageSystem
-// ============================================================================
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/systems/enemy/bossSystem.js
+
+   RÔLE :
+     IA + rendu spécifique du boss.
+     Le boss utilise le pipeline unifié :
+       - dégâts : damageEnemy()
+       - collisions : enemySystem
+       - projectiles : projectileSystem
+       - mort : damageEnemy() déclenche boss:dead
+*/
 
 import { spawnProjectile } from "../projectileSystem.js";
 import { computeOffense, damagePlayer } from "../damageSystem.js";
 import { enemies } from "./enemySystem.js";
 import { player } from "../player/player.js";
-
+import { bossProfiles } from "../../data/bossProfiles.js";
 
 export let boss = null;
 let spawnEvent = null;
@@ -45,7 +52,8 @@ export function consumeBossEvent() {
 // SPAWN HORS‑ÉCRAN
 // ============================================================================
 function spawnBossOffscreen(player) {
-    const margin = 700;
+    const profile = bossProfiles.spectral_archer;
+    const margin = profile.stats.aggroRange + 500;
     const side = Math.floor(Math.random() * 4);
 
     let x, y;
@@ -72,43 +80,39 @@ function spawnBossOffscreen(player) {
 // ============================================================================
 export function spawnBoss(player, difficulty, biome = "foret") {
 
+    const profile = bossProfiles.spectral_archer;
     const pos = spawnBossOffscreen(player);
 
-    // ============================
-    // STATS FINALES DU BOSS
-    // ============================
+    // === STATS ===
     const stats = {
-        maxHp: 2000 * difficulty,
-        hp: 2000 * difficulty,
+        maxHp: profile.stats.maxHp * difficulty,
+        hp: profile.stats.maxHp * difficulty,
 
-        moveSpeed: 60,                 // 🔥 vitesse stable
-        attackDamage: 5 * difficulty,
+        moveSpeed: profile.stats.moveSpeed,
+        aggroRange: profile.stats.aggroRange,
 
-        attackCooldownMs: 1200,        // melee cooldown
-        attackRange: 120,
+        damage: profile.ranged.enabled
+            ? profile.ranged.damage
+            : (profile.melee.damage ?? 10),
 
-        projectileSpeed: 450,
-        projectileRange: 600,
-        projectileDamage: 25 * difficulty,
+        critChance: 0.05,
+        critMultiplier: 1.5,
 
-        aggroRange: 600
+        // IMPORTANT : toutes les stats défensives/offensives
+        // peuvent être ajoutées ici si tu veux enrichir le boss
     };
 
-    // ============================
-    // RUNTIME (copie propre)
-    // ============================
+    // === RUNTIME ===
     const runtime = {};
     for (const k in stats) runtime[k] = stats[k];
 
-    // ============================
-    // BOSS OBJECT
-    // ============================
+    // === BOSS OBJECT ===
     boss = {
         x: pos.x,
         y: pos.y,
 
         size: 90,
-        color: "#7700aa",
+        color: profile.color,
 
         stats,
         runtime,
@@ -116,36 +120,34 @@ export function spawnBoss(player, difficulty, biome = "foret") {
         hp: stats.hp,
         maxHp: stats.maxHp,
 
+        isBoss: true,
         isMob: true,
         type: "boss",
 
-        // === MELEE ===
-        weapon: {
-            type: "melee",
-            meleeRange: 30
-        },
+        profile,
 
         state: "idle",
 
-        // === COOLDOWNS ===
         meleeTimer: 0,
-        rangedCooldown: 5000,
         rangedTimer: 0,
 
-        // === ANTI-KITE ===
+        dead: false,
+
         lastHitTime: performance.now(),
         speedBuffActive: false,
-        speedBuffTimer: 0,
-
-        dead: false
+        speedBuffTimer: 0
     };
 
+    window.boss = boss;
+
+    // 🔥 Le boss est un ennemi normal pour collisions/projectiles
     enemies.push(boss);
+
     spawnEvent = "spawn";
 }
 
 // ============================================================================
-// UPDATE
+// UPDATE BOSS (IA SPÉCIALE)
 // ============================================================================
 export function updateBoss(player, dt) {
 
@@ -153,28 +155,30 @@ export function updateBoss(player, dt) {
 
     const now = performance.now();
     const r = boss.runtime;
+    const p = boss.profile;
 
     const dx = player.x - boss.x;
     const dy = player.y - boss.y;
     const dist = Math.hypot(dx, dy);
 
-    // 🔥 meleeDistance étendue (attaque stable)
-    const meleeDistance = (boss.size / 2) + (player.size / 2) + 30;
+    const meleeProfile = p.melee;
+    const rangedProfile = p.ranged;
 
-    // ========================================================================
-    // IDLE
-    // ========================================================================
+    const meleeDistance =
+        (boss.size / 2) +
+        (player.size / 2) +
+        (meleeProfile.range ?? 0);
+
+    // === IDLE ===
     if (boss.state === "idle") {
         if (dist < r.aggroRange) boss.state = "chase";
         return;
     }
 
-    // ========================================================================
-    // CHASE
-    // ========================================================================
+    // === CHASE ===
     if (boss.state === "chase") {
 
-        // === DÉPLACEMENT ===
+        // Déplacement
         if (dist > 0) {
             const speed = r.moveSpeed * (dt / 1000);
             boss.x += (dx / dist) * speed;
@@ -182,45 +186,51 @@ export function updateBoss(player, dt) {
         }
 
         // === ATTAQUE MÊLÉE ===
-        boss.meleeTimer += dt;
+        if (meleeProfile.enabled) {
+            boss.meleeTimer += dt;
 
-        if (dist < meleeDistance && boss.meleeTimer >= r.attackCooldownMs) {
+            if (dist < meleeDistance && boss.meleeTimer >= meleeProfile.cooldown) {
 
-            boss.meleeTimer = 0;
+                boss.meleeTimer = 0;
 
-            const dmgPacket = computeOffense(r);
-            dmgPacket.type = "physical";
+                const dmgPacket = computeOffense({
+                    ...r,
+                    damage: meleeProfile.damage,
+                    element: meleeProfile.element ?? "physical",
+                    coefficient: meleeProfile.coefficient ?? 1
+                });
 
-            damagePlayer(player, dmgPacket);
+                damagePlayer(player, dmgPacket);
+            }
         }
 
         // === ATTAQUE À DISTANCE ===
-        boss.rangedTimer += dt;
+        if (rangedProfile.enabled) {
+            boss.rangedTimer += dt;
 
-        if (boss.rangedTimer >= boss.rangedCooldown) {
-            boss.rangedTimer = 0;
+            if (boss.rangedTimer >= rangedProfile.cooldown) {
+                boss.rangedTimer = 0;
 
-            const vx = dx / dist;
-            const vy = dy / dist;
+                const vx = dx / dist;
+                const vy = dy / dist;
 
-            spawnProjectile({
-                x: boss.x,
-                y: boss.y,
-                vx,
-                vy,
-                speed: r.projectileSpeed,
-                range: r.projectileRange,
-                owner: boss
-            });
+                spawnProjectile({
+                    x: boss.x,
+                    y: boss.y,
+                    vx,
+                    vy,
+                    speed: rangedProfile.speed,
+                    range: rangedProfile.range,
+                    owner: boss
+                });
+            }
         }
 
-        // ====================================================================
-        // ANTI-KITE propre
-        // ====================================================================
+        // === ANTI-KITE ===
         if (!boss.speedBuffActive && now - boss.lastHitTime > 3000) {
             boss.speedBuffActive = true;
             boss.speedBuffTimer = 2000;
-            r.moveSpeed = boss.stats.moveSpeed * 1.2; // +20%
+            r.moveSpeed = boss.stats.moveSpeed * 1.2;
         }
 
         if (boss.speedBuffActive) {
@@ -235,30 +245,7 @@ export function updateBoss(player, dt) {
 }
 
 // ============================================================================
-// DAMAGE BOSS
-// ============================================================================
-export function damageBoss(amount) {
-
-    if (!boss || boss.dead) return;
-
-    boss.hp -= amount;
-    boss.runtime.hp = boss.hp;
-
-    // reset anti-kite propre
-    boss.lastHitTime = performance.now();
-    boss.speedBuffActive = false;
-    boss.runtime.moveSpeed = boss.stats.moveSpeed;
-
-    if (boss.hp <= 0) {
-        boss.hp = 0;
-        boss.dead = true;
-
-        window.dispatchEvent(new CustomEvent("boss:dead"));
-    }
-}
-
-// ============================================================================
-// DRAW BOSS
+// DESSIN DU BOSS (SKIN SPÉCIAL)
 // ============================================================================
 export function drawBoss(ctx) {
 
@@ -294,20 +281,19 @@ export function drawBoss(ctx) {
 }
 
 // ============================================================================
-// CERCLE D’AGGRO (idle uniquement)
+// CERCLE D’AGGRO
 // ============================================================================
 export function drawBossAggroCircle(ctx, camera) {
 
     if (!boss || boss.dead) return;
     if (boss.state !== "idle") return;
 
-    // Le moteur a déjà fait translate(-camera.x, -camera.y)
     const bx = boss.x;
     const by = boss.y;
 
     ctx.save();
     ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 3;
 
     const visualAggro = boss.runtime.aggroRange;
 
@@ -318,8 +304,6 @@ export function drawBossAggroCircle(ctx, camera) {
     ctx.restore();
 }
 
-
-
 // ============================================================================
 // INDICATEUR HORS‑ÉCRAN
 // ============================================================================
@@ -327,27 +311,21 @@ export function drawBossIndicator(ctx, camera, canvas) {
 
     if (!boss || boss.dead) return;
 
-    // Coordonnées écran du boss
     const bx = boss.x - camera.x;
     const by = boss.y - camera.y;
 
-    // Coordonnées écran du joueur
     const px = player.x - camera.x;
     const py = player.y - camera.y;
 
-    // Si le boss est visible → pas d’indicateur
     if (bx >= 0 && bx <= canvas.width && by >= 0 && by <= canvas.height) return;
 
-    // Direction boss → joueur
     const dx = bx - px;
     const dy = by - py;
 
     const angle = Math.atan2(dy, dx);
 
-    // Rayon autour du joueur (distance de la boussole)
     const radius = 60;
 
-    // Position finale de l’indicateur
     const ix = px + Math.cos(angle) * radius;
     const iy = py + Math.sin(angle) * radius;
 

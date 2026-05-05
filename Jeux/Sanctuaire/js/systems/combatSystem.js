@@ -249,7 +249,7 @@ function shootProjectileSpread(attacker, cursor) {
             vy,
             speed: r.projectileSpeed ?? 300,
             range: r.projectileRange ?? 300,
-            owner: attacker.runtime ?? attacker
+            owner: attacker
         });
     }
 }

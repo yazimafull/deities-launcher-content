@@ -56,7 +56,7 @@ export const basePlayer = {
         attackSpeed: 0,
         attackSpeedMultiplier: 0,
 
-        attackRange: 0,
+        attackRange: 200,
         attackRangeMultiplier: 0,
 
 
@@ -64,13 +64,13 @@ export const basePlayer = {
         maxHp: 1,
         maxHpMultiplier: 0,
 
-        regenHp: 0.01,
+        regenHp: 0.1,
         regenHpMultiplier: 0,
 
         maxShield: 1,
         maxShieldMultiplier: 0,
 
-        regenShield: 0.01,
+        regenShield: 0.1,
         regenShieldMultiplier: 0,
 
         dodgeChance: 0,

@@ -353,6 +353,7 @@ window.addEventListener("boss:dead", () => {
     // 🔥 Correction : pause + affichage loot
     document.getElementById("loot-screen")?.classList.remove("hidden");
     window.dispatchEvent(new CustomEvent("game:pause"));
+    console.log("LISTENER boss:dead prêt");
 
     openLootScreen({
         gold,

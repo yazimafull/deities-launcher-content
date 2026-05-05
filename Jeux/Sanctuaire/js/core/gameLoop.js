@@ -59,6 +59,7 @@ export const gameContext = {
         this.addObjective(mob.objectivePoints ?? 1);
     }
 };
+window.gameContext = gameContext;
 
 // ================================
 // PLAYER SETUP (RUN INITIALIZATION)

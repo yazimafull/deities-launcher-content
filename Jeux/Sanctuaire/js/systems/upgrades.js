@@ -14,7 +14,17 @@ import {
     player,
     updatePlayerStats
 } from "./player/player.js";
+
 import { applyPlayerRuntimeStats } from "./player/playerRuntimeSystem.js";
+
+
+// ======================================================
+// CENTRALISATION : une seule fonction pour tout recalculer
+// ======================================================
+function recalcPlayer() {
+    updatePlayerStats();
+    applyPlayerRuntimeStats(player);
+}
 
 
 // ================================
@@ -42,15 +52,11 @@ export const allUpgrades = [
         type: "element",
         apply() {
 
-            // 🔥 CORRECTION :
-            // Avant : player.element = "fire"; (inutile, jamais lu par le moteur)
-            // Maintenant : on modifie l’ARME, car le runtime lit weapon.element.
             if (player.equipment?.weapon) {
                 player.equipment.weapon.element = "fire";
             }
 
-            updatePlayerStats();
-            applyPlayerRuntimeStats(player);
+            recalcPlayer();
         }
     },
 
@@ -60,13 +66,11 @@ export const allUpgrades = [
         type: "element",
         apply() {
 
-            // ❄️ Même correction que Fire
             if (player.equipment?.weapon) {
                 player.equipment.weapon.element = "ice";
             }
 
-            updatePlayerStats();
-            applyPlayerRuntimeStats(player);
+            recalcPlayer();
         }
     },
 
@@ -76,13 +80,11 @@ export const allUpgrades = [
         type: "element",
         apply() {
 
-            // ⚡ Même correction que Fire
             if (player.equipment?.weapon) {
                 player.equipment.weapon.element = "lightning";
             }
 
-            updatePlayerStats();
-            applyPlayerRuntimeStats(player);
+            recalcPlayer();
         }
     },
 
@@ -95,27 +97,27 @@ export const allUpgrades = [
         type: "stat",
         apply() {
             addBuff("moveSpeed", 20);
-            updatePlayerStats();
+            recalcPlayer();
         }
     },
 
     {
         id: "damage_up",
-        name: "+2 dégâts",
+        name: "+3 dégâts",
         type: "stat",
         apply() {
-            addBuff("damage", 2);
-            updatePlayerStats();
+            addBuff("damage", 3);
+            recalcPlayer();
         }
     },
 
     {
         id: "fire_rate_up",
-        name: "+20% attaque speed",
+        name: "+50% attaque speed",
         type: "stat",
         apply() {
-            addBuff("attackSpeed", 0.20);
-            updatePlayerStats();
+            addBuff("attackSpeed", 0.5);
+            recalcPlayer();
         }
     },
 
@@ -125,7 +127,7 @@ export const allUpgrades = [
         type: "stat",
         apply() {
             addBuff("critChance", 0.10);
-            updatePlayerStats();
+            recalcPlayer();
         }
     },
 
@@ -138,31 +140,30 @@ export const allUpgrades = [
         type: "survival",
         apply() {
             addBuff("maxHp", 20);
-            updatePlayerStats();
+            updatePlayerStats(); // runtime pas nécessaire
         }
     },
 
     {
         id: "shield_up",
-        name: "+20 Shield",
+        name: "+5 Shield",
         type: "survival",
         apply() {
-            addBuff("maxShield", 20);
-            updatePlayerStats();
+            addBuff("maxShield", 5);
+            updatePlayerStats(); // runtime pas nécessaire
         }
     },
 
     // =========================
     // NOUVEAUX BUFFS
     // =========================
-
     {
         id: "hp_regen_up",
         name: "+1 HP regen / sec",
         type: "survival",
         apply() {
             addBuff("regenHp", 1);
-            updatePlayerStats();
+            updatePlayerStats(); // runtime pas nécessaire
         }
     },
 
@@ -172,7 +173,7 @@ export const allUpgrades = [
         type: "survival",
         apply() {
             addBuff("regenShield", 1);
-            updatePlayerStats();
+            updatePlayerStats(); // runtime pas nécessaire
         }
     }
 ];
