@@ -1,11 +1,12 @@
 ﻿/*
    ROUTE : js/UI/menu/coffrePanel.js
-   RÔLE : Affichage du coffre (inventaire permanent)
+   RÔLE : Affichage du coffre (inventaire permanent du personnage actif)
    EXPORTS : openCoffrePanel, closeCoffrePanel
 */
 
-import { basePlayer as player } from "../../data/playerBase.js";
+import { player } from "../../systems/player/player.js";
 import { removeFromInventory } from "../../systems/inventorySystem.js";
+import { saveActiveCharacter } from "../../core/characterManager.js";
 
 let overlay = null;
 let panel = null;
@@ -14,7 +15,6 @@ let panel = null;
    FORMATAGE TOOLTIP (stats + affixes)
 ============================================================ */
 
-// Formatage universel → 2 décimales si nombre
 function formatValue(v) {
     return typeof v === "number" ? v.toFixed(2) : v;
 }
@@ -22,17 +22,14 @@ function formatValue(v) {
 function buildTooltip(item) {
     let lines = [];
 
-    // Nom
     lines.push(item.name);
 
-    // Stats
     if (item.stats) {
         for (const [key, value] of Object.entries(item.stats)) {
             lines.push(formatStat(key, value));
         }
     }
 
-    // Affixes
     if (item.affixes) {
         for (const [key, value] of Object.entries(item.affixes)) {
             lines.push(formatAffix(key, value));
@@ -41,7 +38,6 @@ function buildTooltip(item) {
 
     return lines.join("\n");
 }
-
 
 function formatStat(key, value) {
     const v = formatValue(value);
@@ -133,12 +129,10 @@ function refreshPanel() {
         label.textContent = `${name} ${qty}`;
         row.appendChild(label);
 
-        // Tooltip propre
         row.onmouseenter = () => {
             row.title = buildTooltip(item);
         };
 
-        // Bouton supprimer
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "X";
         deleteBtn.style.marginLeft = "10px";
@@ -151,6 +145,7 @@ function refreshPanel() {
 
         deleteBtn.onclick = () => {
             removeFromInventory(item.id, item.quantity ?? 1);
+            saveActiveCharacter(); // 🔥 Sauvegarde après modification
             refreshPanel();
         };
 

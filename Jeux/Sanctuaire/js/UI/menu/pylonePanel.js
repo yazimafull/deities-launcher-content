@@ -2,6 +2,9 @@
 // ============================================================================
 // RÔLE : Gère entièrement le Pylône : sélection biome/niveau, équipement,
 //        pierre d’affixe, récapitulatif, verrouillage et lancement de run.
+//        - Gestion du slot d’affixe (lock/unlock)
+//        - Gestion du timer (lock global)
+//        - Sélecteur d’items (arme/armure/pierre)
 // ============================================================================
 
 import { startRunManager } from "../../core/runManager.js";
@@ -43,6 +46,23 @@ function setDisabled(el, value) {
 }
 
 // ================================
+// LOCK / UNLOCK AFFIX SLOT
+// ================================
+function lockAffixSlot(stoneName) {
+    const slot = $("affixSlot");
+    if (!slot) return;
+    slot.dataset.locked = "true";
+    slot.textContent = stoneName ?? "Pierre";
+}
+
+function unlockAffixSlot() {
+    const slot = $("affixSlot");
+    if (!slot) return;
+    slot.dataset.locked = "false";
+    slot.textContent = "Aucune pierre";
+}
+
+// ================================
 // TOOLTIP BUILDER
 // ================================
 function buildTooltip(item) {
@@ -65,6 +85,7 @@ function buildTooltip(item) {
 
 function showTooltip(item, x, y) {
     const box = $("tooltip");
+    if (!box) return;
     box.innerHTML = buildTooltip(item);
     box.style.left = x + 15 + "px";
     box.style.top = y + 15 + "px";
@@ -72,7 +93,9 @@ function showTooltip(item, x, y) {
 }
 
 function hideTooltip() {
-    $("tooltip").classList.add("hidden");
+    const box = $("tooltip");
+    if (!box) return;
+    box.classList.add("hidden");
 }
 
 // ================================
@@ -111,7 +134,13 @@ export function openPylonePanel() {
     loadout.armor = null;
     loadout.stone = null;
 
+    // Reset slot affixe
+    unlockAffixSlot();
+
     $("pylone-overlay")?.classList.remove("hidden");
+    refreshLevelDropdown();
+
+    $("levelLabel").textContent = "Niveau " + player.unlockedLevels;
 
     refreshEquipmentSlots();
     refreshAffixSlot();
@@ -172,11 +201,24 @@ export function initPylonePanel() {
     });
 
     // SLOT PIERRE
-    $("affixSlot")?.addEventListener("click", () => openItemSelector("stone"));
+    $("affixSlot")?.addEventListener("click", () => {
+        const slot = $("affixSlot");
+        if (!slot) return;
+        if (slot.dataset.locked === "true") return;
+        if (choicesLocked) return;
+        openItemSelector("stone");
+    });
 
     // ÉQUIPEMENT
-    $("weaponSlot")?.addEventListener("click", () => openItemSelector("weapon"));
-    $("armorSlot")?.addEventListener("click", () => openItemSelector("armor"));
+    $("weaponSlot")?.addEventListener("click", () => {
+        if (choicesLocked) return;
+        openItemSelector("weapon");
+    });
+
+    $("armorSlot")?.addEventListener("click", () => {
+        if (choicesLocked) return;
+        openItemSelector("armor");
+    });
 
     // LAUNCH
     $("pylone-launch")?.addEventListener("click", startLaunchCountdown);
@@ -225,6 +267,9 @@ function openItemSelector(type) {
         slot.addEventListener("click", () => {
             loadout[type] = item;
             closeItemSelector();
+
+            if (type === "stone") refreshAffixSlot();
+
             refreshEquipmentSlots();
             updateRecap();
             updateLaunchButtonState();
@@ -257,35 +302,42 @@ function refreshEquipmentSlots() {
     const wSlot = $("weaponSlot");
     const aSlot = $("armorSlot");
 
-    wSlot.textContent = w ? w.name : "Arme";
-    aSlot.textContent = a ? a.name : "Armure";
+    if (wSlot) wSlot.textContent = w ? w.name : "Arme";
+    if (aSlot) aSlot.textContent = a ? a.name : "Armure";
 
     // Tooltip custom
-    wSlot.onmouseenter = () => {
-        if (w) {
-            const rect = wSlot.getBoundingClientRect();
-            showTooltip(w, rect.right, rect.top);
-        }
-    };
-    wSlot.onmouseleave = hideTooltip;
+    if (wSlot) {
+        wSlot.onmouseenter = () => {
+            if (w) {
+                const rect = wSlot.getBoundingClientRect();
+                showTooltip(w, rect.right, rect.top);
+            }
+        };
+        wSlot.onmouseleave = hideTooltip;
+    }
 
-    aSlot.onmouseenter = () => {
-        if (a) {
-            const rect = aSlot.getBoundingClientRect();
-            showTooltip(a, rect.right, rect.top);
-        }
-    };
-    aSlot.onmouseleave = hideTooltip;
+    if (aSlot) {
+        aSlot.onmouseenter = () => {
+            if (a) {
+                const rect = aSlot.getBoundingClientRect();
+                showTooltip(a, rect.right, rect.top);
+            }
+        };
+        aSlot.onmouseleave = hideTooltip;
+    }
 }
 
 function refreshAffixSlot() {
     const slot = $("affixSlot");
+    if (!slot) return;
 
     if (!loadout.stone) {
+        slot.dataset.locked = "false";
         slot.textContent = "Aucune pierre";
         return;
     }
 
+    slot.dataset.locked = "true";
     slot.textContent = loadout.stone.name;
 }
 
@@ -368,6 +420,10 @@ function startLaunchCountdown() {
 
     choicesLocked = true;
 
+    // 🔒 Verrouiller le slot d’affixe + visuel des slots équipement
+    const affixSlot = $("affixSlot");
+    if (affixSlot) affixSlot.dataset.locked = "true";
+
     countdownInterval = setInterval(() => {
         seconds--;
 
@@ -391,13 +447,23 @@ function clearLaunchTimer() {
     $("pylone-launch").disabled = false;
 
     choicesLocked = false;
+
+    // 🔓 Déverrouiller si aucune pierre
+    if (!loadout.stone) {
+        const affixSlot = $("affixSlot");
+        if (affixSlot) affixSlot.dataset.locked = "false";
+    }
+
+    // 🔓 Réactiver visuellement les slots équipement
+    $("weaponSlot")?.classList.remove("disabled");
+    $("armorSlot")?.classList.remove("disabled");
 }
 
 function launchRun() {
 
     const biomeId = document.querySelector(".biome-btn.active")?.dataset.id || "foret";
     const levelText = $("levelLabel")?.textContent || "";
-    const difficulte = levelText.replace("Niveau ", "") || "I";
+    const difficulte = Number(levelText.replace("Niveau ", "")) || 1;
 
     const activeCharacter = sessionStorage.getItem("activeCharacter");
 
@@ -423,6 +489,38 @@ function launchRun() {
     applyPlayerRuntimeStats(player);
 
     startRunManager(config);
+}
+
+// ================================
+// REFRESH NIVEAUX DÉBLOQUÉS
+// ================================
+function refreshLevelDropdown() {
+    const menu = $("levelMenu");
+    const levelLabel = $("levelLabel");
+
+    menu.innerHTML = "";
+
+    for (let i = 1; i <= player.unlockedLevels; i++) {
+        const div = document.createElement("div");
+        div.className = "dropdown-item";
+        div.textContent = "Niveau " + i;
+        menu.appendChild(div);
+    }
+
+    const current = Number(levelLabel.textContent.replace("Niveau ", ""));
+    if (!current || current > player.unlockedLevels) {
+        levelLabel.textContent = "Niveau 1";
+    }
+
+    menu.querySelectorAll(".dropdown-item").forEach(item => {
+        item.addEventListener("click", () => {
+            if (choicesLocked) return;
+            levelLabel.textContent = item.textContent.trim();
+            updateRecap();
+            updateLaunchButtonState();
+            menu.classList.remove("open");
+        });
+    });
 }
 
 // ================================

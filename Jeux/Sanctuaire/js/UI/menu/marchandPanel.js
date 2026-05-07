@@ -5,27 +5,21 @@
    DÉPENDANCES :
      - ../data/playerBase.js (player.inventory)
      - ../systems/inventorySystem.js (addToInventory)
-     - ../systems/currencySystem.js (getCurrency, spendCurrency, addCurrency)
+     - ../systems/currencySystem.js (getCurrency, spendCurrency, addCurrency, convertCopperToGSC)
      - ./confirmPopup.js (popup de confirmation)
-     - CSS : system.css (overlay + modal + btn)
-   NOTES :
-     - Tooltip natif affichant :
-         • Prix
-         • Quantité possédée dans le coffre
-         • Stats / affixes si présents
 */
 
 import { basePlayer as player } from "../../data/playerBase.js";
 import { addToInventory } from "../../systems/inventorySystem.js";
 import { openConfirmPopup } from "./confirmPopup.js";
-import { getCurrency, spendCurrency, addCurrency } from "../../systems/currencySystem.js";
+import { getCurrency, spendCurrency, addCurrency, convertCopperToGSC } from "../../systems/currencySystem.js";
 
 let overlay = null;
 let panel = null;
 
-// ===============================
-// CRÉATION DU PANEL
-// ===============================
+/* ============================================================================
+   CRÉATION DU PANEL
+============================================================================ */
 function createPanel() {
 
     overlay = document.createElement("div");
@@ -67,16 +61,20 @@ function createPanel() {
     document.body.appendChild(overlay);
 }
 
-// ===============================
-// REMPLIR LE PANEL
-// ===============================
+/* ============================================================================
+   REMPLIR LE PANEL
+============================================================================ */
 function refreshPanel() {
+
     const list = document.getElementById("marchand-list");
     list.innerHTML = "";
 
+    // 🔥 Affichage Gold en G/S/C
+    const gsc = getCurrency("gold");
     document.getElementById("marchand-gold").textContent =
-        `Or disponible : ${getCurrency("gold")}`;
+        `Or disponible : ${gsc.gold}🟡 ${gsc.silver}⚪ ${gsc.copper}🟤`;
 
+    // 🔥 Liste des objets du marchand
     const itemsForSale = [
         { id: "iron_fragment", name: "Fragment de fer", type: "material", quantity: 10, price: 0 },
         { id: "wood_piece", name: "Morceau de bois", type: "material", quantity: 10, price: 3 },
@@ -96,7 +94,7 @@ function refreshPanel() {
         row.style.color = "#e2d3b5";
 
         const label = document.createElement("span");
-        label.textContent = `${item.name} — ${item.price} or`;
+        label.textContent = `${item.name} — ${item.price}🟡`;
 
         // 🔥 Quantité possédée dans le coffre
         const owned = player.inventory
@@ -106,7 +104,6 @@ function refreshPanel() {
         // 🔥 Tooltip natif complet
         let tooltip = `${item.name}\nPrix : ${item.price} or\nPossédé : ${owned}`;
 
-        // 🔥 Ajout stats si présentes
         if (item.stats) {
             tooltip += "\n\nStats :\n" +
                 Object.entries(item.stats)
@@ -114,7 +111,6 @@ function refreshPanel() {
                     .join("\n");
         }
 
-        // 🔥 Ajout affixes si présents
         if (item.affixes) {
             tooltip += "\n\nAffixes :\n" +
                 Object.entries(item.affixes)
@@ -124,7 +120,7 @@ function refreshPanel() {
 
         label.title = tooltip;
 
-        // Bouton acheter
+        // 🔥 Bouton acheter
         const buyBtn = document.createElement("button");
         buyBtn.textContent = "Acheter";
         buyBtn.classList.add("btn");
@@ -138,6 +134,7 @@ function refreshPanel() {
                 message: `Acheter ${item.name} pour ${item.price} or ?`,
                 onConfirm: () => {
 
+                    // 🔥 Dépense en GOLD (converti en copper automatiquement)
                     if (!spendCurrency("gold", item.price)) {
                         openConfirmPopup({
                             title: "Erreur",
@@ -147,8 +144,10 @@ function refreshPanel() {
                         return;
                     }
 
+                    // 🔥 Si l'objet donne de l'or → ajouter en copper
                     if (item.givesGold) {
-                        addCurrency("gold", item.givesGold);
+                        const copper = item.givesGold * 10000;
+                        addCurrency("gold", copper);
                     } else {
                         addToInventory({
                             id: item.id,
@@ -158,8 +157,10 @@ function refreshPanel() {
                         });
                     }
 
+                    // 🔥 Mise à jour affichage G/S/C
+                    const gsc2 = getCurrency("gold");
                     document.getElementById("marchand-gold").textContent =
-                        `Or disponible : ${getCurrency("gold")}`;
+                        `Or disponible : ${gsc2.gold}🟡 ${gsc2.silver}⚪ ${gsc2.copper}🟤`;
                 }
             });
         };
@@ -170,9 +171,9 @@ function refreshPanel() {
     });
 }
 
-// ===============================
-// OUVERTURE / FERMETURE
-// ===============================
+/* ============================================================================
+   OUVERTURE / FERMETURE
+============================================================================ */
 export function openMarchandPanel() {
     if (!panel) createPanel();
     refreshPanel();

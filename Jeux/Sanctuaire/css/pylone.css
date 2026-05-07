@@ -68,15 +68,23 @@
 
 .biome-btn {
     flex: 1;
-    padding: 10px;
+    padding: 14px 12px; /* même hauteur que le dropdown */
     text-align: center;
     border: 1px solid #4a6fa5;
     cursor: pointer;
     transition: 0.2s;
     border-radius: 4px;
-    font-size: 13px;
+
+    /* UNIFORMISATION TYPO */
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
     color: #e2d3b5;
+
+    /* UNIFORMISATION STYLE */
     background: rgba(10,10,30,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .biome-btn:hover,
@@ -86,12 +94,14 @@
     color: #d4af37;
 }
 
+
 /* =============================== */
 /*           DROPDOWN              */
 /* =============================== */
 
 .pylone-dropdown {
     position: relative;
+    overflow: visible; /* ⭐ IMPORTANT : permet au menu de sortir */
 }
 
 .dropdown-toggle {
@@ -100,6 +110,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px; /* ⭐ ESPACE entre texte et flèche */
     border-radius: 4px;
     cursor: pointer;
     color: #e2d3b5;
@@ -116,19 +127,22 @@
     font-size: 12px;
 }
 
+/* MENU FERMÉ */
 .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0; right: 0;
+    left: 0;
+    right: 0;
     background: rgba(20,20,40,0.98);
     border: 1px solid #4a6fa5;
     border-radius: 4px;
-    z-index: 100;
     display: none;
+    z-index: 99999; /* ⭐ AU-DESSUS de la modal */
 }
 
-.dropdown.open .dropdown-menu {
-    display: block;
+/* MENU OUVERT (JS ajoute .open sur le menu) */
+.dropdown-menu.open {
+    display: block !important;
 }
 
 .dropdown-item {
@@ -211,13 +225,13 @@
 }
 
 .pylone-recap-line {
-    font-size: 13px;
+    font-size: 14px;
     color: #e2d3b5;
     margin-bottom: 6px;
 }
 
 .pylone-recap-modifiers {
-    margin-top: 10px;
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -248,6 +262,7 @@
     justify-content: flex-end;
     gap: 10px;
 }
+
 /* =============================== */
 /*        NIVEAU + PIERRE ROW      */
 /* =============================== */
@@ -293,6 +308,7 @@
     opacity: 0.4;
     cursor: default;
 }
+
 /* ===============================
    MINI COFFRE (sélecteur d’item)
 ================================ */
@@ -358,5 +374,52 @@
     pointer-events: none;
     z-index: 9999;
 }
+/* =============================== */
+/*   ALIGNEMENT NIVEAU / AFFIXE    */
+/* =============================== */
 
+/* Même largeur que le slot Pierre d'affixe */
+#levelDropdown {
+    width: 100%;
+}
 
+#levelDropdown .dropdown-toggle {
+    width: 100%;
+    font-family: 'Cinzel', serif; /* même typo que les biomes */
+    font-size: 16px;              /* même taille que les biomes */
+    color: #e2d3b5;
+}
+
+#levelDropdown .dropdown-menu {
+    width: 100%;
+}
+
+/* =============================== */
+/*     PIERRE D'AFFIXE LOCK STATE  */
+/* =============================== */
+
+/* Slot normal (déjà dans ton CSS, on étend juste) */
+.pylone-affix-slot {
+    position: relative;
+}
+
+/* État verrouillé */
+.pylone-affix-slot[data-locked="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: rgba(120,120,120,0.4);
+    background: rgba(60,60,60,0.25);
+    box-shadow: none !important;
+}
+
+/* Désactive le hover quand verrouillé */
+.pylone-affix-slot[data-locked="true"]:hover {
+    box-shadow: none;
+    border-color: rgba(120,120,120,0.4);
+    color: #d4af37;
+}
+
+/* État normal (cliquable) */
+.pylone-affix-slot[data-locked="false"] {
+    cursor: pointer;
+}

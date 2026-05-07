@@ -63,23 +63,20 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.25s ease;
     z-index: 10;
     font-family: 'Cinzel', serif;
     font-size: 18px;
-    color: #e2d3b5;
-    text-shadow: 0 0 8px #000, 0 0 16px #000;
     letter-spacing: 1px;
-    border: 2px solid rgba(212,175,55,0.6);
-    background: rgba(212,175,55,0.15);
-}
 
-/* Le texte est masqué par défaut, visible au survol */
-.zone {
+    /* 🔥 Invisibilité totale par défaut */
+    border: 2px solid transparent;
+    background: transparent;
     color: transparent;
     text-shadow: none;
 }
 
+/* Texte visible uniquement au hover */
 .zone:hover {
     color: #e2d3b5;
     text-shadow: 0 0 8px #000, 0 0 16px #000;
@@ -89,16 +86,12 @@
 /*        FORMES DES ZONES         */
 /* =============================== */
 
+/* Pylône : inchangé */
 [data-zone="pylone"] {
     border-radius: 50%;
 }
 
-[data-zone="pylone"]:hover {
-    border-color: rgba(212,175,55,0.6);
-    background: rgba(212,175,55,0.08);
-    box-shadow: 0 0 30px rgba(212,175,55,0.3);
-}
-
+/* Rectangles pour les autres */
 [data-zone="marchand"],
 [data-zone="coffre"],
 [data-zone="forge"],
@@ -106,57 +99,97 @@
     border-radius: 4px;
 }
 
-[data-zone="marchand"]:hover,
-[data-zone="coffre"]:hover,
-[data-zone="forge"]:hover,
-[data-zone="grimoire"]:hover {
+/* =============================== */
+/*        SURBRILLANCES GLOW       */
+/* =============================== */
+
+/* --- PYLÔNE (inchangé) --- */
+[data-zone="pylone"]:hover {
     border-color: rgba(212,175,55,0.6);
     background: rgba(212,175,55,0.08);
-    box-shadow: 0 0 20px rgba(212,175,55,0.3);
+    box-shadow: 0 0 30px rgba(212,175,55,0.3);
+}
+
+/* --- FORGE : Glow Forge Divine (orange incandescent) --- */
+[data-zone="forge"]:hover {
+    border-color: rgba(255,140,0,0.85);
+    background: rgba(255,140,0,0.12);
+    box-shadow:
+        0 0 25px rgba(255,120,0,0.6),
+        0 0 55px rgba(255,80,0,0.35),
+        0 0 90px rgba(255,60,0,0.25);
+}
+
+/* --- MARCHAND : Glow Doré Marchand --- */
+[data-zone="marchand"]:hover {
+    border-color: rgba(212,175,55,0.85);
+    background: rgba(212,175,55,0.10);
+    box-shadow:
+        0 0 25px rgba(212,175,55,0.5),
+        0 0 55px rgba(212,175,55,0.25);
+}
+
+/* --- COFFRE : Glow Mystique (bleu) --- */
+[data-zone="coffre"]:hover {
+    border-color: rgba(80,180,255,0.85);
+    background: rgba(80,180,255,0.12);
+    box-shadow:
+        0 0 25px rgba(80,180,255,0.6),
+        0 0 55px rgba(40,140,255,0.35),
+        0 0 90px rgba(20,100,255,0.25);
+}
+
+/* --- GRIMOIRE : Glow Arcane (violet) --- */
+[data-zone="grimoire"]:hover {
+    border-color: rgba(180,0,255,0.85);
+    background: rgba(180,0,255,0.12);
+    box-shadow:
+        0 0 25px rgba(180,0,255,0.6),
+        0 0 55px rgba(140,0,255,0.35),
+        0 0 90px rgba(100,0,255,0.25);
 }
 
 /* =============================== */
 /*     POSITIONS EN PIXELS         */
-/*   (base 1920×1080)              */
 /* =============================== */
 
 [data-zone="pylone"] {
-    left: 710px;
-    top: 110px;
-    width: 500px;
-    height: 850px;
+    left: 810px;
+    top: 245px;
+    width: 300px;
+    height: 550px;
 }
 
 [data-zone="marchand"] {
-    left: 1280px;
-    top: 350px;
-    width: 300px;
-    height: 450px;
+    left: 1310px;
+    top: 405px;
+    width: 210px;
+    height: 395px;
 }
 
 [data-zone="coffre"] {
-    left: 40px;
-    top: 650px;
-    width: 380px;
-    height: 220px;
+    left: 130px;
+    top: 700px;
+    width: 270px;
+    height: 170px;
 }
 
 [data-zone="forge"] {
-    left: 440px;
-    top: 650px;
-    width: 260px;
-    height: 220px;
+    left: 410px;
+    top: 700px;
+    width: 250px;
+    height: 170px;
 }
 
 [data-zone="grimoire"] {
-    left: 1620px;
-    top: 650px;
-    width: 260px;
-    height: 220px;
+    left: 1580px;
+    top: 690px;
+    width: 240px;
+    height: 190px;
 }
 
 /* =============================== */
-/*        BOUTON RETOUR            */
+/*          BOUTON RETOUR          */
 /* =============================== */
 
 .sanctuary-wrapper [data-action="back-menu"] {

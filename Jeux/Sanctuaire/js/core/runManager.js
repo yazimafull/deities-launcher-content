@@ -1,29 +1,20 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/core/runManager.js
+
    RÔLE :
-     - Orchestration complète d’une run :
-         • Reset des systèmes (ennemis, projectiles, XP, boss)
-         • Application difficulté + affixes + modificateurs
-         • Génération + placement des mobs
-         • Lancement du moteur + chargement du biome
-         • Gestion de fin de run (boss mort → loot)
-         • Gestion du retour au Sanctuaire
-     - Intègre désormais les paramètres du Pylône (biome, niveau, affixes, modificateurs)
+     - Orchestration complète d’une run
+     - Gestion difficulté / affixes / modificateurs
+     - Spawn mobs + biome
+     - Gestion fin de run → lootScreen (récompenses unifiées)
+     - Nettoyage du joueur (perdre tout sauf divines)
+     - Retour Sanctuaire
+     - 🔥 Sauvegarde automatique du personnage actif (Option A)
 
    EXPORTS :
      • launchRunFromPylone(config)
      • startRunManager(config)
      • cleanRun()
      • returnToSanctuary()
-
-   DÉPENDANCES :
-     - enemySystem, projectileSystem, biomeSpawner, HUD, gameLoop, screenManager, playerSystem
-     - Biomes, resetRunXP, resetBoss, openLootScreen
-
-   NOTES :
-     - Aucun calcul d’XP ici → délégué à soulXP.js
-     - runManager ne fait que préparer la run
-     - Compatible avec le nouveau Pylône (biome + niveau + affixes + modificateurs)
 */
 
 import { setState, getState, GameState } from "./state.js";
@@ -46,22 +37,14 @@ import { resetPyloneTimer } from "../world/sanctuary.js";
 
 import { player, updatePlayerStats } from "../systems/player/player.js";
 
+import { addCurrency } from "../systems/currencySystem.js";
+
+/* 🔥 IMPORT SAUVEGARDE MULTI-PERSO */
+import { saveActiveCharacter, resetPlayerRuntime } from "./characterManager.js";
+
 const TILE_SIZE = 64;
 const BORDER_SIZE = 8;
 const PLAYER_MARGIN = 80;
-
-/* ============================================================================
-   RÉCOMPENSE TEMPORAIRE DE RUN
-============================================================================ */
-export const runReward = {
-    gold: 0,
-    items: [],
-    soulXP: 0
-};
-
-export function addGold(amount) { runReward.gold += amount; }
-export function addItem(item) { runReward.items.push(item); }
-export function addSoulXP(amount) { runReward.soulXP += amount; }
 
 /* ============================================================================
    VARIABLES DE RUN
@@ -71,7 +54,7 @@ let levelLootBonus = 0;
 let lastRunConfig = null;
 
 /* ============================================================================
-   🔥 API : appelé par le Pylône
+   API : appelé par le Pylône
 ============================================================================ */
 export function launchRunFromPylone(config) {
 
@@ -87,7 +70,6 @@ export function launchRunFromPylone(config) {
     startRunManager(runConfig);
 }
 
-
 /* ============================================================================
    LANCEMENT D’UNE RUN
 ============================================================================ */
@@ -96,10 +78,14 @@ export function startRunManager(config) {
     console.log("🚀 startRunManager()", config);
 
     lastRunConfig = config;
-    // 🔥 Appliquer l’équipement du pylône au joueur
+    window.lastRunConfig = config;
+
+    /* ======================================================
+       APPLICATION ÉQUIPEMENT DU PYLÔNE
+       (système unifié : player.equipment)
+    ====================================================== */
     if (config.weapon) {
         player.equipment.weapon = config.weapon;
-        player.weapon = config.weapon;
     }
     if (config.armor) {
         player.equipment.armor = config.armor;
@@ -107,40 +93,33 @@ export function startRunManager(config) {
 
     levelLootBonus = 0;
 
-    // RESET DES SYSTÈMES
+    /* ======================================================
+       RESET SYSTÈMES
+    ====================================================== */
     enemies.length = 0;
     projectiles.length = 0;
-    resetRunXP();
+
+    if (!config.continueRun) {
+        resetRunXP();
+    }
     resetBoss();
 
-    // OBJECTIF
     config.objective = 0;
     config.bossSpawned = false;
 
     /* ======================================================
-       DIFFICULTÉ (supporte nombre OU I/II/III)
+       DIFFICULTÉ
     ====================================================== */
-    let level = 1;
-
-    if (typeof config.difficulte === "number") {
-        level = config.difficulte;
-    } else {
-        level = ({ "I": 1, "II": 2, "III": 3 })[config.difficulte] ?? 1;
-    }
+    let level = Number(config.difficulte) || 1;
 
     config.difficulty = level;
+    lastRunConfig.difficulty = level;
 
     /* ======================================================
-       AFFIXES (tableau complet)
+       AFFIXES & MODIFICATEURS
     ====================================================== */
-    const affixes = config.affixes ?? [];
-    config.affixes = affixes;
-
-    /* ======================================================
-       MODIFICATEURS (tableau complet)
-    ====================================================== */
-    const modifiers = config.modifiers ?? [];
-    config.modifiers = modifiers;
+    config.affixes = config.affixes ?? [];
+    config.modifiers = config.modifiers ?? [];
 
     /* ======================================================
        BIOME
@@ -162,13 +141,13 @@ export function startRunManager(config) {
         config.biomeId === "foret" ? "forest" : config.biomeId;
 
     /* ======================================================
-       GÉNÉRATION DES MOBS (affixes inclus)
+       GÉNÉRATION DES MOBS
     ====================================================== */
     const mobs = generateBiomeMobs(
         biomeIdForSpawner,
         level,
         biomeData,
-        affixes
+        config.affixes
     );
 
     config.mobs = mobs;
@@ -189,7 +168,7 @@ export function startRunManager(config) {
     /* ======================================================
        APPLICATION DES MODIFICATEURS
     ====================================================== */
-    applyRunModifiers(modifiers);
+    applyRunModifiers(config.modifiers);
 
     /* ======================================================
        HUD + PLAYER
@@ -212,16 +191,12 @@ export function startRunManager(config) {
     ====================================================== */
     startRun(config);
 
-
     /* ======================================================
        CHARGEMENT DU MODULE DE BIOME
     ====================================================== */
-    console.log("🌍 Chargement biome :", biome.id);
-
     biome.load()
         .then(module => {
             if (getState() !== GameState.PLAYING) return;
-            console.log("📦 Module biome chargé :", biome.id);
             biome.start(module, config);
         })
         .catch(err => console.error("❌ Erreur chargement biome :", err));
@@ -237,17 +212,14 @@ function applyRunModifiers(modifiers) {
         switch (m) {
 
             case "fastEnemies":
-                console.log("⚡ Modificateur : Ennemis rapides");
                 enemies.forEach(e => e.speed *= 1.3);
                 break;
 
             case "moreProjectiles":
-                console.log("🔥 Modificateur : Projectiles ennemis +50%");
                 enemies.forEach(e => e.projectileRate *= 1.5);
                 break;
 
             case "tankEnemies":
-                console.log("🛡️ Modificateur : Ennemis tanky");
                 enemies.forEach(e => e.hp *= 1.4);
                 break;
         }
@@ -255,29 +227,16 @@ function applyRunModifiers(modifiers) {
 }
 
 /* ============================================================================
-   CLEAN RUN
+   CLEAN RUN (TECHNIQUE)
 ============================================================================ */
 export function cleanRun() {
 
-    console.log("🧹 Clean run (reset complet)");
-
-    player.hp = player.stats.maxHp;
-    player.shield = player.stats.maxShield ?? 0;
-
     player.attackCooldown = 0;
-
     player.x = 0;
     player.y = 0;
 
-    //if (player.baseRuntime) Object.assign(player.runtime, player.baseRuntime);
-    //if (player.baseStats) Object.assign(player.stats, player.baseStats);
-
-    if (!player.weapon?.isDivine) player.weapon = null;
-    if (!player.armorItem?.isDivine) player.armorItem = null;
-
     enemies.length = 0;
     projectiles.length = 0;
-    resetRunXP();
     resetBoss();
 
     const canvas = document.getElementById("game-canvas");
@@ -288,34 +247,77 @@ export function cleanRun() {
     }
 
     HUD.hide();
-
-    console.log("✔ CleanRun terminé");
 }
 
 /* ============================================================================
-   🔥 FONCTION MAÎTRE : returnToSanctuary()
+   CLEAN RUN : MORT
+============================================================================ */
+export function cleanRunOnDeath() {
+
+    resetRunXP();
+    resetPlayerRuntime();
+    HUD.hide();
+
+    if (!player.equipment.weapon?.isDivine) player.equipment.weapon = null;
+    if (!player.equipment.armor?.isDivine) player.equipment.armor = null;
+
+    player.equipment.affix = null;
+
+    updatePlayerStats();
+
+    /* 🔥 Sauvegarde après mort */
+    saveActiveCharacter();
+}
+
+
+/* ============================================================================
+   CLEAN RUN : QUITTER VIA PAUSE MENU
+============================================================================ */
+export function cleanRunOnQuit() {
+
+    HUD.hide();
+
+    resetRunXP();
+    resetPlayerRuntime();
+
+
+    if (!player.equipment.weapon?.isDivine) player.equipment.weapon = null;
+    if (!player.equipment.armor?.isDivine) player.equipment.armor = null;
+    player.equipment.affix = null;
+
+    updatePlayerStats();
+
+    /* 🔥 Sauvegarde après abandon */
+    saveActiveCharacter();
+}
+
+/* ============================================================================
+   CLEAN RUN : EXTRACTION
+============================================================================ */
+export function cleanRunOnExtract() {
+
+    HUD.hide();
+    resetRunXP();
+    resetPlayerRuntime();
+    updatePlayerStats();
+    /* 🔥 Extraction = sauvegarde */
+    saveActiveCharacter();
+}
+
+/* ============================================================================
+   RETOUR AU SANCTUAIRE
 ============================================================================ */
 export function returnToSanctuary() {
 
-    console.log("🏛️ Retour au Sanctuaire");
-
     stopRun();
-    cleanRun();
     resetInput();
+    HUD.hide();
 
     document.getElementById("pause-screen")?.classList.add("hidden");
     document.getElementById("death-screen")?.classList.add("hidden");
     document.getElementById("loot-screen")?.classList.add("hidden");
 
     setScreen(Screens.SANCTUARY);
-
-    player.gold += runReward.gold;
-    player.inventory.push(...runReward.items);
-    player.soulXP += runReward.soulXP;
-
-    runReward.gold = 0;
-    runReward.items = [];
-    runReward.soulXP = 0;
 
     resetPyloneTimer();
     runChain = 0;
@@ -324,7 +326,8 @@ export function returnToSanctuary() {
 
     window.dispatchEvent(new CustomEvent("game:resume"));
 
-    console.log("✔ Retour Sanctuaire terminé");
+    /* 🔥 Sauvegarde au retour sanctuaire */
+    saveActiveCharacter();
 }
 
 /* ============================================================================
@@ -339,29 +342,34 @@ window.addEventListener("boss:dead", () => {
 
     runChain++;
 
-    const soulXP = player.runSoulXP ?? 0;
-    const gold = 20 * lastRunConfig.difficulty;
+    const difficulty = lastRunConfig.difficulty;
+
+    const goldBase = difficulty * 2;
+    const goldFinal = goldBase * 10000;
+
+    const soulXPFinal = player.runSoulXP ?? 0;
+    const jobXPFinal = difficulty;
+
     const items = [];
 
-    runReward.gold = gold;
-    runReward.items = items;
-    runReward.soulXP = soulXP;
+    /* 🔥 Appliquer les récompenses */
+    player.soulXP += soulXPFinal;
+    player.jobXP += jobXPFinal;
+    addCurrency("copper", goldFinal);
 
-    // 🔥 Correction : sauvegarde pour continuer la run
-    window.lastRunConfig = structuredClone(lastRunConfig);
-
-    // 🔥 Correction : pause + affichage loot
-    document.getElementById("loot-screen")?.classList.remove("hidden");
-    window.dispatchEvent(new CustomEvent("game:pause"));
-    console.log("LISTENER boss:dead prêt");
+    /* 🔥 Sauvegarde après récompenses */
+    saveActiveCharacter();
 
     openLootScreen({
-        gold,
+        goldFinal,
+        soulXPFinal,
+        jobXPFinal,
         items,
-        soulXP,
-        difficulty: lastRunConfig.difficulty,
+        difficulty,
         runChain,
         levelLootBonus
     });
-});
 
+    document.getElementById("loot-screen")?.classList.remove("hidden");
+    window.dispatchEvent(new CustomEvent("game:pause"));
+});

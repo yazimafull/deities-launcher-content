@@ -2,8 +2,11 @@
    ROUTE : Jeux/Sanctuaire/js/systems/debug/debugStats.js
    RÔLE :
      Affiche toutes les statistiques finales du joueur (player.stats)
-     pour vérifier les resets, les multiplicateurs, les valeurs anormales.
+     + infos de run (XP, bonus, difficulté…)
 */
+
+import { runXP } from "../xp/runXP.js";
+import { getState, GameState } from "../../core/state.js";
 
 export const DebugStats = {
     enabled: true,
@@ -44,7 +47,7 @@ export function drawDebugStats(ctx, canvas, player) {
     // OFFENSE (colonne 1)
     // ============================
     write(0, L1++, "=== OFFENSE ===", 0);
- 
+
     write(0, L1++, "Damage", s.damage);
     write(0, L1++, "Damage Mult", s.damageMultiplier);
 
@@ -152,9 +155,84 @@ export function drawDebugStats(ctx, canvas, player) {
     write(2, L3++, "Energy Max", s.energyMax);
     write(2, L3++, "Energy Regen", s.energyRegen);
 
-    write(2, L3++, "=== WEAPON Element ===", 0);
-    // ⭐ AJOUT : afficher l’élément actuel de l’arme (runtime)
-    write(2, L3++, "Element", player.runtime?.element ?? "physical");
+    // Élément d’arme (manuel)
+    ctx.fillText(
+        "Element: " + (player.equipment.weapon?.element ?? "physical"),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // ============================
+    // RUN INFO
+    // ============================
+    write(2, L3++, "=== RUN INFO ===", 0);
+
+    // Niveau de difficulté réel (celui de la run en cours)
+    const currentRunLevel = window.lastRunConfig?.difficulty ?? 1;
+
+
+    ctx.fillText(
+        "Run Level (Difficulty): " + currentRunLevel,
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // Niveau d'XP de run
+    ctx.fillText(
+        "Run XP Level: " + (runXP.level ?? 1),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // XP actuel
+    ctx.fillText(
+        "XP: " + (runXP.xp ?? 0),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // XP pour le prochain niveau
+    ctx.fillText(
+        "XP To Next: " + (runXP.xpToNext ?? 0),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // XP restant
+    ctx.fillText(
+        "XP Remaining: " + Math.max(0, (runXP.xpToNext ?? 0) - (runXP.xp ?? 0)),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // Bonus d'XP de la run (en %)
+    ctx.fillText(
+        "Run XP Bonus: " + Math.round((player.runXpBonus ?? 0) * 100) + "%",
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+
+    // Run Chain (nombre de runs consécutives)
+    ctx.fillText(
+        "Run Chain: " + (window.runChain ?? 0),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
+    // Soul XP total
+    ctx.fillText(
+        "Soul XP Total: " + (player.soulXP ?? 0),
+        colX[2],
+        colY + L3 * lineHeight
+    );
+    L3++;
 
 
     ctx.restore();

@@ -1,42 +1,33 @@
 ﻿/*
    ROUTE : Jeux/Sanctuaire/js/systems/xp/runXP.js
 
-   ARBORESCENCE :
-     Jeux → Sanctuaire → js → systems → xp → runXP.js
-
    RÔLE :
-     Gestion complète de l’XP de run (progression temporaire).
-     Centralise : calcul XP, orbes physiques, attraction, pickup, level-up.
-     Reset total à chaque run. Indépendant de soulXP et jobXP.
-
-   PRINCIPES :
-     - computeXP(mob, config, playerStats) = formule unique
-     - spawnXP(x, y, value) = création orbe
-     - updateRunXP(player) = attraction + pickup
-     - drawRunXP(ctx) = rendu des orbes
-     - onEnemyKilled(mob, config, player) = point d’entrée unique
+     Gestion complète de l’XP de run (temporaire).
+     - Orbes physiques visibles
+     - Taille dynamique selon la valeur
+     - Couleur dynamique selon la valeur
+     - Attraction + pickup
 */
 
-import { randRange } from "../../core/utils.js";
 import { openLevelUpMenu } from "../levelup.js";
 
-// ================================
-// STATE XP DE RUN
-// ================================
+/* ============================================================================
+   STATE XP DE RUN
+============================================================================ */
 export const runXP = {
     xp: 0,
     xpToNext: 100,
     level: 1
 };
 
-// ================================
-// ORBES XP PHYSIQUES
-// ================================
+/* ============================================================================
+   ORBES XP PHYSIQUES
+============================================================================ */
 export const xpOrbs = [];
 
-// ================================
-// RESET (nouvelle run)
-// ================================
+/* ============================================================================
+   RESET (nouvelle run)
+============================================================================ */
 export function resetRunXP() {
     runXP.xp = 0;
     runXP.level = 1;
@@ -44,56 +35,75 @@ export function resetRunXP() {
     xpOrbs.length = 0;
 }
 
-// ================================
-// CALCUL XP FINALE D’UN MOB
-// ================================
+/* ============================================================================
+   FORMULE XP UNIFIÉE
+============================================================================ */
 export function computeXP(mob, config, playerStats = {}) {
 
-    // baseXP du Bestiary
     let xp = mob.baseXP ?? 1;
 
-    // difficulté (I=1, II=2, III=3)
-    xp *= config.difficulty ?? 1;
-
-    // affixes globaux (exemple)
-    if (config.affix === "xp_bonus") {
-        xp *= 1.25;
+    // Bonus affixes (%)
+    let affixBonusPercent = 0;
+    if (Array.isArray(config.affixes)) {
+        for (const a of config.affixes) {
+            if (a && typeof a.xpBonus === "number") {
+                affixBonusPercent += a.xpBonus;
+            }
+        }
     }
+    xp *= (1 + affixBonusPercent / 100);
 
-    // stats du joueur (xpGain additive)
-    const xpGain = playerStats.xpGain ?? 0;
-    xp *= (1 + xpGain / 100);
+    // Bonus XP de run
+    const runXpBonus = playerStats.runXpBonus ?? 0;
+    xp *= (1 + runXpBonus);
 
     return Math.floor(xp);
 }
 
-// ================================
-// SPAWN XP ORB
-// ================================
+/* ============================================================================
+   SPAWN XP ORB
+   - Taille dynamique (petite)
+   - Couleur dynamique (majuscules OK)
+============================================================================ */
 export function spawnXP(x, y, value) {
+
+    const xp = Math.max(value, 1); // jamais invisible
+
+    // Taille dynamique (entre 2 et 12 px)
+    const size = 2 + Math.min(Math.sqrt(xp) * 1.0, 10);
+
+    // Couleur dynamique
+    let color = "#4AA3FF"; // bleu normal
+
+    if (xp > 20)  color = "#FFFFFF"; // blanc
+    if (xp > 50)  color = "#E500FA"; // violet clair (ta couleur)
+    if (xp > 100) color = "#FAB800"; // doré (ta couleur)
+
     xpOrbs.push({
         x,
         y,
-        size: 8,
-        value: value ?? randRange(4, 8)
+        size,
+        value: xp,
+        color
     });
 }
 
-// ================================
-// EVENT : ENEMY DEATH
-// ================================
+
+/* ============================================================================
+   EVENT : ENEMY DEATH
+============================================================================ */
 export function onEnemyKilled(mob, config, player) {
-
-    // 1) calcul XP
-    const xpValue = computeXP(mob, config, player?.stats);
-
-    // 2) création orbe
+    const xpValue = computeXP(mob, config, {
+        ...player.stats,
+        runXpBonus: player.runXpBonus ?? 0
+    });
     spawnXP(mob.x, mob.y, xpValue);
 }
 
-// ================================
-// AJOUT XP (pickup direct)
-// ================================
+
+/* ============================================================================
+   AJOUT XP
+============================================================================ */
 export function addXP(amount) {
     runXP.xp += amount;
 
@@ -102,31 +112,34 @@ export function addXP(amount) {
     }
 }
 
-// ================================
-// LEVEL UP
-// ================================
+/* ============================================================================
+   LEVEL UP
+============================================================================ */
 function levelUp() {
     runXP.xp -= runXP.xpToNext;
     runXP.level++;
-
     runXP.xpToNext = Math.floor(runXP.xpToNext * 1.25);
-
     openLevelUpMenu();
 }
 
-// ================================
-// UPDATE XP (ATTRACTION + PICKUP)
-// ================================
+/* ============================================================================
+   UPDATE XP (ATTRACTION + PICKUP)
+============================================================================ */
 export function updateRunXP(player) {
 
     if (!player) return;
 
+    // Bonus d'affixes
     const bonusPickup = player.stats?.pickupRange ?? 0;
 
-    const basePickup = 20;
-    const pickupDistance = basePickup + bonusPickup;
+    // Distance où l’orbe COMMENCE à bouger
+    const attractionDistance = 100 + bonusPickup;
 
-    const basePull = 1.5;
+    // Distance où l’orbe est RAMASSÉE (collision)
+    const pickupDistance = 30;
+
+    // Vitesse d’attraction
+    const basePull = 0.5;
     const pull = basePull + bonusPickup * 0.05;
 
     for (let i = xpOrbs.length - 1; i >= 0; i--) {
@@ -137,31 +150,30 @@ export function updateRunXP(player) {
         const dy = player.y - orb.y;
         const dist = Math.hypot(dx, dy);
 
-        // attraction
-        if (dist > 0) {
+        // 🎯 Attraction : l’orbe commence à bouger quand tu es dans la zone
+        if (dist < attractionDistance && dist > pickupDistance) {
             orb.x += (dx / dist) * pull;
             orb.y += (dy / dist) * pull;
         }
 
-        // pickup
-        if (dist < pickupDistance) {
-
+        // 🎯 Pickup : seulement quand ça TOUCHE le joueur
+        if (dist <= pickupDistance) {
             addXP(orb.value);
             xpOrbs.splice(i, 1);
         }
     }
 }
 
-// ================================
-// DRAW ORBS
-// ================================
+
+/* ============================================================================
+   DRAW ORBS
+============================================================================ */
 export function drawRunXP(ctx) {
 
     if (!ctx) return;
 
-    ctx.fillStyle = "#4aa3ff";
-
     for (const o of xpOrbs) {
+        ctx.fillStyle = o.color;
         ctx.beginPath();
         ctx.arc(o.x, o.y, o.size / 2, 0, Math.PI * 2);
         ctx.fill();

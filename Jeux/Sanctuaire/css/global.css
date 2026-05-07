@@ -69,3 +69,24 @@ body {
     /* === AJOUT : réactivation des interactions internes === */
     pointer-events: auto;
 }
+/* =============================== */
+/*        LOOT SCREEN LINES        */
+/* =============================== */
+
+.loot-line {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 18px;
+    margin: 4px 0;
+}
+
+.loot-label {
+    flex: 1;
+}
+
+.loot-value {
+    flex: 0;
+    text-align: right;
+    min-width: 180px; /* garantit l’alignement du + */
+}

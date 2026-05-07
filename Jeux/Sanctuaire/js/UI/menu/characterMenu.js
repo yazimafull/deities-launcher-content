@@ -1,229 +1,227 @@
-﻿﻿﻿// ui/menu/characterMenu.js
+﻿// ROUTE : js/UI/menu/characterMenu.js
+// ROLE  : Gestion du menu personnage (sélection, création, suppression)
 
-// ================================
-// STATE LOCAL
-// ================================
-export let selectedClass = null;
-export let selectedCharacterName = null;
+import {
+    getCharacters,
+    createCharacter,
+    deleteCharacter,
+    setActiveCharacter,
+    getActiveCharacterId,
+} from "../../core/characterManager.js";
 
-const STORAGE_KEY = "deitiesPersonnages";
 
-// ================================
-// STORAGE
-// ================================
-export function loadCharacters() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+// ============================================================================
+// SELECTEURS
+// ============================================================================
+const screen = document.querySelector('[data-screen="character-select"]');
+const listContainer = screen.querySelector('[data-role="character-list"]');
+
+// Boutons
+const createBtn = screen.querySelector('[data-action="create-character"]');
+const deleteBtn = screen.querySelector('[data-action="delete-character"]');
+const playBtn = screen.querySelector('[data-action="play"]');
+
+// Overlays
+const createOverlay = screen.querySelector('[data-overlay="create-character"]');
+const deleteOverlay = screen.querySelector('[data-overlay="delete-character"]');
+
+// Inputs création
+const nameInput = createOverlay.querySelector('[data-input="name"]');
+let selectedClass = null;
+
+// Nom du perso à supprimer
+const deleteNameLabel = deleteOverlay.querySelector('[data-role="delete-name"]');
+
+// ============================================================================
+// FONCTIONS UTILITAIRES
+// ============================================================================
+/**
+ * Crée un élément DOM avec une classe et un contenu texte.
+ * @param {string} tag - Balise HTML (ex: "div").
+ * @param {string} className - Classe CSS.
+ * @param {string} text - Contenu texte.
+ * @returns {HTMLElement} - Élément DOM créé.
+ */
+function createElement(tag, className, text = "") {
+    const el = document.createElement(tag);
+    el.className = className;
+    if (text) el.textContent = text;
+    return el;
 }
 
-export function saveCharacters(characters) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+/**
+ * Parse les données d'un personnage depuis localStorage.
+ * @param {string} id - ID du personnage.
+ * @returns {object|null} - Objet profil ou null si erreur.
+ */
+function getCharacterProfile(id) {
+    const raw = localStorage.getItem(`character_${id}`);
+    if (!raw) return null;
+
+    try {
+        return JSON.parse(raw);
+    } catch (e) {
+        console.error(`Erreur de parsing pour l'ID ${id}:`, e);
+        return null;
+    }
 }
 
-// ================================
-// INIT (appelé par loader)
-// ================================
-export function initCharacterMenu() {
+// ============================================================================
+// RENDU DE LA LISTE
+// ============================================================================
+function renderCharacterList() {
+    const ids = getCharacters();
+    listContainer.innerHTML = "";
 
-    const list = document.querySelector('[data-role="character-list"]');
-    const playBtn = document.querySelector('[data-action="play"]');
-    const deleteBtn = document.querySelector('[data-action="delete-character"]');
+    const fragment = document.createDocumentFragment(); // Optimisation DOM
 
-    if (!list) return;
+    for (const id of ids) {
+        const profile = getCharacterProfile(id);
+        if (!profile) continue;
 
-    // reset UI
-    list.innerHTML = "";
-    selectedCharacterName = null;
+        // Création des éléments
+        const item = createElement("div", "character-item");
+        item.dataset.id = id;
 
-    // load characters
-    loadCharacters().forEach(addCharacterToList);
+        item.appendChild(createElement("div", "char-name", profile.name));
+        item.appendChild(createElement("div", "char-class", profile.classe));
+        item.appendChild(createElement("div", "char-level", "Niv. " + (profile.soulLevel ?? 1)));
 
-    // reset buttons
-    if (playBtn) playBtn.disabled = true;
-    if (deleteBtn) deleteBtn.classList.add("hidden");
-
-    bindEvents();
-
-    console.log("✅ CharacterMenu ready");
-}
-
-// ================================
-// EVENTS
-// ================================
-function bindEvents() {
-
-    const createBtn = document.querySelector('[data-action="create-character"]');
-    const playBtn   = document.querySelector('[data-action="play"]');
-    const deleteBtn = document.querySelector('[data-action="delete-character"]');
-
-    const createOverlay = document.querySelector('[data-overlay="create-character"]');
-    const deleteOverlay = document.querySelector('[data-overlay="delete-character"]');
-
-    const confirmCreate = document.querySelector('[data-action="confirm-create"]');
-    const confirmDelete = document.querySelector('[data-action="confirm-delete"]');
-
-    const cancelBtns = document.querySelectorAll('[data-action="close"]');
-
-    // ================================
-    // OPEN CREATE
-    // ================================
-    createBtn?.addEventListener("click", () => {
-        resetCreatePanel();
-        createOverlay?.classList.remove("hidden");
-    });
-
-    // ================================
-    // CLOSE OVERLAYS
-    // ================================
-    cancelBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            createOverlay?.classList.add("hidden");
-            deleteOverlay?.classList.add("hidden");
-        });
-    });
-
-    // ================================
-    // CLASS SELECT
-    // ================================
-    document.querySelectorAll(".class").forEach(btn => {
-        btn.addEventListener("click", () => {
-
-            document.querySelectorAll(".class")
-                .forEach(b => b.classList.remove("selected"));
-
-            btn.classList.add("selected");
-            selectedClass = btn.dataset.class;
-        });
-    });
-
-    // ================================
-    // CREATE CHARACTER
-    // ================================
-    confirmCreate?.addEventListener("click", () => {
-
-        const input = document.querySelector('[data-input="name"]');
-        const name = input?.value.trim();
-
-        if (!name) return alert("Nom requis");
-        if (!selectedClass) return alert("Classe requise");
-
-        const chars = loadCharacters();
-
-        if (chars.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-            return alert("Nom déjà utilisé");
+        // Gestion de la sélection
+        item.addEventListener("click", () => selectCharacter(id));
+        if (getActiveCharacterId() === id) {
+            item.classList.add("selected");
         }
+        console.log("PROFILE:", profile);
 
-        const newChar = {
-            name,
-            avatarClass: selectedClass
-        };
+        fragment.appendChild(item);
+    }
 
-        chars.push(newChar);
-        saveCharacters(chars);
-
-        addCharacterToList(newChar);
-        selectCharacter(newChar.name);
-
-        createOverlay?.classList.add("hidden");
-
-        if (playBtn) playBtn.disabled = false;
-    });
-
-    // ================================
-    // DELETE CHARACTER
-    // ================================
-    deleteBtn?.addEventListener("click", () => {
-
-        if (!selectedCharacterName) return;
-
-        deleteOverlay?.classList.remove("hidden");
-
-        const label = document.querySelector('[data-role="delete-name"]');
-        if (label) label.textContent = selectedCharacterName;
-    });
-
-    confirmDelete?.addEventListener("click", () => {
-
-        let chars = loadCharacters();
-
-        chars = chars.filter(c => c.name !== selectedCharacterName);
-
-        saveCharacters(chars);
-
-        document
-            .querySelector(`.character-item[data-name="${selectedCharacterName}"]`)
-            ?.remove();
-
-        selectedCharacterName = null;
-
-        deleteOverlay?.classList.add("hidden");
-
-        if (playBtn) playBtn.disabled = true;
-        deleteBtn?.classList.add("hidden");
-    });
-
-    // ⚠️ IMPORTANT :
-    // ❌ PAS de logique PLAY ici
-    // 👉 c'est main.js qui gère le lancement
+    listContainer.appendChild(fragment);
+    updatePlayButton();
+    updateDeleteButton();
 }
 
-// ================================
-// UI
-// ================================
-export function addCharacterToList(character) {
+// ============================================================================
+// GESTION DE LA SÉLECTION
+// ============================================================================
+function selectCharacter(id) {
+    setActiveCharacter(id);
 
-    const list = document.querySelector('[data-role="character-list"]');
-    if (!list) return;
+    // Désélectionne tous les éléments
+    listContainer.querySelectorAll(".character-item")
+        .forEach(el => el.classList.remove("selected"));
 
-    const el = document.createElement("div");
+    // Sélectionne l'élément cliqué
+    const selectedItem = listContainer.querySelector(`[data-id="${id}"]`);
+    if (selectedItem) selectedItem.classList.add("selected");
 
-    el.className = "character-item";
-    el.dataset.name = character.name;
-
-    el.innerHTML = `
-        <span>${character.name}</span>
-        <small>${character.avatarClass}</small>
-    `;
-
-    el.addEventListener("click", () => selectCharacter(character.name));
-
-    list.appendChild(el);
+    updatePlayButton();
+    updateDeleteButton();
 }
 
-// ================================
-// SELECT CHARACTER
-// ================================
-export function selectCharacter(name) {
-
-    selectedCharacterName = name;
-
-    document.querySelectorAll(".character-item")
-        .forEach(i => i.classList.remove("selected"));
-
-    document
-        .querySelector(`.character-item[data-name="${name}"]`)
-        ?.classList.add("selected");
-
-    const playBtn = document.querySelector('[data-action="play"]');
-    const deleteBtn = document.querySelector('[data-action="delete-character"]');
-
-    if (playBtn) playBtn.disabled = false;
-    if (deleteBtn) deleteBtn.classList.remove("hidden");
-
-    const chars = loadCharacters();
-    const char = chars.find(c => c.name === name);
-    if (char) sessionStorage.setItem("activeCharacter", JSON.stringify(char));
+// ============================================================================
+// GESTION DES BOUTONS
+// ============================================================================
+function updatePlayButton() {
+    playBtn.disabled = !getActiveCharacterId();
 }
 
-// ================================
-// RESET CREATE PANEL
-// ================================
-export function resetCreatePanel() {
+function updateDeleteButton() {
+    deleteBtn.classList.toggle("hidden", !getActiveCharacterId());
+}
 
-    const input = document.querySelector('[data-input="name"]');
-    if (input) input.value = "";
-
+// ============================================================================
+// CRÉATION DE PERSONNAGE
+// ============================================================================
+function openCreateOverlay() {
+    nameInput.value = "";
     selectedClass = null;
 
-    document.querySelectorAll(".class")
-        .forEach(b => b.classList.remove("selected"));
+    // Réinitialise la sélection des classes
+    createOverlay.querySelectorAll("[data-class]")
+        .forEach(btn => btn.classList.remove("selected"));
+
+    createOverlay.classList.remove("hidden");
+}
+
+function closeCreateOverlay() {
+    createOverlay.classList.add("hidden");
+}
+
+function confirmCreate() {
+    const name = nameInput.value.trim();
+    if (!name || !selectedClass) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+    }
+
+    const id = createCharacter(name, selectedClass);
+
+    setActiveCharacter(id);
+    closeCreateOverlay();
+    renderCharacterList();
+}
+
+// ============================================================================
+// SUPPRESSION DE PERSONNAGE
+// ============================================================================
+function openDeleteOverlay() {
+    const id = getActiveCharacterId();
+    if (!id) return;
+
+    const profile = getCharacterProfile(id);
+    deleteNameLabel.textContent = profile?.name ?? "ce personnage";
+    deleteOverlay.classList.remove("hidden");
+}
+
+function closeDeleteOverlay() {
+    deleteOverlay.classList.add("hidden");
+}
+
+function confirmDelete() {
+    const id = getActiveCharacterId();
+    if (!id) return;
+
+    deleteCharacter(id);
+    closeDeleteOverlay();
+    renderCharacterList();
+}
+
+// ============================================================================
+// INITIALISATION
+// ============================================================================
+function initClassSelection() {
+    createOverlay.querySelectorAll("[data-class]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            selectedClass = btn.dataset.class;
+            createOverlay.querySelectorAll("[data-class]")
+                .forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+        });
+    });
+}
+
+export function initCharacterMenu() {
+    // Initialisation des boutons
+    createBtn.addEventListener("click", openCreateOverlay);
+    deleteBtn.addEventListener("click", openDeleteOverlay);
+
+    // Overlay création
+    createOverlay.querySelector('[data-action="confirm-create"]')
+        .addEventListener("click", confirmCreate);
+    createOverlay.querySelector('[data-action="close"]')
+        .addEventListener("click", closeCreateOverlay);
+
+    // Overlay suppression
+    deleteOverlay.querySelector('[data-action="confirm-delete"]')
+        .addEventListener("click", confirmDelete);
+    deleteOverlay.querySelector('[data-action="close"]')
+        .addEventListener("click", closeDeleteOverlay);
+
+    // Initialisation de la sélection de classe
+    initClassSelection();
+
+    // Rendu initial
+    renderCharacterList();
 }

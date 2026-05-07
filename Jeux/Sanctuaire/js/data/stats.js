@@ -18,17 +18,15 @@ export const Stats = {
     // 🟥 OFFENSIF
     // ============================
 
-    // Base universelle (ex-attackDamage)
     damage: { id: "damage", category: "offense", type: "additive", description: "Dégâts universels." },
-    damageMultiplier: { id: "damageMultiplier", category: "offense", type: "multiplicative", description: "Multiplicateur de dégâts." },
+    damageMultiplier: { id: "damageMultiplier", category: "offense", type: "multiplicative" },
 
-    // Dégâts élémentaires séparés
-    physicalDamage: { id: "physicalDamage", category: "offense", type: "additive", description: "Dégâts physiques." },
-    fireDamage: { id: "fireDamage", category: "offense", type: "additive", description: "Dégâts de feu." },
-    iceDamage: { id: "iceDamage", category: "offense", type: "additive", description: "Dégâts de glace." },
-    lightningDamage: { id: "lightningDamage", category: "offense", type: "additive", description: "Dégâts de foudre." },
-    shadowDamage: { id: "shadowDamage", category: "offense", type: "additive", description: "Dégâts d'ombre." },
-    poisonDamage: { id: "poisonDamage", category: "offense", type: "additive", description: "Dégâts de poison." },
+    physicalDamage: { id: "physicalDamage", category: "offense", type: "additive" },
+    fireDamage: { id: "fireDamage", category: "offense", type: "additive" },
+    iceDamage: { id: "iceDamage", category: "offense", type: "additive" },
+    lightningDamage: { id: "lightningDamage", category: "offense", type: "additive" },
+    shadowDamage: { id: "shadowDamage", category: "offense", type: "additive" },
+    poisonDamage: { id: "poisonDamage", category: "offense", type: "additive" },
 
     physicalDamageMultiplier: { id: "physicalDamageMultiplier", category: "offense", type: "multiplicative" },
     fireDamageMultiplier: { id: "fireDamageMultiplier", category: "offense", type: "multiplicative" },
@@ -37,14 +35,12 @@ export const Stats = {
     shadowDamageMultiplier: { id: "shadowDamageMultiplier", category: "offense", type: "multiplicative" },
     poisonDamageMultiplier: { id: "poisonDamageMultiplier", category: "offense", type: "multiplicative" },
 
-    // Critiques
-    critChance: { id: "critChance", category: "offense", type: "additive", description: "Chance de critique." },
+    critChance: { id: "critChance", category: "offense", type: "additive" },
     critChanceMultiplier: { id: "critChanceMultiplier", category: "offense", type: "multiplicative" },
 
-    critMultiplier: { id: "critMultiplier", category: "offense", type: "additive", description: "Multiplicateur critique de base." },
+    critMultiplier: { id: "critMultiplier", category: "offense", type: "additive" },
     critMultiplierMultiplier: { id: "critMultiplierMultiplier", category: "offense", type: "multiplicative" },
 
-    // Projectiles
     projectileSpeed: { id: "projectileSpeed", category: "offense", type: "additive" },
     projectileSpeedMultiplier: { id: "projectileSpeedMultiplier", category: "offense", type: "multiplicative" },
 
@@ -54,13 +50,11 @@ export const Stats = {
     projectileCount: { id: "projectileCount", category: "offense", type: "additive" },
     projectileCountMultiplier: { id: "projectileCountMultiplier", category: "offense", type: "multiplicative" },
 
-    // DOT
     dotDamage: { id: "dotDamage", category: "offense", type: "additive" },
     dotDamageMultiplier: { id: "dotDamageMultiplier", category: "offense", type: "multiplicative" },
 
     dotDuration: { id: "dotDuration", category: "offense", type: "additive" },
     dotDurationMultiplier: { id: "dotDurationMultiplier", category: "offense", type: "multiplicative" },
-
 
     attackSpeed: { id: "attackSpeed", category: "offense", type: "additive" },
     attackSpeedMultiplier: { id: "attackSpeedMultiplier", category: "offense", type: "multiplicative" },
@@ -90,7 +84,6 @@ export const Stats = {
     blockChance: { id: "blockChance", category: "defense", type: "additive" },
     blockPower: { id: "blockPower", category: "defense", type: "additive" },
 
-    // Résistances élémentaires
     physicalResistance: { id: "physicalResistance", category: "defense", type: "additive" },
     fireResistance: { id: "fireResistance", category: "defense", type: "additive" },
     iceResistance: { id: "iceResistance", category: "defense", type: "additive" },
@@ -98,7 +91,6 @@ export const Stats = {
     poisonResistance: { id: "poisonResistance", category: "defense", type: "additive" },
     shadowResistance: { id: "shadowResistance", category: "defense", type: "additive" },
 
-    // Shield efficiency par type
     shieldEfficiencyPhysical: { id: "shieldEfficiencyPhysical", category: "defense", type: "additive" },
     shieldEfficiencyFire: { id: "shieldEfficiencyFire", category: "defense", type: "additive" },
     shieldEfficiencyIce: { id: "shieldEfficiencyIce", category: "defense", type: "additive" },
@@ -117,8 +109,10 @@ export const Stats = {
     lootQuantity: { id: "lootQuantity", category: "utility", type: "additive" },
     lootQuality: { id: "lootQuality", category: "utility", type: "additive" },
 
-    currencyGain: { id: "currencyGain", category: "utility", type: "additive" },
-    xpGain: { id: "xpGain", category: "utility", type: "additive" },
+    goldGain: { id: "goldGain", category: "utility", type: "additive", description: "Bonus d'or gagné." },
+    crystalGain: { id: "crystalGain", category: "utility", type: "additive" },
+    soulGain: { id: "soulGain", category: "utility", type: "additive" },
+    componentGain: { id: "componentGain", category: "utility", type: "additive" },
 
     pickupRange: { id: "pickupRange", category: "utility", type: "additive" },
 
@@ -126,6 +120,11 @@ export const Stats = {
     // ============================
     // 🟪 MÉTA
     // ============================
+
+    runXpBonus: { id: "runXpBonus", category: "meta", type: "additive", description: "Bonus d'XP de run." },
+
+    soulXpGain: { id: "soulXpGain", category: "meta", type: "additive", description: "Bonus d'XP d'âme." },
+    jobXpGain: { id: "jobXpGain", category: "meta", type: "additive", description: "Bonus d'XP de métier." },
 
     spiritMax: { id: "spiritMax", category: "meta", type: "additive" },
     spiritRegen: { id: "spiritRegen", category: "meta", type: "additive" },

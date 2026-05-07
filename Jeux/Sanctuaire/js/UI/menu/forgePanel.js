@@ -291,8 +291,6 @@ function openForgeItemSelector(targetSlot) {
 
         row.onclick = () => {
 
-            consumeItemInstance(item);
-
             targetSlot.item = item;
             updateSlotVisual(targetSlot, item);
 
@@ -326,21 +324,22 @@ function assembleItems() {
     const weaponPieces = weaponSlots.map(s => s.item).filter(Boolean);
     const armorPieces = armorSlots.map(s => s.item).filter(Boolean);
 
-    // Assemblage arme
+    // Consommer les pièces maintenant
+    weaponPieces.forEach(piece => consumeItemInstance(piece));
+    armorPieces.forEach(piece => consumeItemInstance(piece));
+
     if (weaponPieces.length >= 2) {
         const finalWeapon = assembleWeaponSimple(weaponPieces);
         addToInventory(finalWeapon);
         autoEquipIfPossible();
     }
 
-    // Assemblage armure
     if (armorPieces.length >= 2) {
         const finalArmor = assembleArmorSimple(armorPieces);
         addToInventory(finalArmor);
         autoEquipIfPossible();
     }
 
-    // Reset des slots
     weaponSlots.forEach(s => {
         s.item = null;
         updateSlotVisual(s, null);
@@ -353,6 +352,7 @@ function assembleItems() {
 
     updateAssemblySummary();
 }
+
 
 /* ======================================================
    RÉCAP STATS (nouveau système)

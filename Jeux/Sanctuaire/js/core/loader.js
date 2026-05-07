@@ -26,11 +26,13 @@
 import "./state.js";
 import "./input.js";
 import "./utils.js";
+import "./autoSave.js";
 
 import "./runManager.js";
 import "./gameLoop.js";
 import "./main.js";
 import "./screenManager.js";
+import "./characterManager.js";
 
 // ================================
 // UI SCALE
@@ -116,6 +118,7 @@ import { initOptionsMenu } from "../UI/menu/optionsMenu.js";
 import { HUD } from "../UI/hud/hudSystem.js";
 import { initLootScreen } from "../UI/loot/lootScreen.js";
 import { initPylonePanel } from "../UI/menu/pylonePanel.js";
+import { attachPlayButton } from "./main.js";
 
 
 // ================================
@@ -149,6 +152,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!UI_INITIALIZED) {
 
         initCharacterMenu();
+        attachPlayButton();
         initPauseMenu();
         initOptionsMenu();
         initLootScreen();

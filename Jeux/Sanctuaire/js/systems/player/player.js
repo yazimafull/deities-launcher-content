@@ -3,31 +3,34 @@
 
    RÔLE :
      Conteneur RUNTIME du joueur (en jeu uniquement).
-     Ne contient :
-       - position & mouvement
-       - hp / shield runtime
-       - équipement runtime (copié depuis basePlayer)
-       - stats finales (calculées)
-       - flags runtime
-
-   PRINCIPES :
-     - Le permanent vient de basePlayer.js (inventaire, talents, affixes…)
-     - Les stats finales viennent de playerStatsSystem.js
-     - Le runtime (hp, shield…) vient de playerRuntimeSystem.js
-     - Aucune stat de combat n’est stockée ici.
+     Ne contient PAS les données permanentes.
+     Le permanent vient de characterManager.loadActiveCharacter().
 */
 
-import { basePlayer } from "../../data/playerBase.js";
 import { buildPlayerStats } from "./playerStatsSystem.js";
 import { applyPlayerRuntimeStats } from "./playerRuntimeSystem.js";
 
-// ================================
+// ============================================================================
 // INSTANCE RUNTIME DU JOUEUR
-// ================================
+// ============================================================================
 export const player = {
 
-    // --- Données permanentes clonées depuis basePlayer ---
-    ...structuredClone(basePlayer),
+    // --- Données permanentes (injectées par loadActiveCharacter) ---
+    name: "",
+    classe: "",
+    soulXP: 0,
+    jobXP: 0,
+    unlockedLevels: 1,
+    inventory: [],
+    equipment: {
+        weapon: null,
+        armor: null,
+        trinket: null,
+        affix: null
+    },
+    divines: [],
+    talents: {},
+    unspentTalentPoints: 0,
 
     // --- Position & mouvement ---
     x: 0,
@@ -39,40 +42,35 @@ export const player = {
     hp: 0,
     shield: 0,
 
-    // --- Équipement runtime (structure attendue par buildPlayerStats) ---
-    equipment: {
-        weapon: null,
-        armor: null,
-        trinkets: []
-    },
-
-    // --- Sources runtime supplémentaires (toujours présentes même vides) ---
+    // --- Runtime sources ---
     trinkets: [],
     buffs: [],
-    talents: [],
     gems: [],
 
-    // --- Stats finales (remplies par buildPlayerStats) ---
-    stats: structuredClone(basePlayer.stats),
+    // --- Bonus runtime de run ---
+    runXpBonus: 0,
+    runAffixes: [],
+    runStats: {},
+
+    // --- Stats finales ---
+    stats: {},
 
     // --- Flags runtime ---
     isMob: false,
+    activeElement: null,
 };
 
-// ================================
+// ============================================================================
 // INIT PLAYER (entrée dans une run)
-// ================================
-export function initPlayer(x, y, character = null) {
+// ============================================================================
+export function initPlayer(x, y) {
 
     // Position initiale
     player.x = x;
     player.y = y;
 
-    // Merge du personnage sélectionné (permanent)
-    if (character) {
-        Object.assign(player, character);
-    }
-    player.activeElement = null; // fire / ice / lightning / physical
+    // Élément actif par défaut
+    player.activeElement = null;
 
     // 1) Calcul des stats finales
     updatePlayerStats();
@@ -85,54 +83,37 @@ export function initPlayer(x, y, character = null) {
     player.shield = player.stats.maxShield;
 }
 
-// ================================
+// ============================================================================
 // RESET PLAYER (retour Sanctuaire)
-// ================================
+// ============================================================================
 export function resetPlayer() {
-
-    const x = player.x;
-    const y = player.y;
-
-    // Reset complet du permanent
-    Object.assign(player, structuredClone(basePlayer));
-
-    // Restaurer la position
-    player.x = x;
-    player.y = y;
 
     // Reset mouvement
     player.dx = 0;
     player.dy = 0;
 
-    // Reset équipement runtime
-    player.equipment.weapon = null;
-    player.equipment.armor = null;
-    player.equipment.trinkets = [];
-
-    // Élément actif par défaut
-    player.activeElement = "physical";
-
-    // Reset sources runtime
+    // Reset runtime
     player.trinkets = [];
     player.buffs = [];
-    player.talents = [];
     player.gems = [];
+    player.runXpBonus = 0;
+    player.runAffixes = [];
+    player.runStats = {};
 
-    // 1) Recalcul des stats finales
+    // Recalcul des stats finales
     updatePlayerStats();
 
-    // 2) Application des stats runtime
+    // Application des stats runtime
     applyPlayerRuntimeStats(player);
 
-    // 3) HP / Shield corrects
+    // HP / Shield corrects
     player.hp = player.stats.maxHp;
     player.shield = player.stats.maxShield;
 }
 
-
-// ================================
+// ============================================================================
 // CALCUL DES STATS FINALES
-// ================================
+// ============================================================================
 export function updatePlayerStats() {
     player.stats = buildPlayerStats(player);
 }

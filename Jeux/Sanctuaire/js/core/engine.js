@@ -47,7 +47,7 @@ import {
     drawDamageNumbers
 } from "../systems/damageSystem.js";
 
-import { updateRunXP, runXP, spawnXP, computeXP } from "../systems/xp/runXP.js";
+import { updateRunXP, runXP, spawnXP, computeXP, drawRunXP } from "../systems/xp/runXP.js";
 
 import {
     updateBoss,
@@ -180,6 +180,13 @@ export function updateEngine(dt, context) {
 export function renderEngine(ctx, canvas, context) {
 
     if (!player) return;
+    
+    // 🔥 STOP RENDERING WHEN PAUSED
+    if (getState() === GameState.PAUSED) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        HUD.draw(ctx, canvas);
+        return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -194,6 +201,7 @@ export function renderEngine(ctx, canvas, context) {
 
     drawEnemies(ctx);
     drawProjectiles(ctx);
+    drawRunXP(ctx);
 
     if (context.bossSpawned && boss) {
         drawBoss(ctx, camera, canvas);

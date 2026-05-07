@@ -11,7 +11,7 @@
 */
 
 import { setState, GameState, getState } from "../../core/state.js";
-import { returnToSanctuary } from "../../core/runManager.js";   // 🔥 NOUVEL IMPORT
+import { returnToSanctuary, cleanRunOnQuit } from "../../core/runManager.js";   // 🔥 NOUVEL IMPORT
 
 let pauseOverlay = null;
 let sanctuaryConfirmOverlay = null;
@@ -103,11 +103,14 @@ export function initPauseMenu() {
 
     // ================================
     // CONFIRMATION : Retour Sanctuaire
-    // 🔥 VERSION FINALE : utilise la fonction maître
+    // 🔥 VERSION FINALE : utilise cleanRunOnQuit()
     // ================================
     sanctuaryConfirmOkBtn?.addEventListener("click", () => {
         hideSanctuaryConfirm();
         pauseOverlay.classList.add("hidden");
-        returnToSanctuary();   // 🔥 LE CŒUR DU SYSTÈME
+
+        cleanRunOnQuit();      // 🔥 PUNITION : quitter = perte stuff
+        returnToSanctuary();   // 🔥 Retour Sanctuaire
     });
+
 }

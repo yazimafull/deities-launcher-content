@@ -1,48 +1,25 @@
 ﻿/*
    ROUTE : js/systems/inventorySystem.js
-   RÔLE : Gestion de l'inventaire PERMANENT du joueur (coffre du sanctuaire)
-   EXPORTS : addToInventory, removeFromInventory, getInventoryQuantity, loadInventory
-   DÉPENDANCES : ../data/playerBase.js (playerBase)
-   NOTES :
-     - Utilise playerBase.inventory comme coffre unique.
-     - Supporte les items stackables (quantity) et non-stackables.
-     - Sauvegarde automatique dans localStorage.
-     - Utilisé par : marchand, forge, assembleur, pylône, récompenses.
+
+   RÔLE :
+     Gestion de l’inventaire PERMANENT du personnage actif.
+     - Stockage des items persistants (hors-run)
+     - Support stackable / non-stackable
+     - Sauvegarde via saveActiveCharacter()
+     - Utilisé par : marchand, forge, assembleur, pylône, lootScreen
 */
 
-import { basePlayer as player } from "../data/playerBase.js";
+import { player } from "../systems/player/player.js";
+import { saveActiveCharacter } from "../core/characterManager.js";
 
-// ===============================
-// SAUVEGARDE INVENTAIRE
-// ===============================
-function saveInventory() {
-    try {
-        localStorage.setItem("playerInventory", JSON.stringify(player.inventory));
-    } catch (e) {
-        console.warn("[Inventory] Impossible de sauvegarder l'inventaire", e);
-    }
-}
-
-// ===============================
-// CHARGEMENT INVENTAIRE
-// ===============================
-export function loadInventory() {
-    try {
-        const raw = localStorage.getItem("playerInventory");
-        if (raw) {
-            player.inventory = JSON.parse(raw);
-        }
-    } catch (e) {
-        console.warn("[Inventory] Impossible de charger l'inventaire", e);
-    }
-}
-
-// ===============================
-// AJOUTER UN OBJET AU COFFRE
-// ===============================
+/* ============================================================================
+   AJOUTER UN OBJET AU COFFRE
+   - Stackable : fusionne les quantités
+   - Non-stackable : ajoute une instance
+============================================================================ */
 export function addToInventory(item) {
 
-    // Items stackables (composants, matériaux…)
+    // Stackable (composants, matériaux…)
     if (item.quantity != null) {
         const existing = player.inventory.find(i => i.id === item.id);
 
@@ -52,18 +29,20 @@ export function addToInventory(item) {
             player.inventory.push({ ...item });
         }
 
-        saveInventory();
+        saveActiveCharacter(); // 🔥 Sauvegarde multi-perso
         return;
     }
 
-    // Items non stackables (armes, armures, pièces…)
+    // Non stackable (armes, armures, pièces…)
     player.inventory.push({ ...item });
-    saveInventory();
+    saveActiveCharacter(); // 🔥 Sauvegarde multi-perso
 }
 
-// ===============================
-// RETIRER UN OBJET DU COFFRE
-// ===============================
+/* ============================================================================
+   RETIRER UN OBJET DU COFFRE
+   - Stackable : décrémente quantité
+   - Non-stackable : supprime l’instance
+============================================================================ */
 export function removeFromInventory(itemId, amount = 1) {
 
     const entry = player.inventory.find(i => i.id === itemId);
@@ -77,64 +56,50 @@ export function removeFromInventory(itemId, amount = 1) {
             player.inventory = player.inventory.filter(i => i.id !== itemId);
         }
 
-        saveInventory();
+        saveActiveCharacter(); // 🔥 Sauvegarde multi-perso
         return true;
     }
 
     // Non stackable
     player.inventory = player.inventory.filter(i => i.id !== itemId);
-    saveInventory();
+    saveActiveCharacter(); // 🔥 Sauvegarde multi-perso
     return true;
 }
 
-// ===============================
-// OBTENIR LA QUANTITÉ POSSÉDÉE
-// ===============================
+/* ============================================================================
+   OBTENIR LA QUANTITÉ POSSÉDÉE (stackables uniquement)
+============================================================================ */
 export function getInventoryQuantity(itemId) {
     const entry = player.inventory.find(i => i.id === itemId);
     return entry?.quantity ?? 0;
 }
 
-// ===============================
-// COMPTEUR (alias plus lisible pour la Forge)
-// ===============================
-export function countItem(itemId) {
-    return getInventoryQuantity(itemId);
-}
+/* ============================================================================
+   ALIAS (Forge / Assembleur)
+============================================================================ */
+export const countItem = getInventoryQuantity;
+export const removeItem = removeFromInventory;
+export const addItemToInventory = addToInventory;
 
-// ===============================
-// SUPPRESSION (alias Forge)
-// ===============================
-export function removeItem(itemId, qty = 1) {
-    return removeFromInventory(itemId, qty);
-}
-
-// ===============================
-// CONSOMMER UNE INSTANCE PRÉCISE
-// ===============================
+/* ============================================================================
+   CONSOMMER UNE INSTANCE PRÉCISE (non-stackable)
+============================================================================ */
 export function consumeItemInstance(instance) {
     const inv = player.inventory;
     const index = inv.indexOf(instance);
 
     if (index !== -1) {
         inv.splice(index, 1);
-        saveInventory();
+        saveActiveCharacter(); // 🔥 Sauvegarde multi-perso
         return true;
     }
 
     return false;
 }
 
-// ===============================
-// AJOUT (alias Forge)
-// ===============================
-export function addItemToInventory(item) {
-    return addToInventory(item);
-}
-
-// ===============================
-// OBTENIR L'INVENTAIRE ENTIER (lecture seule)
-// ===============================
+/* ============================================================================
+   OBTENIR L’INVENTAIRE ENTIER (lecture seule)
+============================================================================ */
 export function getInventory() {
     return player.inventory;
 }

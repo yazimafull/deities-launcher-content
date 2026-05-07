@@ -80,7 +80,7 @@ export const ForgeRecipes = {
             slot: "frame",
             affixes: {},
             stats: {
-                attackRange: 120,     // portée d’attaque
+                attackRange: 220,     // portée d’attaque
                 projectileRange: 300  // portée du projectile
             }
         }
@@ -203,7 +203,7 @@ export const ForgeRecipes = {
             affixes: {},
             stats: {
                 maxHp: 10,
-                moveSpeed: 40
+                moveSpeed: 70
             }
         }
     },

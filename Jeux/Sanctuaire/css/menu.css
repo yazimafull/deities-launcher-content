@@ -160,7 +160,7 @@
 .character-list::-webkit-scrollbar { display: none; }
 
 .character-item {
-    padding: 10px 12px;
+    padding: 20px 12px;
     border-bottom: 1px solid rgba(201,168,106,0.3);
     cursor: pointer;
     display: flex;
@@ -172,6 +172,24 @@
 }
 
 .character-item:hover { background: rgba(201,168,106,0.1); }
+
+.char-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2d3b5;
+}
+
+.char-class {
+    font-size: 14px;
+    color: #c9a86a;
+    opacity: 0.9;
+}
+
+.char-level {
+    font-size: 13px;
+    color: #e2d3b5;
+    opacity: 0.85;
+}
 
 .character-item.selected {
     background: rgba(20,15,5,0.8);

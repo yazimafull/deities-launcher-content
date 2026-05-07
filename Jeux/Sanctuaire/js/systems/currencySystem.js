@@ -1,32 +1,40 @@
 ﻿/*
    ROUTE : js/systems/currencySystem.js
-   RÔLE : Gestion globale des monnaies du jeu (or, cristaux, âmes, etc.)
-   EXPORTS : loadCurrencies, saveCurrencies, addCurrency, spendCurrency, getCurrency
-   DÉPENDANCES : ../data/playerBase.js
-   NOTES :
-     - Système extensible : ajoute autant de monnaies que tu veux.
-     - Persistance automatique via localStorage.
-     - Utilisé par : marchand, loot, forge, run rewards, talents, etc.
+   RÔLE :
+     - Gestion globale des monnaies du jeu
+     - Stockage interne en Copper (1 Gold = 10 000 Copper)
+     - Conversion Gold/Silver/Copper pour l'affichage
+     - Dépenses uniquement en Gold (jamais Silver/Copper)
+   EXPORTS :
+     - loadCurrencies, saveCurrencies
+     - addCurrency(type, copperAmount)
+     - spendCurrency(type, goldCost)
+     - getCurrency(type) → { gold, silver, copper }
+     - convertCopperToGSC(copper)
 */
 
 import { basePlayer as player } from "../data/playerBase.js";
 
-// ===============================
+// ============================================================================
+// CONSTANTES DE CONVERSION
+// ============================================================================
+const COPPER_PER_SILVER = 100;
+const COPPER_PER_GOLD   = 10000;
+
+// ============================================================================
 // INITIALISATION DES MONNAIES
-// ===============================
-// Si player.currencies n'existe pas encore → on le crée
+// ============================================================================
 if (!player.currencies) {
     player.currencies = {
-        gold: 0,
+        gold: 0,          // stocké en copper !
         crystals: 0,
         monsterSouls: 0
-        // Ajoute ici d'autres monnaies si besoin
     };
 }
 
-// ===============================
+// ============================================================================
 // CHARGEMENT
-// ===============================
+// ============================================================================
 export function loadCurrencies() {
     const raw = localStorage.getItem("playerCurrencies");
     if (raw) {
@@ -38,35 +46,68 @@ export function loadCurrencies() {
     }
 }
 
-// ===============================
+// ============================================================================
 // SAUVEGARDE
-// ===============================
+// ============================================================================
 export function saveCurrencies() {
     localStorage.setItem("playerCurrencies", JSON.stringify(player.currencies));
 }
 
-// ===============================
-// OBTENIR UNE MONNAIE
-// ===============================
-export function getCurrency(type) {
-    return player.currencies[type] ?? 0;
+// ============================================================================
+// CONVERSION : Copper → Gold / Silver / Copper
+// ============================================================================
+export function convertCopperToGSC(copper) {
+
+    const gold   = Math.floor(copper / COPPER_PER_GOLD);
+    const remain = copper % COPPER_PER_GOLD;
+
+    const silver = Math.floor(remain / COPPER_PER_SILVER);
+    const copperFinal = remain % COPPER_PER_SILVER;
+
+    return { gold, silver, copper: copperFinal };
 }
 
-// ===============================
-// AJOUTER UNE MONNAIE
-// ===============================
-export function addCurrency(type, amount) {
+// ============================================================================
+// OBTENIR UNE MONNAIE (retourne G/S/C)
+// ============================================================================
+export function getCurrency(type) {
+
+    const copper = player.currencies[type] ?? 0;
+
+    // Si ce n'est pas une monnaie en copper → renvoyer brut
+    if (type !== "gold") return copper;
+
+    return convertCopperToGSC(copper);
+}
+
+// ============================================================================
+// AJOUTER UNE MONNAIE (toujours en copper)
+// ============================================================================
+export function addCurrency(type, copperAmount) {
+
     if (!player.currencies[type]) player.currencies[type] = 0;
-    player.currencies[type] += amount;
+
+    player.currencies[type] += copperAmount;
+
     saveCurrencies();
 }
 
-// ===============================
-// DÉPENSER UNE MONNAIE
-// ===============================
-export function spendCurrency(type, amount) {
-    if (getCurrency(type) < amount) return false;
-    player.currencies[type] -= amount;
+// ============================================================================
+// DÉPENSER UNE MONNAIE (uniquement en GOLD)
+// ============================================================================
+export function spendCurrency(type, goldCost) {
+
+    if (type !== "gold") {
+        console.warn("❌ spendCurrency() : seules les dépenses en Gold sont autorisées.");
+        return false;
+    }
+
+    const costInCopper = goldCost * COPPER_PER_GOLD;
+
+    if ((player.currencies.gold ?? 0) < costInCopper) return false;
+
+    player.currencies.gold -= costInCopper;
+
     saveCurrencies();
     return true;
 }

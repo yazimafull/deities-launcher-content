@@ -1,20 +1,33 @@
-﻿// ROUTE : data/playerBase.js
+﻿/*
+   ROUTE : Jeux/Sanctuaire/js/data/playerBase.js
+
+   RÔLE :
+     - Définition du joueur permanent (base immuable)
+     - Contient : stats de base, progression méta, inventaire, équipement
+     - Ne contient AUCUNE logique (calculs faits dans player.js)
+     - Source de vérité pour l’état permanent du joueur
+
+   NOTES :
+     - Les stats offensives restent à 0 car écrasées par l’arme
+     - Les stats défensives minimales (HP/Shield/regen) sont conservées
+     - L’or permanent est géré par currencySystem → currencies.gold (en copper)
+*/
 
 export const basePlayer = {
 
-    // =====================
+    // =============================
     // IDENTITÉ / POSITION
-    // =====================
+    // =============================
     x: 0,
     y: 0,
     size: 32,
 
-    // =====================
+    // =============================
     // STATS DE BASE (minimales)
-    // =====================
+    // =============================
     stats: {
 
-        // 🟥 OFFENSE
+        // 🟥 OFFENSE — écrasées par l’arme
         damage: 1,
         damageMultiplier: 0,
 
@@ -60,7 +73,7 @@ export const basePlayer = {
         attackRangeMultiplier: 0,
 
 
-        // 🟩 DÉFENSE
+        // 🟩 DÉFENSE — valeurs minimales jouables
         maxHp: 1,
         maxHpMultiplier: 0,
 
@@ -100,13 +113,20 @@ export const basePlayer = {
         lootQuantity: 0,
         lootQuality: 0,
 
-        currencyGain: 0,
-        xpGain: 0,
+        goldGain: 0,
+        crystalGain: 0,
+        soulGain: 0,
+        componentGain: 0,
+
+        jobXpGain: 0,
+        soulXpGain: 0,
 
         pickupRange: 0,
 
 
         // 🟪 META
+        runXpBonus: 0,
+
         spiritMax: 0,
         spiritRegen: 0,
         spiritCostReduction: 0,
@@ -115,36 +135,47 @@ export const basePlayer = {
         energyRegen: 0,
     },
 
-    // =====================
-    // PROGRESSION MÉTA
-    // =====================
+    // =============================
+    // PROGRESSION MÉTA (permanent)
+    // =============================
     soulXP: 0,
     soulLevel: 1,
-    gold: 0,
 
-    // =====================
+    jobXP: 0,
+    jobLevel: 1,
+
+    // =============================
+    // MONNAIES (GSC → copper)
+    // =============================
+    currencies: {
+        gold: 0,          // stocké en copper
+        crystals: 0,
+        monsterSouls: 0
+    },
+
+    // =============================
     // INVENTAIRE PERMANENT
-    // =====================
+    // =============================
     inventory: [],
 
-    // =====================
+    // =============================
     // ÉQUIPEMENT PERMANENT
-    // =====================
+    // =============================
     equipment: {
         weapon: null,
         armor: null,
         trinkets: []
     },
 
-    // =====================
+    // =============================
     // SOURCES DE STATS PERMANENTES
-    // =====================
+    // =============================
     talents: [],
     affixes: [],
     buffs: [],
 
-    // =====================
+    // =============================
     // FLAGS
-    // =====================
+    // =============================
     isMob: false
 };

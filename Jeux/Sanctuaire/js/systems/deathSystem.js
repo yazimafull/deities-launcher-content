@@ -7,7 +7,8 @@
 // - Le retour Sanctuaire utilise désormais la fonction maître du runManager.
 
 import { GameState, setState } from "../core/state.js";
-import { returnToSanctuary } from "../core/runManager.js";   // 🔥 IMPORT MAÎTRE
+import { returnToSanctuary } from "../core/runManager.js";
+import { cleanRunOnDeath } from "../core/runManager.js";   // 🔥 AJOUT
 
 export function onPlayerDeath() {
     const deathScreen = document.getElementById("death-screen");
@@ -25,4 +26,7 @@ export function onPlayerDeath() {
 
 // Bouton "Retour Sanctuaire"
 document.getElementById("death-back")
-    ?.addEventListener("click", returnToSanctuary);   // 🔥 UTILISE LA FONCTION MAÎTRE
+    ?.addEventListener("click", () => {
+        cleanRunOnDeath();     // 🔥 PUNITION DE MORT
+        returnToSanctuary();   // 🔥 RETOUR SANCTUAIRE
+    });

@@ -93,8 +93,6 @@
         </div>
     </div>
 
-    <!-- (ANCIEN overlay options supprimé ici) -->
-
 </section>
 
 <!-- =========================
@@ -150,14 +148,14 @@
 
                             <div id="levelDropdown" class="pylone-dropdown dropdown small">
                                 <button class="dropdown-toggle">
-                                    <span id="levelLabel">Niveau I</span>
+                                    <span id="levelLabel">Niveau 1</span>
                                     <span class="dropdown-arrow">▼</span>
                                 </button>
 
                                 <div id="levelMenu" class="dropdown-menu">
-                                    <div class="dropdown-item">Niveau I</div>
-                                    <div class="dropdown-item">Niveau II</div>
-                                    <div class="dropdown-item">Niveau III</div>
+                                    <div class="dropdown-item">Niveau 1</div>
+                                    <div class="dropdown-item">Niveau 2</div>
+                                    <div class="dropdown-item">Niveau 3</div>
                                 </div>
                             </div>
                         </div>
@@ -310,27 +308,16 @@
 
             <h2 class="loot-title">RÉCOMPENSES</h2>
 
-            <!-- XP d'âme -->
-            <div id="loot-soulxp" class="loot-line">
-                <!-- Exemple : XP d'âme gagnée : 120 -->
-            </div>
+            <!-- Conteneur principal des valeurs (gold + soulXP + jobXP) -->
+            <div id="loot-values"></div>
 
-            <!-- Breakdown (optionnel, vide si non utilisé) -->
-            <div id="loot-breakdown" class="loot-breakdown hidden">
-                <!-- Exemple : Bonus temps : +20% -->
-            </div>
-
-            <!-- Or -->
-            <div id="loot-gold" class="loot-line">
-                <!-- Exemple : Or gagné : 250 -->
-            </div>
+            <!-- Breakdown -->
+            <div id="loot-breakdown" class="loot-breakdown hidden"></div>
 
             <!-- Items -->
             <div class="loot-items-block">
                 <div class="loot-items-title">Objets trouvés</div>
-                <div id="loot-items" class="loot-items">
-                    <!-- Exemple : <div class="loot-item rare">Épée rouillée</div> -->
-                </div>
+                <div id="loot-items" class="loot-items"></div>
             </div>
 
             <!-- Actions -->
@@ -342,9 +329,6 @@
         </div>
 
     </div>
-
-
-
     <!-- =========================
          LEVELUP MENU
     ========================= -->
@@ -354,7 +338,6 @@
             <div id="upgrade-choices"></div>
         </div>
     </div>
-
     <!-- =========================
          UPGRADE PANEL
     ========================= -->

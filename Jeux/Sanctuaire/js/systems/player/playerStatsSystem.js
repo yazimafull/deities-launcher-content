@@ -120,5 +120,16 @@ function applySource(stats, source) {
 */
 function applyList(stats, list) {
     if (!list) return;
-    for (const item of list) applySource(stats, item);
+
+    if (Array.isArray(list)) {
+        for (const item of list) applySource(stats, item);
+        return;
+    }
+
+    if (typeof list === "object") {
+        for (const key in list) {
+            applySource(stats, list[key]);
+        }
+    }
 }
+
