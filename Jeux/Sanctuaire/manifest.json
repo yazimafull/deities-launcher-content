@@ -1,5 +1,5 @@
 {
-    "version": "1777943480864",
+    "version": "1777975388089",
     "files": [
         {
             "path": "arbo.txt",
@@ -46,12 +46,20 @@
             "sha256": "57e1be9a15bfc8862ae3d411eac636c2ab84fd6e47422c3bb945a7f4d4dbb70b"
         },
         {
+            "path": "icons/armor_crafted.png",
+            "sha256": "9cef3a5613d889ec7b4262d3fc199616cededaa2c58b25cd5cbeb863a91c9c35"
+        },
+        {
+            "path": "icons/weapon_bow.png",
+            "sha256": "90b165e39526120445cbc32920731a76bf5add2618ccf82ba68c89bf8a64b13b"
+        },
+        {
             "path": "index.html",
             "sha256": "b41ad60380a466ce2763cd57ca02477325924cee8626d02c1194ac7d563ef0e3"
         },
         {
             "path": "js/UI/loot/lootScreen.js",
-            "sha256": "da7b1726510c2af1c4617697e67295bfe97191b20bab263410920bbe8be76bea"
+            "sha256": "637e6fc3308a38fc1f0944ab598a39d4b1810bdb19f787baeabd8f5cb4246718"
         },
         {
             "path": "js/UI/menu/characterMenu.js",
@@ -91,7 +99,7 @@
         },
         {
             "path": "js/core/gameLoop.js",
-            "sha256": "85d44c83f3f4d67b0ee67dea4fcd07bc36baf6b004db7cc6aeb41c5c324a4a2a"
+            "sha256": "c286bf074ee0decde0f7826b31d9edb3d179d3950359553651f41c089e0e788d"
         },
         {
             "path": "js/core/input.js",
@@ -103,7 +111,7 @@
         },
         {
             "path": "js/core/loader.js",
-            "sha256": "465f5b70d8cfd4bf5e53c537832c491a4d2c7f87d35689462bde87be1d8dbfea"
+            "sha256": "de084c35542db9dd1ac8607c5430f98e567e5f17649eacee10b93788f118a375"
         },
         {
             "path": "js/core/main.js",
@@ -111,7 +119,7 @@
         },
         {
             "path": "js/core/runManager.js",
-            "sha256": "44f488bb2cc98cb227f4aaac212f0fd5efc2b56871847eba2c7f7dbb56d54ae7"
+            "sha256": "7caf0a30892a85398bdc1855d10e57385a054da5fdeb1b214bd3647f6bcde534"
         },
         {
             "path": "js/core/screenManager.js",
@@ -142,8 +150,12 @@
             "sha256": "10e88d47e2da9e32e55d5e75b85c24d16c4acde633b24c7efdefc96babece524"
         },
         {
+            "path": "js/data/bossProfiles.js",
+            "sha256": "6b7d6a73458eec50031268aa6ce6ea7474a4ac83754bfa504306ce5f33123aa5"
+        },
+        {
             "path": "js/data/playerBase.js",
-            "sha256": "c55f427768e097d5943d0859e533e65189ce0942a1f94595c38d8a1868c03f51"
+            "sha256": "b8ee5f90e87d32f020db1b969f5cdb8da99fddfad4f1f0bcf6255f1f24a21eac"
         },
         {
             "path": "js/data/skillProfiles.js",
@@ -167,7 +179,7 @@
         },
         {
             "path": "js/systems/combatSystem.js",
-            "sha256": "193d3319049107e9f7cc7f1451f9898de815d49e8400bea54a335d9384dabb25"
+            "sha256": "0e0393fe963ecd7407999178c473d096b299941f0a900c21385a5e3338b6faee"
         },
         {
             "path": "js/systems/currencySystem.js",
@@ -175,7 +187,7 @@
         },
         {
             "path": "js/systems/damageSystem.js",
-            "sha256": "b273da89fbba2c14a77f9aeccb40a16d118839a792466f387d4c60c9dc25079a"
+            "sha256": "19bb8daea8afdf92d67944eda8cf124d10521d757829e82dba5211a870fe0399"
         },
         {
             "path": "js/systems/deathSystem.js",
@@ -219,7 +231,7 @@
         },
         {
             "path": "js/systems/enemy/bossSystem.js",
-            "sha256": "d1c3ad986e381dbc37058d9e872199b6ed7781b93f8cfa8ab486c2384650c755"
+            "sha256": "98028d6003fa802e2fc6fafd313f12ccd7d64a3864eb7a7685609245164538dd"
         },
         {
             "path": "js/systems/enemy/enemyAI.js",
@@ -235,7 +247,7 @@
         },
         {
             "path": "js/systems/enemy/enemyFactory.js",
-            "sha256": "ce1d4c479b0e71a1beafe57fd021348f2334c0e02fd55f8951b5903c42032000"
+            "sha256": "45747381f99287d4ccaf8ad92baeeba907db7c81017aad7a6752ea84ea0a43f4"
         },
         {
             "path": "js/systems/enemy/enemyRender.js",
@@ -243,7 +255,7 @@
         },
         {
             "path": "js/systems/enemy/enemySystem.js",
-            "sha256": "aaee8786196113bacb3f6ef50fc2be8ef587e5c62856f1a8a79e65252760c623"
+            "sha256": "bfb3ee4d7972feeef776edaba5db447fa9a87b4a7ca9eb76d485b6787caf02f7"
         },
         {
             "path": "js/systems/forge/forgeRecipes.js",
@@ -359,7 +371,7 @@
         },
         {
             "path": "js/systems/projectileSystem.js",
-            "sha256": "f69d7f06d79731a2e5dba6e9aae82cb3a6cfa8fdf519268c2fe9e81d5efb245b"
+            "sha256": "5f0fe87a952b6a17f937ba6ab6ef03520e0075904846dbf759abd79a7f7ef956"
         },
         {
             "path": "js/systems/upgradePanel.js",
@@ -367,7 +379,7 @@
         },
         {
             "path": "js/systems/upgrades.js",
-            "sha256": "af39301572fa2fca13c2a039404417a769b9f42013eacebdfe7027621837c1fa"
+            "sha256": "a445a49aa5a36ff0069c10ccda5bd77170f2be3a85e2449196e03ed70494efb8"
         },
         {
             "path": "js/systems/xp/jobXP.js",
