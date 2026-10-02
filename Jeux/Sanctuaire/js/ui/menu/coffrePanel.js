@@ -1,5 +1,5 @@
 ﻿/*
-   ROUTE : js/UI/menu/coffrePanel.js
+   ROUTE : js/ui/menu/coffrePanel.js
    RÔLE : Affichage du coffre (inventaire permanent du personnage actif)
    EXPORTS : openCoffrePanel, closeCoffrePanel
 */

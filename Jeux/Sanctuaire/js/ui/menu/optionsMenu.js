@@ -1,6 +1,6 @@
-﻿// UI/menu/optionsMenu.js
+﻿// ui/menu/optionsMenu.js
 /*
-   ROUTE : Jeux/Sanctuaire/js/UI/menu/optionsMenu.js
+   ROUTE : Jeux/Sanctuaire/js/ui/menu/optionsMenu.js
    RÔLE : Gestion du panneau Options unifié (ouverture, fermeture, listeners idempotents)
    EXPORTS : openOptions, closeOptions, initOptionsMenu
    DÉPENDANCES : aucune (module autonome, manipule uniquement le DOM)

@@ -1,6 +1,6 @@
-﻿// UI/menu/pauseMenu.js
+﻿// ui/menu/pauseMenu.js
 /*
-   ROUTE : Jeux/Sanctuaire/js/UI/menu/pauseMenu.js
+   ROUTE : Jeux/Sanctuaire/js/ui/menu/pauseMenu.js
    RÔLE : Gestion du menu Pause en run (ouverture, fermeture, confirmation Sanctuaire)
    EXPORTS : openPause, initPauseMenu
    DÉPENDANCES : state.js, screenManager.js, gameLoop.js, runManager.js

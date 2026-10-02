@@ -60,7 +60,7 @@ import {
 
 import { onPlayerDeath } from "../systems/deathSystem.js";
 
-import { HUD } from "../UI/hud/hudSystem.js";
+import { HUD } from "../ui/hud/hudSystem.js";
 
 import { moveEntity, updatePlayerDirection } from "../systems/movementSystem.js";
 

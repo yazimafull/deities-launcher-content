@@ -1,4 +1,4 @@
-﻿// ROUTE : js/UI/menu/characterMenu.js
+﻿// ROUTE : js/ui/menu/characterMenu.js
 // ROLE  : Gestion du menu personnage (sélection, création, suppression)
 
 import {

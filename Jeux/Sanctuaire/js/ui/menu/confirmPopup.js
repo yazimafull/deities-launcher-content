@@ -1,5 +1,5 @@
 ﻿/*
-   ROUTE : js/UI/menu/confirmPopup.js
+   ROUTE : js/ui/menu/confirmPopup.js
    RÔLE : Popup système de confirmation (Oui / Non)
    EXPORTS : openConfirmPopup
    NOTES :

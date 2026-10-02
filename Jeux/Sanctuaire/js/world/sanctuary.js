@@ -5,11 +5,11 @@ import { goToMenu } from "../core/main.js";
 import { startRun } from "../core/gameLoop.js";
 import { startRunManager } from "../core/runManager.js";
 
-import { openCoffrePanel } from "../UI/menu/coffrePanel.js";
-import { openMarchandPanel } from "../UI/menu/marchandPanel.js";
-import { openForgePanel } from "../UI/menu/forgePanel.js";
+import { openCoffrePanel } from "../ui/menu/coffrePanel.js";
+import { openMarchandPanel } from "../ui/menu/marchandPanel.js";
+import { openForgePanel } from "../ui/menu/forgePanel.js";
 
-import { openPylonePanel, resetPyloneTimer } from "../UI/menu/pylonePanel.js";
+import { openPylonePanel, resetPyloneTimer } from "../ui/menu/pylonePanel.js";
 
 import { getActiveCharacterId, loadActiveCharacter } from "../core/characterManager.js";
 import { loadCurrencies } from "../systems/currencySystem.js";

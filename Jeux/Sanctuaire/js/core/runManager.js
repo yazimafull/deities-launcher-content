@@ -21,11 +21,11 @@ import { setState, getState, GameState } from "./state.js";
 import { spawnEnemy, enemies } from "../systems/enemy/enemySystem.js";
 import { projectiles } from "../systems/projectileSystem.js";
 
-import { openLootScreen } from "../UI/loot/lootScreen.js";
+import { openLootScreen } from "../ui/loot/lootScreen.js";
 import { resetRunXP } from "../systems/xp/runXP.js";
 import { resetBoss } from "../systems/enemy/bossSystem.js";
 
-import { HUD } from "../UI/hud/hudSystem.js";
+import { HUD } from "../ui/hud/hudSystem.js";
 import { startRun, stopRun } from "./gameLoop.js";
 import { Biomes } from "../data/biomes.js";
 import { generateBiomeMobs } from "../systems/biomeSpawner.js";

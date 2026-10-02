@@ -1,5 +1,5 @@
 ﻿/*
-   ROUTE : js/UI/menu/marchandPanel.js
+   ROUTE : js/ui/menu/marchandPanel.js
    RÔLE : Panel Marchand (achat d’objets simples pour tests)
    EXPORTS : openMarchandPanel, closeMarchandPanel
    DÉPENDANCES :

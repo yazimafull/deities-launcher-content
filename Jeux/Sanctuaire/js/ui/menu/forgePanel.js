@@ -1,5 +1,5 @@
 ﻿/*
-   ROUTE : js/UI/menu/forgePanel.js
+   ROUTE : js/ui/menu/forgePanel.js
    RÔLE :
      - Panel UI complet de la Forge :
          • Onglet FABRICATION (recettes → pièces)

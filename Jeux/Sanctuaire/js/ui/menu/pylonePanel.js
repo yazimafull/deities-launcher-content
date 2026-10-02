@@ -1,4 +1,4 @@
-﻿// ROUTE : js/UI/menu/pylonePanel.js
+﻿// ROUTE : js/ui/menu/pylonePanel.js
 // ============================================================================
 // RÔLE : Gère entièrement le Pylône : sélection biome/niveau, équipement,
 //        pierre d’affixe, récapitulatif, verrouillage et lancement de run.

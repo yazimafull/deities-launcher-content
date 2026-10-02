@@ -8,7 +8,7 @@
 */
 
 import { getState, GameState } from "../core/state.js";
-import { openPause } from "../UI/menu/pauseMenu.js";
+import { openPause } from "../ui/menu/pauseMenu.js";
 import { isDown } from "../core/input.js";
 
 let canvas, ctx;

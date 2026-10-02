@@ -1,5 +1,5 @@
 ﻿/*
-   ROUTE : Jeux/Sanctuaire/js/UI/loot/lootScreen.js
+   ROUTE : Jeux/Sanctuaire/js/ui/loot/lootScreen.js
 
    RÔLE :
      - Afficher le panneau de loot de fin de run

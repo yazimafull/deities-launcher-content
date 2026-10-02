@@ -112,12 +112,12 @@ import "../systems/item/profiles/weaponProfiles.js";
 // ================================
 // UI
 // ================================
-import { initCharacterMenu } from "../UI/menu/characterMenu.js";
-import { initPauseMenu } from "../UI/menu/pauseMenu.js";
-import { initOptionsMenu } from "../UI/menu/optionsMenu.js";
-import { HUD } from "../UI/hud/hudSystem.js";
-import { initLootScreen } from "../UI/loot/lootScreen.js";
-import { initPylonePanel } from "../UI/menu/pylonePanel.js";
+import { initCharacterMenu } from "../ui/menu/characterMenu.js";
+import { initPauseMenu } from "../ui/menu/pauseMenu.js";
+import { initOptionsMenu } from "../ui/menu/optionsMenu.js";
+import { HUD } from "../ui/hud/hudSystem.js";
+import { initLootScreen } from "../ui/loot/lootScreen.js";
+import { initPylonePanel } from "../ui/menu/pylonePanel.js";
 import { attachPlayButton } from "./main.js";
 
 

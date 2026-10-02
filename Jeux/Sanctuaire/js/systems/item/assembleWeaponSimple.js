@@ -15,7 +15,7 @@ export function assembleWeaponSimple(parts) {
         slot: "weapon",
         weaponType: "crafted",
         name: "Arme assemblée",
-        icon: "icons/weapon_crafted.png",
+        icon: "icon.png",
 
         stats: {},
         affixes: {},
