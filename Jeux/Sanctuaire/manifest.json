@@ -1,14 +1,6 @@
 {
-    "version": "1778148221497",
+    "version": "1790951633134",
     "files": [
-        {
-            "path": "arbo.txt",
-            "sha256": "b6d094b688f111d602242a70056f882abfcfc77d46cc0723f215357ff4ca9430"
-        },
-        {
-            "path": "arborescence.txt",
-            "sha256": "0eb048f4555af6233a66fa8f008803205e7b4bf5442c356605414522a32d1d06"
-        },
         {
             "path": "css/gameplay.css",
             "sha256": "5c0f8a66424346db0e2848d299b9e41d6c6ad03f0a90a135f8624a4ce1eaaf9b"
@@ -210,10 +202,6 @@
             "sha256": "8c3a6381809833da752a6afb9c45ac4071d8c3182fd15e4e3489e77ee77f6c60"
         },
         {
-            "path": "js/systems/effects/Nouveau document RTF - Copie (4).rtf",
-            "sha256": "0d6afb7e939f0936f40afdc759b5a354ea5427ec250a47e7b904ab1ea800a01d"
-        },
-        {
             "path": "js/systems/effects/fire.js",
             "sha256": "530ade7b8af03622e08fe74936a859b1ca616aeeaba40b752da8c76ab0ba97de"
         },
@@ -392,10 +380,6 @@
         {
             "path": "js/systems/xp/jobXP.js",
             "sha256": "377935add36f1c107a6cb5f710dfeb4a03201ea3498e732cf3bb904773842df7"
-        },
-        {
-            "path": "js/systems/xp/old_xp.js",
-            "sha256": "bf8395ee1b473503b58827798023441649713bb8e50174f3fbbc1f7600eb105e"
         },
         {
             "path": "js/systems/xp/runXP.js",

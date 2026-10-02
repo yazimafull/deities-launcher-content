@@ -1,0 +1,9 @@
+{
+  "LaserGame": {"files": ["index.html", "game.json", "icon.png", "background.jpg"], "directories": [], "exclude": []},
+  "Pipo": {"files": ["index.html", "game.json", "icon.png", "background.jpg"], "directories": [], "exclude": []},
+  "Sanctuaire": {
+    "files": ["index.html", "game.json", "icon.png", "main-menu-background.jpg", "sanctuary-background.jpg"],
+    "directories": ["css", "js", "icons"],
+    "exclude": ["arbo.txt", "arborescence.txt", "js/systems/xp/old_xp.js", "js/systems/effects/Nouveau document RTF - Copie (4).rtf"]
+  }
+}
